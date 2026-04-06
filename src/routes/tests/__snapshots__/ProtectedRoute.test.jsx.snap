@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProtectedRoute — real mode matches snapshot when authenticated 1`] = `
+<DocumentFragment>
+  <div>
+    Protected Content
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ProtectedRoute — real mode matches snapshot when not authenticated (redirect rendered) 1`] = `
+<DocumentFragment>
+  <div>
+    Login Page
+  </div>
+</DocumentFragment>
+`;
