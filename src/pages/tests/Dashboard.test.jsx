@@ -12,6 +12,7 @@
 import { render, screen } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
 
 import { buildStore, appMessages, MOCK_USER, AUTHED_STATE } from '../../tests/renderUtils.jsx';
 import Dashboard from '../Dashboard.jsx';
@@ -33,7 +34,9 @@ function renderDashboard(authOverrides = {}) {
   return render(
     <Provider store={store}>
       <IntlProvider locale="en" messages={appMessages} defaultLocale="en">
-        <Dashboard />
+        <MemoryRouter>
+          <Dashboard />
+        </MemoryRouter>
       </IntlProvider>
     </Provider>,
   );

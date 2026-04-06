@@ -3,7 +3,7 @@
  *
  * AppLayout renders a sidebar (Sider + Menu) and a header with:
  *   - App title in the sidebar logo area
- *   - Navigation items: Dashboard, Records
+ *   - Navigation items: Dashboard, Search
  *   - A collapse/expand toggle button
  *   - User name / email display in the header
  *   - A user dropdown with Sign Out action
@@ -44,7 +44,7 @@ function renderLayout(authOverrides = {}, initialPath = '/dashboard') {
             <Routes>
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<div>Dashboard Content</div>} />
-                <Route path="/records" element={<div>Records Content</div>} />
+                <Route path="/search"    element={<div>Search Content</div>} />
               </Route>
             </Routes>
           </MemoryRouter>
@@ -67,24 +67,24 @@ describe('AppLayout — sidebar', () => {
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
   });
 
-  it('renders the Records navigation item', () => {
+  it('renders the Search navigation item', () => {
     renderLayout(AUTHED_STATE);
-    expect(screen.getByText('Records')).toBeInTheDocument();
+    expect(screen.getByText('Search')).toBeInTheDocument();
   });
 
-  it('navigates to /records when the Records menu item is clicked', async () => {
+  it('navigates to /search when the Search menu item is clicked', async () => {
     const user = userEvent.setup();
     renderLayout(AUTHED_STATE);
 
-    await user.click(screen.getByText('Records'));
-    expect(await screen.findByText('Records Content')).toBeInTheDocument();
+    await user.click(screen.getByText('Search'));
+    expect(await screen.findByText('Search Content')).toBeInTheDocument();
   });
 
   it('navigates to /dashboard when the Dashboard menu item is clicked', async () => {
     const user = userEvent.setup();
-    renderLayout(AUTHED_STATE, '/records');
+    renderLayout(AUTHED_STATE, '/search');
 
-    await screen.findByText('Records Content');
+    await screen.findByText('Search Content');
     await user.click(screen.getByText('Dashboard'));
     expect(await screen.findByText('Dashboard Content')).toBeInTheDocument();
   });

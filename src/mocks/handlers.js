@@ -7,11 +7,11 @@ const BASE = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:8080/api';
 /**
  * MSW handlers that mirror a Spring Boot REST controller:
  *
- *   GET    /api/records?page=0&size=10  → PagedResponse<Record>
- *   GET    /api/records/:id             → Record
- *   POST   /api/records                → Record (201)
- *   PUT    /api/records/:id            → Record
- *   DELETE /api/records/:id            → 204
+ *   GET    /api/records?page=0&size=10&name=&department=  → PagedResponse<Record>
+ *   GET    /api/records/:id                               → Record
+ *   POST   /api/records                                   → Record (201)
+ *   PUT    /api/records/:id                               → Record
+ *   DELETE /api/records/:id                               → 204
  */
 export const handlers = [
   // ── GET /api/records ────────────────────────────────────────────────────────
@@ -20,7 +20,15 @@ export const handlers = [
     const page = parseInt(url.searchParams.get('page') ?? '0', 10);
     const size = parseInt(url.searchParams.get('size') ?? '10', 10);
 
-    const data = db.getAll(page, size);
+    const filters = {
+      name:       url.searchParams.get('name')       ?? '',
+      email:      url.searchParams.get('email')      ?? '',
+      department: url.searchParams.get('department') ?? '',
+      status:     url.searchParams.get('status')     ?? '',
+      address:    url.searchParams.get('address')    ?? '',
+    };
+
+    const data = db.search(filters, page, size);
     return HttpResponse.json(data);
   }),
 

@@ -9,8 +9,9 @@ import OktaCallback from '../pages/OktaCallback.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 
 // Code-split protected pages
-const Dashboard = lazy(() => import('../pages/Dashboard.jsx'));
-const RecordsPage = lazy(() => import('../pages/Records/RecordsPage.jsx'));
+const Dashboard   = lazy(() => import('../pages/Dashboard.jsx'));
+const SearchPage  = lazy(() => import('../pages/Search/SearchPage.jsx'));
+const ResultsPage = lazy(() => import('../pages/Results/ResultsPage.jsx'));
 
 const PageLoader = () => (
   <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
@@ -29,7 +30,8 @@ const AppRoutes = () => (
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/records" element={<RecordsPage />} />
+          <Route path="/search"    element={<SearchPage />} />
+          <Route path="/results"   element={<ResultsPage />} />
           {/* Fallback inside protected zone */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>

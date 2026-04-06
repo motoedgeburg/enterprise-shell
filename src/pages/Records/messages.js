@@ -11,6 +11,7 @@ const messages = {
   RECORDS_COL_EMAIL: { id: 'RECORDS_COL_EMAIL', defaultMessage: 'Email' },
   RECORDS_COL_DEPARTMENT: { id: 'RECORDS_COL_DEPARTMENT', defaultMessage: 'Department' },
   RECORDS_COL_STATUS: { id: 'RECORDS_COL_STATUS', defaultMessage: 'Status' },
+  RECORDS_COL_ADDRESS: { id: 'RECORDS_COL_ADDRESS', defaultMessage: 'Address' },
   RECORDS_COL_CREATED: { id: 'RECORDS_COL_CREATED', defaultMessage: 'Created' },
   RECORDS_COL_ACTIONS: { id: 'RECORDS_COL_ACTIONS', defaultMessage: 'Actions' },
 
@@ -65,6 +66,11 @@ const messages = {
     id: 'MODAL_FIELD_EMAIL_PLACEHOLDER',
     defaultMessage: 'jane.doe@company.com',
   },
+  MODAL_FIELD_ADDRESS: { id: 'MODAL_FIELD_ADDRESS', defaultMessage: 'Address' },
+  MODAL_FIELD_ADDRESS_PLACEHOLDER: {
+    id: 'MODAL_FIELD_ADDRESS_PLACEHOLDER',
+    defaultMessage: '123 Main St, Philadelphia, PA 19103',
+  },
   MODAL_FIELD_DEPARTMENT: { id: 'MODAL_FIELD_DEPARTMENT', defaultMessage: 'Department' },
   MODAL_FIELD_DEPARTMENT_PLACEHOLDER: {
     id: 'MODAL_FIELD_DEPARTMENT_PLACEHOLDER',
@@ -85,6 +91,10 @@ const messages = {
   MODAL_VALIDATION_EMAIL_INVALID: {
     id: 'MODAL_VALIDATION_EMAIL_INVALID',
     defaultMessage: 'Enter a valid email address',
+  },
+  MODAL_VALIDATION_ADDRESS_REQUIRED: {
+    id: 'MODAL_VALIDATION_ADDRESS_REQUIRED',
+    defaultMessage: 'Address is required',
   },
   MODAL_VALIDATION_DEPARTMENT_REQUIRED: {
     id: 'MODAL_VALIDATION_DEPARTMENT_REQUIRED',

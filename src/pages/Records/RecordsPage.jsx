@@ -76,6 +76,7 @@ const RecordsPage = () => {
     const dto = {
       name: values.name,
       email: values.email,
+      address: values.address,
       department: values.department,
       status: values.status,
     };
@@ -107,12 +108,18 @@ const RecordsPage = () => {
       filteredValue: searchText ? [searchText] : null,
       onFilter: (value, record) =>
         record.name.toLowerCase().includes(String(value).toLowerCase()) ||
-        record.email.toLowerCase().includes(String(value).toLowerCase()),
+        record.email.toLowerCase().includes(String(value).toLowerCase()) ||
+        record.address?.toLowerCase().includes(String(value).toLowerCase()),
     },
     {
       title: intl.formatMessage(messages.RECORDS_COL_EMAIL),
       dataIndex: 'email',
       key: 'email',
+    },
+    {
+      title: intl.formatMessage(messages.RECORDS_COL_ADDRESS),
+      dataIndex: 'address',
+      key: 'address',
     },
     {
       title: intl.formatMessage(messages.RECORDS_COL_DEPARTMENT),
@@ -179,7 +186,8 @@ const RecordsPage = () => {
     ? records.filter(
         (r) =>
           r.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          r.email.toLowerCase().includes(searchText.toLowerCase()),
+          r.email.toLowerCase().includes(searchText.toLowerCase()) ||
+          r.address?.toLowerCase().includes(searchText.toLowerCase()),
       )
     : records;
 

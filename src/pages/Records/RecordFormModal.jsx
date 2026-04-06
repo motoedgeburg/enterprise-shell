@@ -33,6 +33,10 @@ const RecordFormModal = ({ open, record, onSubmit, onCancel }) => {
       errors.email = intl.formatMessage(messages.MODAL_VALIDATION_EMAIL_INVALID);
     }
 
+    if (!values.address?.trim()) {
+      errors.address = intl.formatMessage(messages.MODAL_VALIDATION_ADDRESS_REQUIRED);
+    }
+
     if (!values.department?.trim()) {
       errors.department = intl.formatMessage(messages.MODAL_VALIDATION_DEPARTMENT_REQUIRED);
     }
@@ -48,6 +52,7 @@ const RecordFormModal = ({ open, record, onSubmit, onCancel }) => {
     ? {
         name: record.name,
         email: record.email,
+        address: record.address,
         department: record.department,
         status: record.status,
       }
@@ -103,6 +108,12 @@ const RecordFormModal = ({ open, record, onSubmit, onCancel }) => {
               name="email"
               label={intl.formatMessage(messages.MODAL_FIELD_EMAIL)}
               placeholder={intl.formatMessage(messages.MODAL_FIELD_EMAIL_PLACEHOLDER)}
+            />
+
+            <TextField
+              name="address"
+              label={intl.formatMessage(messages.MODAL_FIELD_ADDRESS)}
+              placeholder={intl.formatMessage(messages.MODAL_FIELD_ADDRESS_PLACEHOLDER)}
             />
 
             <SelectField

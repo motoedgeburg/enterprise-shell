@@ -1,6 +1,6 @@
 import {
   DashboardOutlined,
-  TableOutlined,
+  SearchOutlined,
   LogoutOutlined,
   UserOutlined,
   MenuFoldOutlined,
@@ -35,9 +35,9 @@ const AppLayout = () => {
       label: intl.formatMessage(messages.NAV_DASHBOARD),
     },
     {
-      key: '/records',
-      icon: <TableOutlined />,
-      label: intl.formatMessage(messages.NAV_RECORDS),
+      key: '/search',
+      icon: <SearchOutlined />,
+      label: intl.formatMessage(messages.NAV_SEARCH),
     },
   ];
 

@@ -3,19 +3,22 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   TeamOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import { Row, Col, Card, Statistic, Typography, Space, Tag } from 'antd';
 import { useIntl } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth.js';
 
 import messages from './messages.js';
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 const Dashboard = () => {
   const { user } = useAuth();
   const intl = useIntl();
+  const navigate = useNavigate();
 
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
@@ -84,6 +87,32 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Quick-link tiles */}
+      <div>
+        <Title level={5} style={{ marginBottom: 12 }}>
+          {intl.formatMessage(messages.DASHBOARD_TILES_SECTION_TITLE)}
+        </Title>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12} lg={8}>
+            <Card
+              hoverable
+              onClick={() => navigate('/search')}
+              style={{ cursor: 'pointer' }}
+            >
+              <Space align="start">
+                <SearchOutlined style={{ fontSize: 28, color: '#1677ff' }} />
+                <div>
+                  <Text strong>{intl.formatMessage(messages.DASHBOARD_TILE_SEARCH_TITLE)}</Text>
+                  <Paragraph type="secondary" style={{ marginBottom: 0, marginTop: 4 }}>
+                    {intl.formatMessage(messages.DASHBOARD_TILE_SEARCH_DESC)}
+                  </Paragraph>
+                </div>
+              </Space>
+            </Card>
+          </Col>
+        </Row>
+      </div>
 
       {/* Auth info panel */}
       <Card title={intl.formatMessage(messages.DASHBOARD_SESSION_CARD_TITLE)} size="small">

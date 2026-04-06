@@ -25,6 +25,20 @@ const messages = {
   },
   DASHBOARD_VALUE_FALLBACK: { id: 'DASHBOARD_VALUE_FALLBACK', defaultMessage: '\u2014' },
 
+  // ─── Dashboard quick-links tiles ──────────────────────────────────────────
+  DASHBOARD_TILES_SECTION_TITLE: {
+    id: 'DASHBOARD_TILES_SECTION_TITLE',
+    defaultMessage: 'Quick Links',
+  },
+  DASHBOARD_TILE_SEARCH_TITLE: {
+    id: 'DASHBOARD_TILE_SEARCH_TITLE',
+    defaultMessage: 'Search Records',
+  },
+  DASHBOARD_TILE_SEARCH_DESC: {
+    id: 'DASHBOARD_TILE_SEARCH_DESC',
+    defaultMessage: 'Filter records by name, email, department, status, or address.',
+  },
+
   // ─── Login page ───────────────────────────────────────────────────────────
   LOGIN_PAGE_TITLE: { id: 'LOGIN_PAGE_TITLE', defaultMessage: 'Enterprise Application' },
   LOGIN_SSO_DESCRIPTION: {

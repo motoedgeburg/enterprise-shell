@@ -23,6 +23,7 @@ const SAMPLE_RECORD = {
   id: 1,
   name: 'Alice Johnson',
   email: 'alice@company.com',
+  address: '123 Market St, Philadelphia, PA 19103',
   department: 'Engineering',
   status: 'active',
 };
@@ -172,6 +173,7 @@ describe('RecordFormModal — callbacks', () => {
           expect.objectContaining({
             name: 'Alice Updated',
             email: 'alice@company.com',
+            address: '123 Market St, Philadelphia, PA 19103',
             department: 'Engineering',
             status: 'active',
           }),
