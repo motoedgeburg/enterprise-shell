@@ -15,6 +15,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import componentMessages from '../components/messages.js';
 import pageMessages from '../pages/messages.js';
+import recordDetailMessages from '../pages/RecordDetail/messages.js';
 import recordsMessages from '../pages/Records/messages.js';
 import resultsMessages from '../pages/Results/messages.js';
 import searchMessages from '../pages/Search/messages.js';
@@ -36,8 +37,9 @@ export const appMessages = buildMessageMap(
   componentMessages,
   pageMessages,
   recordsMessages,
-  searchMessages,
+  recordDetailMessages,
   resultsMessages,
+  searchMessages,
 );
 
 // ─── Store ────────────────────────────────────────────────────────────────────

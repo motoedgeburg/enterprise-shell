@@ -1,4 +1,9 @@
 export { default as AntField } from './AntField.jsx';
+export { default as CheckboxGroupField } from './CheckboxGroupField.jsx';
+export { default as DateField } from './DateField.jsx';
 export { default as EmailField } from './EmailField.jsx';
+export { default as RadioGroupField } from './RadioGroupField.jsx';
 export { default as SelectField } from './SelectField.jsx';
+export { default as SwitchField } from './SwitchField.jsx';
+export { default as TextAreaField } from './TextAreaField.jsx';
 export { default as TextField } from './TextField.jsx';

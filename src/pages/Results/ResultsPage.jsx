@@ -1,5 +1,5 @@
-import { ArrowLeftOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Popconfirm, Space, Table, Tag, Typography, App, Empty } from 'antd';
+import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Space, Table, Tag, Typography, App, Empty } from 'antd';
 import { FORM_ERROR } from 'final-form';
 import { useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -23,7 +23,6 @@ const ResultsPage = () => {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState(null);
 
   // Build filters object from URL params
   const filters = {
@@ -57,20 +56,7 @@ const ResultsPage = () => {
     void fetchResults();
   }, [fetchResults]);
 
-  // ─── CRUD handlers ────────────────────────────────────────────────────────────
-
-  const openCreate = () => { setSelectedRecord(null); setModalOpen(true); };
-  const openEdit   = (record) => { setSelectedRecord(record); setModalOpen(true); };
-
-  const handleDelete = async (id) => {
-    try {
-      await recordsService.remove(id);
-      void message.success(intl.formatMessage(recordsMessages.RECORDS_SUCCESS_DELETED));
-      void fetchResults(pagination.current, pagination.pageSize);
-    } catch {
-      void message.error(intl.formatMessage(recordsMessages.RECORDS_ERROR_DELETE));
-    }
-  };
+  // ─── Add handler ─────────────────────────────────────────────────────────────
 
   const handleFormSubmit = async (values, form) => {
     const dto = {
@@ -81,13 +67,8 @@ const ResultsPage = () => {
       status:     values.status,
     };
     try {
-      if (selectedRecord) {
-        await recordsService.update(selectedRecord.id, dto);
-        void message.success(intl.formatMessage(recordsMessages.RECORDS_SUCCESS_UPDATED));
-      } else {
-        await recordsService.create(dto);
-        void message.success(intl.formatMessage(recordsMessages.RECORDS_SUCCESS_CREATED));
-      }
+      await recordsService.create(dto);
+      void message.success(intl.formatMessage(recordsMessages.RECORDS_SUCCESS_CREATED));
       setModalOpen(false);
       form.reset();
       void fetchResults(pagination.current, pagination.pageSize);
@@ -134,37 +115,6 @@ const ResultsPage = () => {
         </Tag>
       ),
     },
-    {
-      title: intl.formatMessage(recordsMessages.RECORDS_COL_ACTIONS),
-      key: 'actions',
-      fixed: 'right',
-      width: 130,
-      render: (_, record) => (
-        <Space size="small">
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={() => openEdit(record)}
-            aria-label={intl.formatMessage(recordsMessages.RECORDS_EDIT_ARIA, { name: record.name })}
-          />
-          <Popconfirm
-            title={intl.formatMessage(recordsMessages.RECORDS_DELETE_CONFIRM_TITLE)}
-            description={intl.formatMessage(recordsMessages.RECORDS_DELETE_CONFIRM_DESC, { name: record.name })}
-            onConfirm={() => void handleDelete(record.id)}
-            okText={intl.formatMessage(recordsMessages.RECORDS_DELETE_OK)}
-            okButtonProps={{ danger: true }}
-            cancelText={intl.formatMessage(recordsMessages.RECORDS_DELETE_CANCEL)}
-          >
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              aria-label={intl.formatMessage(recordsMessages.RECORDS_DELETE_ARIA, { name: record.name })}
-            />
-          </Popconfirm>
-        </Space>
-      ),
-    },
   ];
 
   return (
@@ -183,7 +133,7 @@ const ResultsPage = () => {
               {intl.formatMessage(messages.RESULTS_PAGE_TITLE)}
             </Title>
           </Space>
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
             {intl.formatMessage(recordsMessages.RECORDS_ADD_BUTTON)}
           </Button>
         </Space>
@@ -200,7 +150,7 @@ const ResultsPage = () => {
           </Space>
         )}
 
-        {/* Results table */}
+        {/* Results table — click a row to open Record Detail */}
         <Table
           dataSource={records}
           columns={columns}
@@ -209,6 +159,13 @@ const ResultsPage = () => {
           locale={{
             emptyText: <Empty description={intl.formatMessage(messages.RESULTS_EMPTY)} />,
           }}
+          onRow={(record) => ({
+            onClick: () =>
+              navigate(`/records/${record.id}`, {
+                state: { search: searchParams.toString() },
+              }),
+            style: { cursor: 'pointer' },
+          })}
           pagination={{
             ...pagination,
             showSizeChanger: true,
@@ -223,7 +180,7 @@ const ResultsPage = () => {
 
       <RecordFormModal
         open={modalOpen}
-        record={selectedRecord}
+        record={null}
         onSubmit={handleFormSubmit}
         onCancel={() => setModalOpen(false)}
       />
