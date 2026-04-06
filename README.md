@@ -15,6 +15,7 @@ A production-grade React enterprise application shell with Okta SSO, Redux Toolk
 | Forms | [React Final Form](https://final-form.org/react) + Ant Design fields |
 | Authentication | [Okta](https://okta.com) via `@okta/okta-auth-js` (PKCE flow) |
 | API mocking | [MSW v2](https://mswjs.io) (browser + Node) |
+| i18n | [react-intl](https://formatjs.io/docs/react-intl) |
 | Testing | Jest + [React Testing Library](https://testing-library.com) |
 | Linting | ESLint + Prettier |
 
@@ -36,7 +37,7 @@ npx msw init public/ --save
 # 4. Start with mocks enabled (no real backend needed)
 REACT_APP_ENABLE_MOCKS=true npm start
 
-# 5. Or start pointing at a real Spring Boot backend
+# 5. Or start pointing at a real backend
 npm start
 ```
 
@@ -81,7 +82,7 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 │                                                                 │
 │  9. All subsequent Axios requests automatically inject:         │
 │     Authorization: Bearer <accessToken>                         │
-│     via the request interceptor in src/api/axiosInstance.ts    │
+│     via the request interceptor in src/api/axiosInstance.js    │
 │                                                                 │
 │ 10. On 401 response: interceptor calls clearCredentials()      │
 │     and redirects back to Okta /authorize                      │
@@ -89,12 +90,12 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Why token-only mode?
+### Why token-only (memory) storage?
 
 - Tokens are stored **in Redux (JavaScript memory only)** — never in `localStorage` or cookies
 - The Okta SDK's token manager is also configured for `storage: 'memory'`
 - This prevents XSS attacks from stealing long-lived refresh tokens
-- Trade-off: tokens don't survive a page refresh; the user will be re-authenticated by Okta transparently on next load
+- Trade-off: tokens don't survive a page refresh; Okta's silent re-authentication handles renewal transparently
 
 ---
 
@@ -103,47 +104,66 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 ```
 src/
 ├── api/
-│   ├── axiosInstance.ts          # Centralized Axios instance with interceptors
-│   └── recordsService.ts         # Records CRUD service module
+│   ├── axiosInstance.js          # Centralized Axios instance with interceptors
+│   ├── recordsService.js         # Records CRUD service module
+│   └── tests/
+│       └── recordsService.test.js
 │
 ├── store/
-│   ├── index.ts                  # Redux store configuration + typed hooks
-│   └── slices/
-│       └── authSlice.ts          # Auth state (token, user, flags)
+│   ├── index.js                  # Redux store configuration + typed hooks
+│   ├── slices/
+│   │   └── authSlice.js          # Auth state (token, user, flags)
+│   └── tests/
+│       └── authSlice.test.js
 │
 ├── routes/
-│   ├── index.tsx                 # Route tree (public + protected)
-│   └── ProtectedRoute.tsx        # HOC — redirects unauthenticated users
+│   ├── index.jsx                 # Route tree (public + protected)
+│   ├── ProtectedRoute.jsx        # HOC — redirects unauthenticated users
+│   └── tests/
+│       ├── ProtectedRoute.test.jsx
+│       └── ProtectedRoute.mock.test.jsx   # IS_MOCK_MODE=true path
 │
 ├── components/
-│   └── AppLayout.tsx             # Ant Design Layout with sidebar + header
+│   ├── AppLayout.jsx             # Ant Design Layout with sidebar + header
+│   ├── messages.js               # i18n message descriptors
+│   └── tests/
+│       └── AppLayout.test.jsx
 │
 ├── pages/
-│   ├── LoginPage.tsx             # SSO entry point (no credentials form)
-│   ├── OktaCallback.tsx          # Token exchange + Redux dispatch
-│   ├── Dashboard.tsx             # Main landing page post-auth
+│   ├── Dashboard.jsx             # Main landing page post-auth
+│   ├── LoginPage.jsx             # SSO entry point (no credentials form)
+│   ├── OktaCallback.jsx          # Token exchange + Redux dispatch
+│   ├── messages.js               # i18n message descriptors
+│   ├── tests/
+│   │   ├── Dashboard.test.jsx
+│   │   ├── LoginPage.test.jsx
+│   │   └── OktaCallback.test.jsx
 │   └── Records/
-│       ├── RecordsPage.tsx       # Table + search + CRUD actions
-│       └── RecordFormModal.tsx   # React Final Form + Ant Design fields
+│       ├── RecordsPage.jsx       # Table + search + CRUD actions
+│       ├── RecordFormModal.jsx   # React Final Form + Ant Design fields
+│       ├── messages.js
+│       └── tests/
+│           ├── RecordsPage.test.jsx
+│           └── RecordFormModal.test.jsx
 │
 ├── hooks/
-│   └── useAuth.ts                # Okta client singleton + auth actions
+│   ├── useAuth.js                # Okta client singleton + auth actions
+│   └── tests/
+│       ├── useAuth.test.js
+│       └── useAuth.mock.test.js  # IS_MOCK_MODE=true path
 │
 ├── mocks/
-│   ├── data.ts                   # In-memory DB (seed + CRUD helpers)
-│   ├── handlers.ts               # MSW request handlers (Spring Boot mirror)
-│   ├── browser.ts                # MSW Service Worker setup
-│   └── server.ts                 # MSW Node server (Jest)
+│   ├── data.js                   # In-memory DB (seed + CRUD helpers)
+│   ├── handlers.js               # MSW request handlers
+│   ├── browser.js                # MSW Service Worker setup
+│   └── server.js                 # MSW Node server (Jest)
 │
-├── __tests__/
-│   ├── authSlice.test.ts
-│   ├── recordsService.test.ts
-│   ├── ProtectedRoute.test.tsx
-│   └── RecordFormModal.test.tsx
+├── tests/
+│   └── renderUtils.jsx           # Shared render helpers + store factory
 │
-├── App.tsx                       # Ant Design ConfigProvider + BrowserRouter
-├── index.tsx                     # React root + MSW bootstrap
-└── setupTests.ts                 # Jest setup (MSW lifecycle + jsdom stubs)
+├── App.jsx                       # Ant Design ConfigProvider + BrowserRouter
+├── index.jsx                     # React root + MSW bootstrap
+└── setupTests.js                 # Jest setup (polyfills, MSW lifecycle, jsdom stubs)
 ```
 
 ---
@@ -166,7 +186,7 @@ In your Okta Admin console:
 | Command | Description |
 |---|---|
 | `npm start` | Start dev server on port 3000 |
-| `npm test` | Run all tests (single pass) |
+| `npm test` | Run all tests (single pass, no watch) |
 | `npm run test:watch` | Run tests in watch mode |
 | `npm run build` | Production build |
 | `npm run lint` | Check for lint errors |
@@ -176,9 +196,28 @@ In your Okta Admin console:
 
 ---
 
+## Tests
+
+169 tests across 15 suites, collocated with their source files.
+
+```bash
+npm test              # single pass
+npm run test:watch    # watch mode
+npm test -- --coverage
+```
+
+Key testing patterns:
+
+- **MSW v2** intercepts all Axios requests in Jest via the Node server (`src/mocks/server.js`). Axios is forced onto the `fetch` adapter in `setupTests.js` so MSW's interceptor applies.
+- **Okta** is mocked via `jest.mock('@okta/okta-auth-js')` using a `global.__oktaMock` pattern to avoid Babel hoisting issues.
+- **IS_MOCK_MODE** tests (env-var-gated code paths) live in separate `*.mock.test.js` files that use `require()` so the env var is set before any module loads.
+- **Ant Design** modals and popovers are tested via React Testing Library's ARIA queries.
+
+---
+
 ## MSW Mock API
 
-The mock handlers in `src/mocks/handlers.ts` mirror a Spring Boot `@RestController`:
+The mock handlers in `src/mocks/handlers.js` mirror a Spring Boot `@RestController`:
 
 | Method | URL | Description |
 |---|---|---|
@@ -202,5 +241,5 @@ See [.env.example](.env.example) for all required variables:
 | `REACT_APP_OKTA_CLIENT_ID` | Okta OIDC client ID |
 | `REACT_APP_OKTA_REDIRECT_URI` | Callback URL (must match Okta app config) |
 | `REACT_APP_OKTA_POST_LOGOUT_URI` | Post-logout redirect URL |
-| `REACT_APP_API_BASE_URL` | Spring Boot backend base URL |
+| `REACT_APP_API_BASE_URL` | Backend base URL |
 | `REACT_APP_ENABLE_MOCKS` | Set `true` to enable MSW in development |
