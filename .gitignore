@@ -31,3 +31,6 @@ yarn-error.log*
 
 # TypeScript build cache
 *.tsbuildinfo
+
+# Claude Code local settings
+.claude/
