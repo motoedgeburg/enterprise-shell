@@ -1,32 +1,10 @@
-import { Modal, Form, Input, Select, Button, Space, Alert } from 'antd';
-import { Form as FinalForm, Field } from 'react-final-form';
+import { Modal, Form, Button, Space, Alert } from 'antd';
+import { Form as FinalForm } from 'react-final-form';
 import { useIntl } from 'react-intl';
 
+import { EmailField, SelectField, TextField } from '../../components/fields/index.js';
+
 import messages from './messages.js';
-
-// ─── Field adapter — bridges React Final Form ↔ Ant Design ───────────────────
-
-const AntField = ({ name, label, children }) => (
-  <Field name={name}>
-    {({ input, meta }) => {
-      const hasError = meta.touched && meta.error;
-      return (
-        <Form.Item
-          label={label}
-          validateStatus={hasError ? 'error' : ''}
-          help={hasError ? meta.error : undefined}
-          style={{ marginBottom: 16 }}
-        >
-          {children({
-            value: input.value,
-            onChange: input.onChange,
-            onBlur: input.onBlur,
-          })}
-        </Form.Item>
-      );
-    }}
-  </Field>
-);
 
 // ─── Modal Component ──────────────────────────────────────────────────────────
 
@@ -115,65 +93,33 @@ const RecordFormModal = ({ open, record, onSubmit, onCancel }) => {
               />
             )}
 
-            <AntField name="name" label={intl.formatMessage(messages.MODAL_FIELD_NAME)}>
-              {({ value, onChange, onBlur }) => (
-                <Input
-                  value={value}
-                  onChange={(e) => onChange(e.target.value)}
-                  onBlur={onBlur}
-                  placeholder={intl.formatMessage(messages.MODAL_FIELD_NAME_PLACEHOLDER)}
-                />
-              )}
-            </AntField>
+            <TextField
+              name="name"
+              label={intl.formatMessage(messages.MODAL_FIELD_NAME)}
+              placeholder={intl.formatMessage(messages.MODAL_FIELD_NAME_PLACEHOLDER)}
+            />
 
-            <AntField name="email" label={intl.formatMessage(messages.MODAL_FIELD_EMAIL)}>
-              {({ value, onChange, onBlur }) => (
-                <Input
-                  type="email"
-                  value={value}
-                  onChange={(e) => onChange(e.target.value)}
-                  onBlur={onBlur}
-                  placeholder={intl.formatMessage(messages.MODAL_FIELD_EMAIL_PLACEHOLDER)}
-                />
-              )}
-            </AntField>
+            <EmailField
+              name="email"
+              label={intl.formatMessage(messages.MODAL_FIELD_EMAIL)}
+              placeholder={intl.formatMessage(messages.MODAL_FIELD_EMAIL_PLACEHOLDER)}
+            />
 
-            <AntField
+            <SelectField
               name="department"
               label={intl.formatMessage(messages.MODAL_FIELD_DEPARTMENT)}
-            >
-              {({ value, onChange, onBlur }) => (
-                <Select
-                  value={value || undefined}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  placeholder={intl.formatMessage(messages.MODAL_FIELD_DEPARTMENT_PLACEHOLDER)}
-                  style={{ width: '100%' }}
-                  options={DEPARTMENTS.map((d) => ({ value: d, label: d }))}
-                />
-              )}
-            </AntField>
+              placeholder={intl.formatMessage(messages.MODAL_FIELD_DEPARTMENT_PLACEHOLDER)}
+              options={DEPARTMENTS.map((d) => ({ value: d, label: d }))}
+            />
 
-            <AntField name="status" label={intl.formatMessage(messages.MODAL_FIELD_STATUS)}>
-              {({ value, onChange, onBlur }) => (
-                <Select
-                  value={value || undefined}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  style={{ width: '100%' }}
-                  options={[
-                    {
-                      value: 'active',
-                      label: intl.formatMessage(messages.MODAL_STATUS_ACTIVE),
-                    },
-                    {
-                      value: 'inactive',
-                      label: intl.formatMessage(messages.MODAL_STATUS_INACTIVE),
-                    },
-                  ]}
-                />
-              )}
-            </AntField>
+            <SelectField
+              name="status"
+              label={intl.formatMessage(messages.MODAL_FIELD_STATUS)}
+              options={[
+                { value: 'active',   label: intl.formatMessage(messages.MODAL_STATUS_ACTIVE) },
+                { value: 'inactive', label: intl.formatMessage(messages.MODAL_STATUS_INACTIVE) },
+              ]}
+            />
           </Form>
         </Modal>
       )}
