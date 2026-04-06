@@ -6,9 +6,9 @@
 // Babel hoists `import` declarations above all other statements, so these must
 // be `require` calls (not imports) to run before the `require('./mocks/server')`
 // below, which transitively loads msw/node.
-const { TextEncoder, TextDecoder } = require('util');
-const { ReadableStream, TransformStream, WritableStream } = require('stream/web');
 const { performance } = require('perf_hooks');
+const { ReadableStream, TransformStream, WritableStream } = require('stream/web');
+const { TextEncoder, TextDecoder } = require('util');
 const { BroadcastChannel } = require('worker_threads');
 
 // NOTE: Do NOT polyfill Blob here.  jsdom ships its own Blob implementation

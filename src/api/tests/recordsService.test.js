@@ -1,8 +1,8 @@
 import { http, HttpResponse } from 'msw';
 
-import { recordsService } from '../recordsService';
 import { db } from '../../mocks/data';
 import { server } from '../../mocks/server';
+import { recordsService } from '../recordsService';
 
 // MSW server lifecycle is managed by src/setupTests.js
 

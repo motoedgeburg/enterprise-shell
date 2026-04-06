@@ -17,7 +17,7 @@ export const recordsService = {
    */
   search: (filters = {}, page = 0, size = 10) => {
     const activeFilters = Object.fromEntries(
-      Object.entries(filters).filter(([, v]) => v !== '' && v != null),
+      Object.entries(filters).filter(([, v]) => v !== '' && v !== null),
     );
     return axiosInstance
       .get(RECORDS_PATH, { params: { page, size, ...activeFilters } })

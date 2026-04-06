@@ -6,8 +6,8 @@ import { useIntl } from 'react-intl';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
-import RecordFormModal from '../Records/RecordFormModal.jsx';
 import recordsMessages from '../Records/messages.js';
+import RecordFormModal from '../Records/RecordFormModal.jsx';
 
 import messages from './messages.js';
 

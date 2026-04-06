@@ -11,6 +11,7 @@ jest.mock('@okta/okta-auth-js', () => ({ OktaAuth: jest.fn() }));
 
 const { act, renderHook } = require('@testing-library/react');
 const { Provider } = require('react-redux');
+
 const { buildStore, MOCK_USER } = require('../../tests/renderUtils.jsx');
 const { useAuth } = require('../useAuth.js');
 

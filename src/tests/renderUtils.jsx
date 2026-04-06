@@ -16,8 +16,8 @@ import { MemoryRouter } from 'react-router-dom';
 import componentMessages from '../components/messages.js';
 import pageMessages from '../pages/messages.js';
 import recordsMessages from '../pages/Records/messages.js';
-import searchMessages from '../pages/Search/messages.js';
 import resultsMessages from '../pages/Results/messages.js';
+import searchMessages from '../pages/Search/messages.js';
 import authReducer from '../store/slices/authSlice';
 
 // ─── Message map ─────────────────────────────────────────────────────────────

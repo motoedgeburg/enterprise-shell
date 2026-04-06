@@ -23,6 +23,7 @@ import { act, renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
 import { buildStore, MOCK_USER } from '../../tests/renderUtils.jsx';
+import { useAuth } from '../useAuth.js';
 
 // The factory runs before any const/let declarations in this file (Babel hoists
 // jest.mock above everything).  Write the mock methods to `global` so the
@@ -36,8 +37,6 @@ jest.mock('@okta/okta-auth-js', () => {
   };
   return { OktaAuth: jest.fn().mockImplementation(() => global.__oktaMock) };
 });
-
-import { useAuth } from '../useAuth.js';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
