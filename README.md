@@ -17,7 +17,8 @@ A production-grade React enterprise application shell with Okta SSO, Redux Toolk
 | Authentication | [Okta](https://okta.com) via `@okta/okta-auth-js` (PKCE flow) |
 | API mocking | [MSW v2](https://mswjs.io) (browser + Node) |
 | i18n | [react-intl](https://formatjs.io/docs/react-intl) — all strings in message descriptor files |
-| Testing | Jest + [React Testing Library](https://testing-library.com) |
+| Build | [Vite](https://vitejs.dev) — instant dev server, native ESM |
+| Testing | [Vitest](https://vitest.dev) + [React Testing Library](https://testing-library.com) |
 | Linting | ESLint + Prettier |
 
 ---
@@ -36,7 +37,7 @@ cp .env.example .env
 npx msw init public/ --save
 
 # 4. Start with mocks enabled (no real backend needed)
-REACT_APP_ENABLE_MOCKS=true npm start
+VITE_ENABLE_MOCKS=true npm start
 
 # 5. Or start pointing at a real backend
 npm start
@@ -83,7 +84,7 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 │     or clicks the app tile from the Okta dashboard             │
 │                                                                 │
 │  6. Okta redirects back to:                                     │
-│     REACT_APP_OKTA_REDIRECT_URI  (e.g. /login/callback)        │
+│     VITE_OKTA_REDIRECT_URI  (e.g. /login/callback)             │
 │     URL contains an authorization code (PKCE flow)             │
 │                                                                 │
 │  7. OktaCallback page mounts and calls handleCallback():        │
@@ -119,12 +120,15 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 ## Folder Structure
 
 ```
+index.html                            # Vite entry point (root of project)
+vite.config.js                        # Vite + Vitest configuration
+.eslintrc.cjs                         # ESLint config (CJS required with "type": "module")
+
 src/
 ├── App.jsx
 ├── index.jsx
 ├── renderUtils.jsx               # Shared test helpers (buildStore, appMessages, fixtures)
-├── setupTests.js                 # Jest setup (polyfills, MSW lifecycle, jsdom stubs)
-├── setupPolyfills.js
+├── setupTests.js                 # Vitest setup (polyfills, MSW lifecycle, jsdom stubs)
 │
 ├── api/
 │   ├── axiosInstance.js          # Centralized Axios instance with interceptors
@@ -238,7 +242,7 @@ src/
     ├── data.js                   # In-memory DB (8 seed records + search/CRUD helpers)
     ├── handlers.js               # MSW handlers: /api/lookups, /api/records
     ├── browser.js                # MSW Service Worker (dev)
-    └── server.js                 # MSW Node server (Jest)
+    └── server.js                 # MSW Node server (Vitest)
 ```
 
 ---
@@ -351,7 +355,7 @@ Each section owns its messages file, co-located with the component:
 | `PUT` | `/api/records/:id` | Update |
 | `DELETE` | `/api/records/:id` | Delete (returns 204) |
 
-Enable mocks in dev: `REACT_APP_ENABLE_MOCKS=true npm start`
+Enable mocks in dev: `VITE_ENABLE_MOCKS=true npm start`
 
 ---
 
@@ -360,21 +364,22 @@ Enable mocks in dev: `REACT_APP_ENABLE_MOCKS=true npm start`
 368 tests across 21 suites, collocated with their source files. Coverage: **85% statements / 79% branches / 81% functions**.
 
 ```bash
-npm test                   # single pass
-npm run test:watch         # watch mode
-npm test -- --coverage     # with coverage report
+npm test                    # single pass
+npm run test:watch          # watch mode
+npm run test:coverage       # with coverage report
 ```
 
-Coverage thresholds (enforced in `package.json`): 60% across all metrics.
+Coverage thresholds (enforced in `vite.config.js`): 60% across all metrics.
 
 Key patterns:
 
-- **MSW v2** intercepts all Axios requests in Jest via the Node server. Axios is forced onto the `fetch` adapter in `setupTests.js` so MSW's interceptor applies.
-- **Okta** is mocked via `jest.mock('@okta/okta-auth-js')` using a `global.__oktaMock` pattern to avoid Babel hoisting issues.
-- **IS_MOCK_MODE** tests live in separate `*.mock.test.js` files that use `require()` so the env var is set before any module loads.
+- **MSW v2** intercepts all Axios requests in Vitest via the Node server. Axios is forced onto the `fetch` adapter in `setupTests.js` so MSW's interceptor applies.
+- **Okta** is mocked with `vi.mock('@okta/okta-auth-js')` using a `class` constructor so `new OktaAuth()` returns the mock instance correctly under Vitest's ESM module system.
+- **IS_MOCK_MODE** tests live in separate `*.mock.test.jsx` files that use `vi.stubEnv` + `vi.resetModules` + dynamic `import()` so the env var is set before any module evaluates.
 - **Ant Design Select / Switch / CheckboxGroup** incompatibility with jsdom is handled by mocking the custom field components at the test boundary with native equivalents that integrate with React Final Form's `<Field>` render prop.
-- **Ant Design DatePicker** inside modals is avoided by opening and cancelling modals without submitting, keeping tests fast and jsdom-safe.
-- **`fireEvent.change` + `fireEvent.blur`** is used instead of `userEvent.type` when pasting long strings (e.g. bio maxLength) to avoid Jest's 5 s timeout.
+- **Ant Design DatePicker** inside modals is avoided by opening modals and verifying content without submitting, keeping tests fast and jsdom-safe.
+- **`fireEvent.change` + `fireEvent.blur`** is used instead of `userEvent.type` when pasting long strings (e.g. bio maxLength) to avoid timeout issues.
+- **`vi.hoisted()`** is used to declare mock objects that are referenced inside `vi.mock` factories, since Vitest hoists `vi.mock` calls above all imports.
 - **`renderUtils.jsx`** at `src/` root provides `buildStore`, `appMessages`, `MOCK_USER`, and `AUTHED_STATE` for all test suites.
 
 ---
@@ -384,8 +389,8 @@ Key patterns:
 In your Okta Admin console:
 
 1. Create a **Single-Page Application (SPA)** OIDC app
-2. Set **Sign-in redirect URI** to `http://localhost:3000/login/callback`
-3. Set **Sign-out redirect URI** to `http://localhost:3000`
+2. Set **Sign-in redirect URI** to `http://localhost:5173/login/callback`
+3. Set **Sign-out redirect URI** to `http://localhost:5173`
 4. Enable **Authorization Code with PKCE** grant type
 5. Add scopes: `openid`, `profile`, `email`
 6. Copy the **Client ID** and your **Okta domain** to `.env`
@@ -396,10 +401,12 @@ In your Okta Admin console:
 
 | Command | Description |
 |---|---|
-| `npm start` | Start dev server on port 3000 |
-| `npm test` | Run all tests (single pass, no watch) |
+| `npm start` | Start Vite dev server (default port 5173) |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm test` | Run all tests (single pass) |
 | `npm run test:watch` | Run tests in watch mode |
-| `npm run build` | Production build |
+| `npm run test:coverage` | Run tests with coverage report |
 | `npm run lint` | Check for lint errors |
 | `npm run lint:fix` | Auto-fix lint errors |
 | `npm run format` | Format all source files with Prettier |
@@ -409,11 +416,13 @@ In your Okta Admin console:
 
 ## Environment Variables
 
+All variables are prefixed with `VITE_` and accessed via `import.meta.env` (Vite convention).
+
 | Variable | Description |
 |---|---|
-| `REACT_APP_OKTA_ISSUER` | Okta authorization server URL |
-| `REACT_APP_OKTA_CLIENT_ID` | Okta OIDC client ID |
-| `REACT_APP_OKTA_REDIRECT_URI` | Callback URL (must match Okta app config) |
-| `REACT_APP_OKTA_POST_LOGOUT_URI` | Post-logout redirect URL |
-| `REACT_APP_API_BASE_URL` | Backend base URL |
-| `REACT_APP_ENABLE_MOCKS` | Set `true` to enable MSW in development |
+| `VITE_OKTA_ISSUER` | Okta authorization server URL |
+| `VITE_OKTA_CLIENT_ID` | Okta OIDC client ID |
+| `VITE_OKTA_REDIRECT_URI` | Callback URL (must match Okta app config) |
+| `VITE_OKTA_POST_LOGOUT_URI` | Post-logout redirect URL |
+| `VITE_API_BASE_URL` | Backend base URL |
+| `VITE_ENABLE_MOCKS` | Set `true` to enable MSW in development |
