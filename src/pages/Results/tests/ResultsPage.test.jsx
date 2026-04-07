@@ -19,8 +19,8 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { buildStore, appMessages, AUTHED_STATE } from '../../../renderUtils.jsx';
 import ResultsPage from '../ResultsPage.jsx';
 
-jest.mock('@okta/okta-auth-js', () => ({
-  OktaAuth: jest.fn().mockImplementation(() => ({})),
+vi.mock('@okta/okta-auth-js', () => ({
+  OktaAuth: class { constructor() {} },
 }));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

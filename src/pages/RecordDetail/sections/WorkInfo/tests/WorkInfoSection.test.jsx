@@ -13,70 +13,65 @@
  * field-change behaviour without jsdom crashes.
  */
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { Field } from 'react-final-form';
 import { Form as FinalForm } from 'react-final-form';
 import { IntlProvider } from 'react-intl';
+import userEvent from '@testing-library/user-event';
 
 import { appMessages } from '../../../../../renderUtils.jsx';
 import WorkInfoSection from '../WorkInfoSection.jsx';
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
-jest.mock(
-  '../../../../../components/fields/SelectField.jsx',
-  () =>
-    function MockSelectField({ name, label, options = [], disabled, validate }) {
-      const { Field } = require('react-final-form');
-      return (
-        <Field name={name} validate={validate}>
-          {({ input }) => (
-            <div>
-              <label htmlFor={name}>{label}</label>
-              <select id={name} {...input} disabled={disabled} data-testid={`select-${name}`}>
-                <option value="">-- select --</option>
-                {options.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        </Field>
-      );
-    },
-);
-
-jest.mock(
-  '../../../../../components/fields/RadioGroupField.jsx',
-  () =>
-    function MockRadioGroupField({ name, label, options = [], validate }) {
-      const { Field } = require('react-final-form');
-      return (
-        <Field name={name} validate={validate}>
-          {({ input }) => (
-            <fieldset>
-              <legend>{label}</legend>
+vi.mock('../../../../../components/fields/SelectField.jsx', () => ({
+  default: function MockSelectField({ name, label, options = [], disabled, validate }) {
+    return (
+      <Field name={name} validate={validate}>
+        {({ input }) => (
+          <div>
+            <label htmlFor={name}>{label}</label>
+            <select id={name} {...input} disabled={disabled} data-testid={`select-${name}`}>
+              <option value="">-- select --</option>
               {options.map((o) => (
-                <label key={o.value}>
-                  <input
-                    type="radio"
-                    name={name}
-                    value={o.value}
-                    checked={input.value === o.value}
-                    onChange={() => input.onChange(o.value)}
-                  />
+                <option key={o.value} value={o.value}>
                   {o.label}
-                </label>
+                </option>
               ))}
-            </fieldset>
-          )}
-        </Field>
-      );
-    },
-);
+            </select>
+          </div>
+        )}
+      </Field>
+    );
+  },
+}));
 
-jest.mock('../../../../../hooks/useLookups.js', () => ({
+vi.mock('../../../../../components/fields/RadioGroupField.jsx', () => ({
+  default: function MockRadioGroupField({ name, label, options = [], validate }) {
+    return (
+      <Field name={name} validate={validate}>
+        {({ input }) => (
+          <fieldset>
+            <legend>{label}</legend>
+            {options.map((o) => (
+              <label key={o.value}>
+                <input
+                  type="radio"
+                  name={name}
+                  value={o.value}
+                  checked={input.value === o.value}
+                  onChange={() => input.onChange(o.value)}
+                />
+                {o.label}
+              </label>
+            ))}
+          </fieldset>
+        )}
+      </Field>
+    );
+  },
+}));
+
+vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
     departments: ['Engineering', 'Product', 'Design'],
     statuses: [

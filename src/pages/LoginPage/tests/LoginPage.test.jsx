@@ -18,15 +18,16 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { buildStore, appMessages, AUTHED_STATE } from '../../../renderUtils.jsx';
 import LoginPage from '../LoginPage.jsx';
 
-jest.mock('@okta/okta-auth-js', () => {
-  global.__oktaMock = {
-    signInWithRedirect: jest.fn().mockResolvedValue(undefined),
-    signOut: jest.fn().mockResolvedValue(undefined),
-    token: { parseFromUrl: jest.fn() },
-    tokenManager: { setTokens: jest.fn() },
-  };
-  return { OktaAuth: jest.fn().mockImplementation(() => global.__oktaMock) };
-});
+const oktaMock = vi.hoisted(() => ({
+  signInWithRedirect: vi.fn().mockResolvedValue(undefined),
+  signOut: vi.fn().mockResolvedValue(undefined),
+  token: { parseFromUrl: vi.fn() },
+  tokenManager: { setTokens: vi.fn() },
+}));
+
+vi.mock('@okta/okta-auth-js', () => ({
+  OktaAuth: class { constructor() { return oktaMock; } },
+}));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -102,7 +103,7 @@ describe('LoginPage — authenticated redirect', () => {
 
 describe('LoginPage — button click', () => {
   beforeEach(() => {
-    global.__oktaMock?.signInWithRedirect.mockClear();
+    oktaMock?.signInWithRedirect.mockClear();
   });
 
   it('calls signInWithRedirect when the button is clicked', async () => {
@@ -111,7 +112,7 @@ describe('LoginPage — button click', () => {
 
     await user.click(screen.getByRole('button', { name: /Sign in with Okta/i }));
 
-    expect(global.__oktaMock.signInWithRedirect).toHaveBeenCalledTimes(1);
+    expect(oktaMock.signInWithRedirect).toHaveBeenCalledTimes(1);
   });
 });
 

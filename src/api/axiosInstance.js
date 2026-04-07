@@ -3,7 +3,7 @@ import axios from 'axios';
 import { store } from '../store';
 import { clearCredentials } from '../store/slices/authSlice';
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:8080/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api';
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -36,9 +36,9 @@ axiosInstance.interceptors.response.use(
       // Token expired or revoked — clear Redux state so ProtectedRoute redirects
       store.dispatch(clearCredentials());
 
-      const issuer = process.env.REACT_APP_OKTA_ISSUER ?? '';
-      const clientId = process.env.REACT_APP_OKTA_CLIENT_ID ?? '';
-      const redirectUri = process.env.REACT_APP_OKTA_REDIRECT_URI ?? '';
+      const issuer = import.meta.env.VITE_OKTA_ISSUER ?? '';
+      const clientId = import.meta.env.VITE_OKTA_CLIENT_ID ?? '';
+      const redirectUri = import.meta.env.VITE_OKTA_REDIRECT_URI ?? '';
 
       if (issuer && clientId && redirectUri) {
         const authorizeUrl =

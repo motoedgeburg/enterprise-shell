@@ -18,36 +18,34 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { buildStore, appMessages, AUTHED_STATE } from '../../../renderUtils.jsx';
 import RecordDetailPage from '../RecordDetailPage.jsx';
 
-jest.mock('@okta/okta-auth-js', () => ({
-  OktaAuth: jest.fn().mockImplementation(() => ({})),
+vi.mock('@okta/okta-auth-js', () => ({
+  OktaAuth: class {
+    constructor() {}
+  },
 }));
 
 // SelectField uses Ant Design Select which is incompatible with jsdom —
 // mock the sections that contain Select fields to isolate the page-level logic.
-jest.mock('../sections/WorkInfo/WorkInfoSection.jsx', () => {
-  function MockWorkInfoSection() {
+vi.mock('../sections/WorkInfo/WorkInfoSection.jsx', () => ({
+  default: function MockWorkInfoSection() {
     return <div data-testid="work-section" />;
-  }
-  return MockWorkInfoSection;
-});
-jest.mock('../sections/Preferences/PreferencesSection.jsx', () => {
-  function MockPreferencesSection() {
+  },
+}));
+vi.mock('../sections/Preferences/PreferencesSection.jsx', () => ({
+  default: function MockPreferencesSection() {
     return <div data-testid="prefs-section" />;
-  }
-  return MockPreferencesSection;
-});
-jest.mock('../sections/History/HistorySection.jsx', () => {
-  function MockHistorySection() {
+  },
+}));
+vi.mock('../sections/History/HistorySection.jsx', () => ({
+  default: function MockHistorySection() {
     return <div data-testid="history-section" />;
-  }
-  return MockHistorySection;
-});
-jest.mock('../sections/Summary/SummarySection.jsx', () => {
-  function MockSummarySection() {
+  },
+}));
+vi.mock('../sections/Summary/SummarySection.jsx', () => ({
+  default: function MockSummarySection() {
     return <div data-testid="summary-section" />;
-  }
-  return MockSummarySection;
-});
+  },
+}));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

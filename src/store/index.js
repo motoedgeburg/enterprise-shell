@@ -17,7 +17,7 @@ export const store = configureStore({
         ignoredPaths: ['auth.user'],
       },
     }),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: import.meta.env.DEV,
 });
 
 // Pre-typed hooks — import these instead of plain useDispatch / useSelector

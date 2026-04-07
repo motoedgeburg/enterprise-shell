@@ -14,13 +14,17 @@ import { MemoryRouter } from 'react-router-dom';
 import { buildStore, appMessages, MOCK_USER, AUTHED_STATE } from '../../../renderUtils.jsx';
 import Dashboard from '../Dashboard.jsx';
 
-jest.mock('@okta/okta-auth-js', () => ({
-  OktaAuth: jest.fn().mockImplementation(() => ({
-    signInWithRedirect: jest.fn(),
-    signOut: jest.fn(),
-    token: { parseFromUrl: jest.fn() },
-    tokenManager: { setTokens: jest.fn() },
-  })),
+vi.mock('@okta/okta-auth-js', () => ({
+  OktaAuth: class {
+    constructor() {
+      return {
+        signInWithRedirect: vi.fn(),
+        signOut: vi.fn(),
+        token: { parseFromUrl: vi.fn() },
+        tokenManager: { setTokens: vi.fn() },
+      };
+    }
+  },
 }));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

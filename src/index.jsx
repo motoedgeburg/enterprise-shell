@@ -24,7 +24,7 @@ const buildMessageMap = (...descriptorObjects) => {
 const appMessages = buildMessageMap(componentMessages, pageMessages, resultsMessages);
 
 async function enableMocking() {
-  if (process.env.REACT_APP_ENABLE_MOCKS !== 'true') {
+  if (import.meta.env.VITE_ENABLE_MOCKS !== 'true') {
     return;
   }
   const { worker } = await import('./mocks/browser.js');

@@ -21,15 +21,16 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { buildStore, appMessages, MOCK_USER, AUTHED_STATE } from '../../renderUtils.jsx';
 import AppLayout from '../AppLayout.jsx';
 
-jest.mock('@okta/okta-auth-js', () => {
-  global.__oktaMock = {
-    signInWithRedirect: jest.fn(),
-    signOut: jest.fn().mockResolvedValue(undefined),
-    token: { parseFromUrl: jest.fn() },
-    tokenManager: { setTokens: jest.fn() },
-  };
-  return { OktaAuth: jest.fn().mockImplementation(() => global.__oktaMock) };
-});
+const oktaMock = vi.hoisted(() => ({
+  signInWithRedirect: vi.fn(),
+  signOut: vi.fn().mockResolvedValue(undefined),
+  token: { parseFromUrl: vi.fn() },
+  tokenManager: { setTokens: vi.fn() },
+}));
+
+vi.mock('@okta/okta-auth-js', () => ({
+  OktaAuth: class { constructor() { return oktaMock; } },
+}));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -145,7 +146,7 @@ describe('AppLayout — user display', () => {
 
 describe('AppLayout — sign out', () => {
   beforeEach(() => {
-    global.__oktaMock?.signOut.mockClear();
+    oktaMock?.signOut.mockClear();
   });
 
   it('calls signOut and clears auth state when Sign Out is clicked', async () => {
@@ -163,7 +164,7 @@ describe('AppLayout — sign out', () => {
       expect(store.getState().auth.isAuthenticated).toBe(false);
     });
 
-    expect(global.__oktaMock.signOut).toHaveBeenCalledTimes(1);
+    expect(oktaMock.signOut).toHaveBeenCalledTimes(1);
   });
 });
 

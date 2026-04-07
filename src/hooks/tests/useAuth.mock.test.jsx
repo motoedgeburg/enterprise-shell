@@ -1,19 +1,29 @@
 /**
  * useAuth — mock mode tests (IS_MOCK_MODE = true).
  *
- * Uses only require() so REACT_APP_ENABLE_MOCKS is set before any module loads.
- * See useAuth.test.js for real-mode tests.
+ * vi.stubEnv + vi.resetModules + dynamic import ensures the module is
+ * evaluated with VITE_ENABLE_MOCKS=true, mirroring Jest's require()-after-
+ * process.env pattern.
  */
+import { act, renderHook } from '@testing-library/react';
+import { Provider } from 'react-redux';
 
-process.env.REACT_APP_ENABLE_MOCKS = 'true';
+import { buildStore, MOCK_USER } from '../../renderUtils.jsx';
 
-jest.mock('@okta/okta-auth-js', () => ({ OktaAuth: jest.fn() }));
+vi.mock('@okta/okta-auth-js', () => ({ OktaAuth: vi.fn() }));
 
-const { act, renderHook } = require('@testing-library/react');
-const { Provider } = require('react-redux');
+let useAuth;
 
-const { buildStore, MOCK_USER } = require('../../renderUtils.jsx');
-const { useAuth } = require('../useAuth.js');
+beforeAll(async () => {
+  vi.stubEnv('VITE_ENABLE_MOCKS', 'true');
+  vi.resetModules();
+  const mod = await import('../useAuth.js');
+  useAuth = mod.useAuth;
+});
+
+afterAll(() => {
+  vi.unstubAllEnvs();
+});
 
 function createWrapper(store) {
   function Wrapper({ children }) {

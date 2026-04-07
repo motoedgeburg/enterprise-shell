@@ -142,7 +142,7 @@ describe('composeValidators', () => {
   });
 
   it('short-circuits — does not run subsequent validators after first failure', () => {
-    const spy = jest.fn(() => undefined);
+    const spy = vi.fn(() => undefined);
     composeValidators(req, spy)('');
     expect(spy).not.toHaveBeenCalled();
   });

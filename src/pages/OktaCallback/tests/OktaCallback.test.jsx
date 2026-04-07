@@ -18,15 +18,16 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { buildStore, appMessages } from '../../../renderUtils.jsx';
 import OktaCallback from '../OktaCallback.jsx';
 
-jest.mock('@okta/okta-auth-js', () => {
-  global.__oktaMock = {
-    signInWithRedirect: jest.fn(),
-    signOut: jest.fn(),
-    token: { parseFromUrl: jest.fn().mockReturnValue(new Promise(() => {})) },
-    tokenManager: { setTokens: jest.fn() },
-  };
-  return { OktaAuth: jest.fn().mockImplementation(() => global.__oktaMock) };
-});
+const oktaMock = vi.hoisted(() => ({
+  signInWithRedirect: vi.fn(),
+  signOut: vi.fn(),
+  token: { parseFromUrl: vi.fn().mockReturnValue(new Promise(() => {})) },
+  tokenManager: { setTokens: vi.fn() },
+}));
+
+vi.mock('@okta/okta-auth-js', () => ({
+  OktaAuth: class { constructor() { return oktaMock; } },
+}));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -108,8 +109,8 @@ describe('OktaCallback — error state', () => {
 
 describe('OktaCallback — successful token exchange', () => {
   beforeEach(() => {
-    global.__oktaMock?.token.parseFromUrl.mockClear();
-    global.__oktaMock?.tokenManager.setTokens.mockClear();
+    oktaMock?.token.parseFromUrl.mockClear();
+    oktaMock?.tokenManager.setTokens.mockClear();
   });
 
   it('dispatches setCredentials and navigates to /dashboard on success', async () => {
@@ -117,7 +118,7 @@ describe('OktaCallback — successful token exchange', () => {
     const mockIdToken = {
       claims: { sub: 'u-1', email: 'u@example.com', name: 'Example User', groups: [] },
     };
-    global.__oktaMock.token.parseFromUrl.mockResolvedValue({
+    oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: mockTokenObj, idToken: mockIdToken },
     });
 
@@ -128,7 +129,7 @@ describe('OktaCallback — successful token exchange', () => {
     });
 
     expect(store.getState().auth.user.email).toBe('u@example.com');
-    expect(global.__oktaMock.tokenManager.setTokens).toHaveBeenCalledTimes(1);
+    expect(oktaMock.tokenManager.setTokens).toHaveBeenCalledTimes(1);
   });
 
   it('navigates to /dashboard after successful callback', async () => {
@@ -136,7 +137,7 @@ describe('OktaCallback — successful token exchange', () => {
     const mockIdToken = {
       claims: { sub: 'u', email: 'u@x.com', name: 'U', groups: [] },
     };
-    global.__oktaMock.token.parseFromUrl.mockResolvedValue({
+    oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: mockTokenObj, idToken: mockIdToken },
     });
 

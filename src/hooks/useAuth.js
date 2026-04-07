@@ -4,10 +4,10 @@ import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { clearCredentials, setCredentials } from '../store/slices/authSlice';
 
-const IS_MOCK_MODE = process.env.REACT_APP_ENABLE_MOCKS === 'true';
+const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
 
 // ─── Mock auth (no Okta needed) ──────────────────────────────────────────────
-// When REACT_APP_ENABLE_MOCKS=true, skip real Okta initialisation entirely.
+// When VITE_ENABLE_MOCKS=true, skip real Okta initialisation entirely.
 // OktaAuth throws on construction if the issuer URL is empty/invalid, which
 // crashes the app before any component renders.
 
@@ -24,10 +24,10 @@ const MOCK_TOKEN = 'mock-access-token-for-dev';
 export const oktaAuth = IS_MOCK_MODE
   ? null
   : new OktaAuth({
-      issuer: process.env.REACT_APP_OKTA_ISSUER ?? '',
-      clientId: process.env.REACT_APP_OKTA_CLIENT_ID ?? '',
+      issuer: import.meta.env.VITE_OKTA_ISSUER ?? '',
+      clientId: import.meta.env.VITE_OKTA_CLIENT_ID ?? '',
       redirectUri:
-        process.env.REACT_APP_OKTA_REDIRECT_URI ?? window.location.origin + '/login/callback',
+        import.meta.env.VITE_OKTA_REDIRECT_URI ?? window.location.origin + '/login/callback',
       scopes: ['openid', 'profile', 'email'],
       pkce: true,
       tokenManager: {
@@ -69,7 +69,7 @@ export const useAuth = () => {
   const realLogout = useCallback(async () => {
     dispatch(clearCredentials());
     await oktaAuth.signOut({
-      postLogoutRedirectUri: process.env.REACT_APP_OKTA_POST_LOGOUT_URI ?? window.location.origin,
+      postLogoutRedirectUri: import.meta.env.VITE_OKTA_POST_LOGOUT_URI ?? window.location.origin,
     });
   }, [dispatch]);
 

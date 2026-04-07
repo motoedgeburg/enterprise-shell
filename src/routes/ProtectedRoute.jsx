@@ -2,12 +2,12 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import { useAppSelector } from '../store';
 
-const IS_MOCK_MODE = process.env.REACT_APP_ENABLE_MOCKS === 'true';
+const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
 
 /**
  * Wraps routes that require authentication.
  *
- * In mock mode (REACT_APP_ENABLE_MOCKS=true) the gate is bypassed entirely so
+ * In mock mode (VITE_ENABLE_MOCKS=true) the gate is bypassed entirely so
  * the full UI is accessible without real Okta credentials.  The mock component
  * is a plain functional component with no hooks — this avoids React duplicate-
  * instance errors when tests use jest.resetModules() to re-require the module

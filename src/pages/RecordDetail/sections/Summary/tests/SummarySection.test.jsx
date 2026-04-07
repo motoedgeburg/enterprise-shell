@@ -23,7 +23,7 @@ import SummarySection from '../SummarySection.jsx';
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
-jest.mock('../../../../../hooks/useLookups.js', () => ({
+vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
     employmentTypes: [
       { value: 'full-time', label: 'Full-time' },

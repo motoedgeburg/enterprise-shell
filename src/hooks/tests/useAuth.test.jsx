@@ -2,7 +2,7 @@
  * useAuth hook tests.
  *
  * The hook has two code paths gated on IS_MOCK_MODE
- * (process.env.REACT_APP_ENABLE_MOCKS === 'true').
+ * (process.env.VITE_ENABLE_MOCKS === 'true').
  *
  * Real-mode path (IS_MOCK_MODE = false, default in tests):
  *   Delegates login/logout/handleCallback to the OktaAuth singleton.
@@ -25,18 +25,20 @@ import { Provider } from 'react-redux';
 import { buildStore, MOCK_USER } from '../../renderUtils.jsx';
 import { useAuth } from '../useAuth.js';
 
-// The factory runs before any const/let declarations in this file (Babel hoists
-// jest.mock above everything).  Write the mock methods to `global` so the
-// factory can store them without triggering a temporal-dead-zone error.
-jest.mock('@okta/okta-auth-js', () => {
-  global.__oktaMock = {
-    signInWithRedirect: jest.fn().mockResolvedValue(undefined),
-    signOut: jest.fn().mockResolvedValue(undefined),
-    token: { parseFromUrl: jest.fn() },
-    tokenManager: { setTokens: jest.fn() },
-  };
-  return { OktaAuth: jest.fn().mockImplementation(() => global.__oktaMock) };
-});
+const oktaMock = vi.hoisted(() => ({
+  signInWithRedirect: vi.fn().mockResolvedValue(undefined),
+  signOut: vi.fn().mockResolvedValue(undefined),
+  token: { parseFromUrl: vi.fn() },
+  tokenManager: { setTokens: vi.fn() },
+}));
+
+vi.mock('@okta/okta-auth-js', () => ({
+  OktaAuth: class {
+    constructor() {
+      return oktaMock;
+    }
+  },
+}));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -90,15 +92,15 @@ describe('useAuth — state from Redux store', () => {
 // ─── Real-mode implementations (IS_MOCK_MODE = false) ────────────────────────
 
 describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
-  // In tests, REACT_APP_ENABLE_MOCKS is not set so IS_MOCK_MODE=false.
+  // In tests, VITE_ENABLE_MOCKS is not set so IS_MOCK_MODE=false.
   // OktaAuth is mocked at the top of this file to avoid constructor failure.
   // mockOktaMethods is the same object returned by every new OktaAuth() call.
 
   beforeEach(() => {
-    global.__oktaMock?.signInWithRedirect.mockClear();
-    global.__oktaMock?.signOut.mockClear();
-    global.__oktaMock?.token.parseFromUrl.mockClear();
-    global.__oktaMock?.tokenManager.setTokens.mockClear();
+    oktaMock?.signInWithRedirect.mockClear();
+    oktaMock?.signOut.mockClear();
+    oktaMock?.token.parseFromUrl.mockClear();
+    oktaMock?.tokenManager.setTokens.mockClear();
   });
 
   it('login calls oktaAuth.signInWithRedirect', () => {
@@ -107,7 +109,7 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
     act(() => {
       result.current.login();
     });
-    expect(global.__oktaMock.signInWithRedirect).toHaveBeenCalledTimes(1);
+    expect(oktaMock.signInWithRedirect).toHaveBeenCalledTimes(1);
   });
 
   it('logout dispatches clearCredentials and calls oktaAuth.signOut', async () => {
@@ -118,7 +120,7 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
       await result.current.logout();
     });
 
-    expect(global.__oktaMock.signOut).toHaveBeenCalledTimes(1);
+    expect(oktaMock.signOut).toHaveBeenCalledTimes(1);
     expect(store.getState().auth.isAuthenticated).toBe(false);
     expect(store.getState().auth.accessToken).toBeNull();
   });
@@ -133,7 +135,7 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
         groups: ['staff'],
       },
     };
-    global.__oktaMock.token.parseFromUrl.mockResolvedValue({
+    oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: mockTokenObj, idToken: mockIdToken },
     });
 
@@ -148,11 +150,11 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
     expect(auth.isAuthenticated).toBe(true);
     expect(auth.user.email).toBe('user@example.com');
     expect(auth.user.sub).toBe('user-123');
-    expect(global.__oktaMock.tokenManager.setTokens).toHaveBeenCalledTimes(1);
+    expect(oktaMock.tokenManager.setTokens).toHaveBeenCalledTimes(1);
   });
 
   it('handleCallback throws when no accessToken is returned', async () => {
-    global.__oktaMock.token.parseFromUrl.mockResolvedValue({
+    oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: null, idToken: null },
     });
 
@@ -171,7 +173,7 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
     const mockIdToken = {
       claims: { sub: 'from-id-token', email: 'id@example.com', name: 'ID User' },
     };
-    global.__oktaMock.token.parseFromUrl.mockResolvedValue({
+    oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: mockTokenObj, idToken: mockIdToken },
     });
 
@@ -190,7 +192,7 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
       accessToken: 'tok',
       claims: { sub: 'from-access-token', email: 'at@example.com', name: 'AT User' },
     };
-    global.__oktaMock.token.parseFromUrl.mockResolvedValue({
+    oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: mockTokenObj, idToken: undefined },
     });
 
@@ -207,7 +209,7 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
   it('handleCallback sets groups to [] when claims have no groups', async () => {
     const mockTokenObj = { accessToken: 'tok', claims: {} };
     const mockIdToken = { claims: { sub: 'u', email: 'e@x.com', name: 'N' } };
-    global.__oktaMock.token.parseFromUrl.mockResolvedValue({
+    oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: mockTokenObj, idToken: mockIdToken },
     });
 

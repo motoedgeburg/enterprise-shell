@@ -1,26 +1,28 @@
 /**
  * ProtectedRoute — mock mode tests (IS_MOCK_MODE = true).
  *
- * This file uses ONLY require() (no ESM import) so that
- * process.env.REACT_APP_ENABLE_MOCKS is set BEFORE any module is evaluated.
- * Babel-jest hoists `import` above all code, so env manipulation in a file
- * that uses imports cannot reliably affect IS_MOCK_MODE at module-load time.
- *
- * Each Jest test file gets its own isolated module registry, so setting the
- * env var here does not bleed into other test files.
+ * vi.stubEnv + vi.resetModules + dynamic import ensures ProtectedRoute is
+ * evaluated with VITE_ENABLE_MOCKS=true so IS_MOCK_MODE is true.
  */
+import { render, screen } from '@testing-library/react';
+import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-// Set before any require so IS_MOCK_MODE === true when modules load
-process.env.REACT_APP_ENABLE_MOCKS = 'true';
+import { buildStore, appMessages } from '../../renderUtils.jsx';
 
-const { render, screen } = require('@testing-library/react');
-const { IntlProvider } = require('react-intl');
-const { Provider } = require('react-redux');
-const { MemoryRouter, Route, Routes } = require('react-router-dom');
+let ProtectedRouteMock;
 
-// buildStore and appMessages don't depend on the env var
-const { buildStore, appMessages } = require('../../renderUtils.jsx');
-const ProtectedRouteMock = require('../ProtectedRoute.jsx').default;
+beforeAll(async () => {
+  vi.stubEnv('VITE_ENABLE_MOCKS', 'true');
+  vi.resetModules();
+  const mod = await import('../ProtectedRoute.jsx');
+  ProtectedRouteMock = mod.default;
+});
+
+afterAll(() => {
+  vi.unstubAllEnvs();
+});
 
 describe('ProtectedRoute — mock mode (IS_MOCK_MODE=true)', () => {
   it('renders the outlet even when auth state is unauthenticated', () => {

@@ -15,113 +15,105 @@
  * native equivalents that integrate with React Final Form via Field.
  */
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { Field } from 'react-final-form';
 import { Form as FinalForm } from 'react-final-form';
 import { IntlProvider } from 'react-intl';
+import userEvent from '@testing-library/user-event';
 
 import { appMessages } from '../../../../../renderUtils.jsx';
 import PreferencesSection from '../PreferencesSection.jsx';
 
 // ─── Mocks ────────────────────────────────────────────────────────────────────
 
-jest.mock(
-  '../../../../../components/fields/SwitchField.jsx',
-  () =>
-    function MockSwitchField({ name, label, checkedLabel, uncheckedLabel, disabled }) {
-      const { Field } = require('react-final-form');
-      return (
-        <Field name={name} type="checkbox">
-          {({ input }) => (
-            <div>
-              <label htmlFor={name}>{label}</label>
-              <input
-                id={name}
-                type="checkbox"
-                checked={!!input.checked}
-                onChange={input.onChange}
-                disabled={disabled}
-                data-testid={`switch-${name}`}
-              />
-              <span data-testid={`switch-label-${name}`}>
-                {input.checked ? checkedLabel : uncheckedLabel}
-              </span>
-            </div>
-          )}
-        </Field>
-      );
-    },
-);
+vi.mock('../../../../../components/fields/SwitchField.jsx', () => ({
+  default: function MockSwitchField({ name, label, checkedLabel, uncheckedLabel, disabled }) {
+    return (
+      <Field name={name} type="checkbox">
+        {({ input }) => (
+          <div>
+            <label htmlFor={name}>{label}</label>
+            <input
+              id={name}
+              type="checkbox"
+              checked={!!input.checked}
+              onChange={input.onChange}
+              disabled={disabled}
+              data-testid={`switch-${name}`}
+            />
+            <span data-testid={`switch-label-${name}`}>
+              {input.checked ? checkedLabel : uncheckedLabel}
+            </span>
+          </div>
+        )}
+      </Field>
+    );
+  },
+}));
 
-jest.mock(
-  '../../../../../components/fields/CheckboxGroupField.jsx',
-  () =>
-    function MockCheckboxGroupField({ name, label, options = [], disabled }) {
-      const { Field } = require('react-final-form');
-      return (
-        <Field name={name}>
-          {({ input }) => {
-            const selected = input.value ?? [];
-            const toggle = (val) => {
-              const next = selected.includes(val)
-                ? selected.filter((v) => v !== val)
-                : [...selected, val];
-              input.onChange(next);
-            };
-            return (
-              <fieldset disabled={disabled} data-testid={`checkboxgroup-${name}`}>
-                <legend>{label}</legend>
-                {options.map((o) => (
-                  <label key={o.value}>
-                    <input
-                      type="checkbox"
-                      value={o.value}
-                      checked={selected.includes(o.value)}
-                      onChange={() => toggle(o.value)}
-                      disabled={disabled}
-                    />
-                    {o.label}
-                  </label>
-                ))}
-              </fieldset>
-            );
-          }}
-        </Field>
-      );
-    },
-);
-
-jest.mock(
-  '../../../../../components/fields/RadioGroupField.jsx',
-  () =>
-    function MockRadioGroupField({ name, label, options = [], disabled, validate }) {
-      const { Field } = require('react-final-form');
-      return (
-        <Field name={name} validate={validate}>
-          {({ input, meta }) => (
-            <fieldset disabled={disabled} data-testid={`radiogroup-${name}`}>
+vi.mock('../../../../../components/fields/CheckboxGroupField.jsx', () => ({
+  default: function MockCheckboxGroupField({ name, label, options = [], disabled }) {
+    return (
+      <Field name={name}>
+        {({ input }) => {
+          const selected = input.value ?? [];
+          const toggle = (val) => {
+            const next = selected.includes(val)
+              ? selected.filter((v) => v !== val)
+              : [...selected, val];
+            input.onChange(next);
+          };
+          return (
+            <fieldset disabled={disabled} data-testid={`checkboxgroup-${name}`}>
               <legend>{label}</legend>
               {options.map((o) => (
                 <label key={o.value}>
                   <input
-                    type="radio"
-                    name={name}
+                    type="checkbox"
                     value={o.value}
-                    checked={input.value === o.value}
-                    onChange={() => input.onChange(o.value)}
+                    checked={selected.includes(o.value)}
+                    onChange={() => toggle(o.value)}
                     disabled={disabled}
                   />
                   {o.label}
                 </label>
               ))}
-              {meta.touched && meta.error && <span>{meta.error}</span>}
             </fieldset>
-          )}
-        </Field>
-      );
-    },
-);
+          );
+        }}
+      </Field>
+    );
+  },
+}));
 
-jest.mock('../../../../../hooks/useLookups.js', () => ({
+vi.mock('../../../../../components/fields/RadioGroupField.jsx', () => ({
+  default: function MockRadioGroupField({ name, label, options = [], disabled, validate }) {
+    return (
+      <Field name={name} validate={validate}>
+        {({ input, meta }) => (
+          <fieldset disabled={disabled} data-testid={`radiogroup-${name}`}>
+            <legend>{label}</legend>
+            {options.map((o) => (
+              <label key={o.value}>
+                <input
+                  type="radio"
+                  name={name}
+                  value={o.value}
+                  checked={input.value === o.value}
+                  onChange={() => input.onChange(o.value)}
+                  disabled={disabled}
+                />
+                {o.label}
+              </label>
+            ))}
+            {meta.touched && meta.error && <span>{meta.error}</span>}
+          </fieldset>
+        )}
+      </Field>
+    );
+  },
+}));
+
+vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
     notificationChannels: [
       { value: 'email', label: 'Email' },

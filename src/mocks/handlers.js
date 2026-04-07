@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 
 import { db } from './data';
 
-const BASE = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:8080/api';
+const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api';
 
 /**
  * MSW handlers that mirror a Spring Boot REST controller:
