@@ -32,15 +32,21 @@ import messages from './messages.js';
 const { Text } = Typography;
 
 const RELATIONSHIPS = [
-  'Spouse', 'Partner', 'Parent', 'Child',
-  'Sibling', 'Friend', 'Colleague', 'Other',
+  'Spouse',
+  'Partner',
+  'Parent',
+  'Child',
+  'Sibling',
+  'Friend',
+  'Colleague',
+  'Other',
 ];
 
 const certStatus = (expiryDate) => {
   if (!expiryDate) return { label: 'No Expiry', color: 'blue' };
   return dayjs(expiryDate).isAfter(dayjs())
-    ? { label: 'Active',  color: 'green' }
-    : { label: 'Expired', color: 'red'   };
+    ? { label: 'Active', color: 'green' }
+    : { label: 'Expired', color: 'red' };
 };
 
 // ── Emergency Contacts ────────────────────────────────────────────────────────
@@ -51,9 +57,9 @@ const EmergencyContactsTab = () => {
   const { values } = useFormState({ subscription: { values: true } });
   const contacts = values.emergencyContacts ?? [];
 
-  const [open, setOpen]       = useState(false);
+  const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [antForm]             = Form.useForm();
+  const [antForm] = Form.useForm();
 
   const openAdd = () => {
     antForm.resetFields();
@@ -68,7 +74,10 @@ const EmergencyContactsTab = () => {
   };
 
   const handleDelete = (id) =>
-    form.change('emergencyContacts', contacts.filter((c) => c.id !== id));
+    form.change(
+      'emergencyContacts',
+      contacts.filter((c) => c.id !== id),
+    );
 
   const setPrimary = (id) =>
     form.change(
@@ -98,36 +107,38 @@ const EmergencyContactsTab = () => {
 
   const columns = [
     {
-      title:     intl.formatMessage(messages.DETAIL_CONTACTS_COL_NAME),
+      title: intl.formatMessage(messages.DETAIL_CONTACTS_COL_NAME),
       dataIndex: 'name',
-      key:       'name',
+      key: 'name',
       render: (name, record) => (
         <Space size={6}>
-          {record.isPrimary
-            ? <StarFilled  style={{ color: '#faad14', fontSize: 12 }} />
-            : <span style={{ display: 'inline-block', width: 12 }} />}
+          {record.isPrimary ? (
+            <StarFilled style={{ color: '#faad14', fontSize: 12 }} />
+          ) : (
+            <span style={{ display: 'inline-block', width: 12 }} />
+          )}
           <Text strong={record.isPrimary}>{name}</Text>
         </Space>
       ),
     },
     {
-      title:     intl.formatMessage(messages.DETAIL_CONTACTS_COL_RELATIONSHIP),
+      title: intl.formatMessage(messages.DETAIL_CONTACTS_COL_RELATIONSHIP),
       dataIndex: 'relationship',
-      key:       'relationship',
+      key: 'relationship',
     },
     {
-      title:     intl.formatMessage(messages.DETAIL_CONTACTS_COL_PHONE),
+      title: intl.formatMessage(messages.DETAIL_CONTACTS_COL_PHONE),
       dataIndex: 'phone',
-      key:       'phone',
+      key: 'phone',
     },
     {
-      title:     intl.formatMessage(messages.DETAIL_CONTACTS_COL_EMAIL),
+      title: intl.formatMessage(messages.DETAIL_CONTACTS_COL_EMAIL),
       dataIndex: 'email',
-      key:       'email',
+      key: 'email',
     },
     {
       title: '',
-      key:   'actions',
+      key: 'actions',
       width: 104,
       render: (_, record) => (
         <Space size={4}>
@@ -212,10 +223,7 @@ const EmergencyContactsTab = () => {
               placeholder="Select relationship"
             />
           </Form.Item>
-          <Form.Item
-            name="phone"
-            label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_PHONE)}
-          >
+          <Form.Item name="phone" label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_PHONE)}>
             <Input
               placeholder="(215) 555-0100"
               maxLength={14}
@@ -224,10 +232,7 @@ const EmergencyContactsTab = () => {
               }}
             />
           </Form.Item>
-          <Form.Item
-            name="email"
-            label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_EMAIL)}
-          >
+          <Form.Item name="email" label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_EMAIL)}>
             <Input placeholder="jane@example.com" />
           </Form.Item>
         </Form>
@@ -244,9 +249,9 @@ const CertificationsTab = () => {
   const { values } = useFormState({ subscription: { values: true } });
   const certs = values.certifications ?? [];
 
-  const [open, setOpen]       = useState(false);
+  const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [antForm]             = Form.useForm();
+  const [antForm] = Form.useForm();
 
   const openAdd = () => {
     antForm.resetFields();
@@ -257,7 +262,7 @@ const CertificationsTab = () => {
   const openEdit = (record) => {
     antForm.setFieldsValue({
       ...record,
-      issueDate:  record.issueDate  ? dayjs(record.issueDate)  : null,
+      issueDate: record.issueDate ? dayjs(record.issueDate) : null,
       expiryDate: record.expiryDate ? dayjs(record.expiryDate) : null,
     });
     setEditing(record);
@@ -265,14 +270,17 @@ const CertificationsTab = () => {
   };
 
   const handleDelete = (id) =>
-    form.change('certifications', certs.filter((c) => c.id !== id));
+    form.change(
+      'certifications',
+      certs.filter((c) => c.id !== id),
+    );
 
   const handleOk = async () => {
     try {
       const vals = await antForm.validateFields();
       const normalized = {
         ...vals,
-        issueDate:  vals.issueDate  ? vals.issueDate.format('YYYY-MM-DD')  : null,
+        issueDate: vals.issueDate ? vals.issueDate.format('YYYY-MM-DD') : null,
         expiryDate: vals.expiryDate ? vals.expiryDate.format('YYYY-MM-DD') : null,
       };
       if (editing) {
@@ -281,10 +289,7 @@ const CertificationsTab = () => {
           certs.map((c) => (c.id === editing.id ? { ...editing, ...normalized } : c)),
         );
       } else {
-        form.change('certifications', [
-          ...certs,
-          { ...normalized, id: `cert-${Date.now()}` },
-        ]);
+        form.change('certifications', [...certs, { ...normalized, id: `cert-${Date.now()}` }]);
       }
       setOpen(false);
     } catch {
@@ -294,9 +299,9 @@ const CertificationsTab = () => {
 
   const columns = [
     {
-      title:     intl.formatMessage(messages.DETAIL_CERTS_COL_NAME),
+      title: intl.formatMessage(messages.DETAIL_CERTS_COL_NAME),
       dataIndex: 'name',
-      key:       'name',
+      key: 'name',
       render: (name, record) => {
         const { label } = certStatus(record.expiryDate);
         return (
@@ -312,26 +317,26 @@ const CertificationsTab = () => {
       },
     },
     {
-      title:     intl.formatMessage(messages.DETAIL_CERTS_COL_ISSUER),
+      title: intl.formatMessage(messages.DETAIL_CERTS_COL_ISSUER),
       dataIndex: 'issuingBody',
-      key:       'issuingBody',
+      key: 'issuingBody',
     },
     {
-      title:     intl.formatMessage(messages.DETAIL_CERTS_COL_ISSUE_DATE),
+      title: intl.formatMessage(messages.DETAIL_CERTS_COL_ISSUE_DATE),
       dataIndex: 'issueDate',
-      key:       'issueDate',
-      render:    (d) => (d ? dayjs(d).format('MMM D, YYYY') : '—'),
+      key: 'issueDate',
+      render: (d) => (d ? dayjs(d).format('MMM D, YYYY') : '—'),
     },
     {
-      title:     intl.formatMessage(messages.DETAIL_CERTS_COL_EXPIRY),
+      title: intl.formatMessage(messages.DETAIL_CERTS_COL_EXPIRY),
       dataIndex: 'expiryDate',
-      key:       'expiryDate',
-      render:    (d) => (d ? dayjs(d).format('MMM D, YYYY') : '—'),
+      key: 'expiryDate',
+      render: (d) => (d ? dayjs(d).format('MMM D, YYYY') : '—'),
     },
     {
-      title:  intl.formatMessage(messages.DETAIL_CERTS_COL_STATUS),
-      key:    'status',
-      width:  100,
+      title: intl.formatMessage(messages.DETAIL_CERTS_COL_STATUS),
+      key: 'status',
+      width: 100,
       render: (_, record) => {
         const { label, color } = certStatus(record.expiryDate);
         return <Tag color={color}>{label}</Tag>;
@@ -339,7 +344,7 @@ const CertificationsTab = () => {
     },
     {
       title: '',
-      key:   'actions',
+      key: 'actions',
       width: 72,
       render: (_, record) => (
         <Space size={4}>
@@ -426,10 +431,7 @@ const CertificationsTab = () => {
           >
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item
-            name="expiryDate"
-            label={intl.formatMessage(messages.DETAIL_CERTS_COL_EXPIRY)}
-          >
+          <Form.Item name="expiryDate" label={intl.formatMessage(messages.DETAIL_CERTS_COL_EXPIRY)}>
             <DatePicker style={{ width: '100%' }} placeholder="Leave blank if no expiry" />
           </Form.Item>
         </Form>
@@ -448,13 +450,13 @@ const HistorySection = () => {
       size="small"
       items={[
         {
-          key:      'contacts',
-          label:    intl.formatMessage(messages.DETAIL_TAB_CONTACTS),
+          key: 'contacts',
+          label: intl.formatMessage(messages.DETAIL_TAB_CONTACTS),
           children: <EmergencyContactsTab />,
         },
         {
-          key:      'certifications',
-          label:    intl.formatMessage(messages.DETAIL_TAB_CERTIFICATIONS),
+          key: 'certifications',
+          label: intl.formatMessage(messages.DETAIL_TAB_CERTIFICATIONS),
           children: <CertificationsTab />,
         },
       ]}

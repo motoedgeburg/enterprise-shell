@@ -21,11 +21,11 @@ const ResultsPage = () => {
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
 
   const filters = {
-    name:       searchParams.get('name')       ?? '',
-    email:      searchParams.get('email')      ?? '',
-    address:    searchParams.get('address')    ?? '',
+    name: searchParams.get('name') ?? '',
+    email: searchParams.get('email') ?? '',
+    address: searchParams.get('address') ?? '',
     department: searchParams.get('department') ?? '',
-    status:     searchParams.get('status')     ?? '',
+    status: searchParams.get('status') ?? '',
   };
 
   // ─── Fetch ───────────────────────────────────────────────────────────────────
@@ -84,9 +84,7 @@ const ResultsPage = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status) => (
-        <Tag color={status === 'active' ? 'green' : 'red'}>
-          {status.toUpperCase()}
-        </Tag>
+        <Tag color={status === 'active' ? 'green' : 'red'}>{status.toUpperCase()}</Tag>
       ),
     },
   ];
@@ -141,8 +139,7 @@ const ResultsPage = () => {
         pagination={{
           ...pagination,
           showSizeChanger: true,
-          showTotal: (total) =>
-            intl.formatMessage(messages.RECORDS_PAGINATION_TOTAL, { total }),
+          showTotal: (total) => intl.formatMessage(messages.RECORDS_PAGINATION_TOTAL, { total }),
           onChange: (page, size) => void fetchResults(page, size),
         }}
         scroll={{ x: 900 }}

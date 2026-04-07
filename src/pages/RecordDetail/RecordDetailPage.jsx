@@ -29,15 +29,15 @@ import WorkInfoSection from './sections/WorkInfo/WorkInfoSection.jsx';
 const { Title, Text } = Typography;
 
 const RecordDetailPage = () => {
-  const { id }       = useParams();
-  const navigate     = useNavigate();
-  const location     = useLocation();
-  const { message }  = App.useApp();
-  const intl         = useIntl();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { message } = App.useApp();
+  const intl = useIntl();
 
-  const isNew = id === undefined;   // mounted on /records/new (no :id param)
+  const isNew = id === undefined; // mounted on /records/new (no :id param)
 
-  const [record, setRecord]   = useState(isNew ? {} : null);
+  const [record, setRecord] = useState(isNew ? {} : null);
   const [loading, setLoading] = useState(!isNew);
 
   const backPath = `/results${location.state?.search ? `?${location.state.search}` : ''}`;
@@ -108,28 +108,28 @@ const RecordDetailPage = () => {
 
   const collapseItems = [
     {
-      key:      'personal',
-      label:    intl.formatMessage(messages.DETAIL_SECTION_PERSONAL),
+      key: 'personal',
+      label: intl.formatMessage(messages.DETAIL_SECTION_PERSONAL),
       children: <PersonalInfoSection />,
     },
     {
-      key:      'work',
-      label:    intl.formatMessage(messages.DETAIL_SECTION_WORK),
+      key: 'work',
+      label: intl.formatMessage(messages.DETAIL_SECTION_WORK),
       children: <WorkInfoSection />,
     },
     {
-      key:      'preferences',
-      label:    intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES),
+      key: 'preferences',
+      label: intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES),
       children: <PreferencesSection />,
     },
     {
-      key:      'history',
-      label:    intl.formatMessage(messages.DETAIL_SECTION_HISTORY),
+      key: 'history',
+      label: intl.formatMessage(messages.DETAIL_SECTION_HISTORY),
       children: <HistorySection />,
     },
     {
-      key:      'summary',
-      label:    intl.formatMessage(messages.DETAIL_SECTION_SUMMARY),
+      key: 'summary',
+      label: intl.formatMessage(messages.DETAIL_SECTION_SUMMARY),
       children: <SummarySection />,
     },
   ];
@@ -140,19 +140,30 @@ const RecordDetailPage = () => {
     <FinalForm onSubmit={handleSubmit} initialValues={record}>
       {({ handleSubmit: submit, submitting, submitError, hasValidationErrors }) => (
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-
           {/* Page header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(backPath)}>
               {intl.formatMessage(messages.DETAIL_BACK)}
             </Button>
-            <Title level={4} style={{ margin: 0, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <Title
+              level={4}
+              style={{
+                margin: 0,
+                flex: 1,
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {isNew ? intl.formatMessage(messages.DETAIL_CREATE_TITLE) : record.name}
             </Title>
             {!isNew && (
               <Popconfirm
                 title={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_TITLE)}
-                description={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_DESC, { name: record.name })}
+                description={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_DESC, {
+                  name: record.name,
+                })}
                 onConfirm={handleDelete}
                 okText={intl.formatMessage(messages.DETAIL_DELETE_OK)}
                 okButtonProps={{ danger: true }}
@@ -195,7 +206,6 @@ const RecordDetailPage = () => {
                 : 'Changes are saved across all sections on a single submit.'}
             </Text>
           </Card>
-
         </Space>
       )}
     </FinalForm>

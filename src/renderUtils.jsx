@@ -18,7 +18,7 @@ import pageMessages from './pages/messages.js';
 import recordDetailMessages from './pages/RecordDetail/messages.js';
 import resultsMessages from './pages/Results/messages.js';
 import searchMessages from './pages/Search/messages.js';
-import authReducer    from './store/slices/authSlice';
+import authReducer from './store/slices/authSlice';
 import lookupsReducer from './store/slices/lookupsSlice';
 
 // ─── Message map ─────────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ export function buildStore(authOverrides = {}, lookupsOverrides = {}) {
   return configureStore({
     reducer: { auth: authReducer, lookups: lookupsReducer },
     preloadedState: {
-      auth:    { ...DEFAULT_AUTH_STATE,    ...authOverrides },
+      auth: { ...DEFAULT_AUTH_STATE, ...authOverrides },
       lookups: { ...DEFAULT_LOOKUPS_STATE, ...lookupsOverrides },
     },
   });

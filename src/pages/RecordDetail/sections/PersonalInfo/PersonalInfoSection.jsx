@@ -1,14 +1,22 @@
 import { Col, Row } from 'antd';
 import { useIntl } from 'react-intl';
 
-import { DateField, EmailField, PhoneField, SsnField, TextAreaField, TextField } from '../../../../components/fields/index.js';
+import {
+  DateField,
+  EmailField,
+  PhoneField,
+  SsnField,
+  TextAreaField,
+  TextField,
+} from '../../../../components/fields/index.js';
 import { useValidators } from '../../../../hooks/useValidators.js';
 
 import messages from './messages.js';
 
 const PersonalInfoSection = () => {
   const intl = useIntl();
-  const { composeValidators, email, maxLength, minLength, pastDate, phone, required, ssn } = useValidators();
+  const { composeValidators, email, maxLength, minLength, pastDate, phone, required, ssn } =
+    useValidators();
 
   return (
     <Row gutter={[16, 0]}>

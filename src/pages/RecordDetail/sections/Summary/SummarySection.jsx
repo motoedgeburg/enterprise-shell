@@ -18,7 +18,10 @@ const SummarySection = () => {
       {({ values: v }) => (
         <Descriptions bordered column={{ xs: 1, sm: 2 }} size="small">
           {/* Personal */}
-          <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_NAME)} span={2}>
+          <Descriptions.Item
+            label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_NAME)}
+            span={2}
+          >
             {v.name || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_EMAIL)}>
@@ -27,13 +30,19 @@ const SummarySection = () => {
           <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_PHONE)}>
             {v.phone || '—'}
           </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_ADDRESS)} span={2}>
+          <Descriptions.Item
+            label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_ADDRESS)}
+            span={2}
+          >
             {v.address || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_DOB)}>
             {v.dateOfBirth ? new Date(v.dateOfBirth).toLocaleDateString() : '—'}
           </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_BIO)} span={2}>
+          <Descriptions.Item
+            label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_BIO)}
+            span={2}
+          >
             {v.bio || '—'}
           </Descriptions.Item>
 
@@ -45,11 +54,15 @@ const SummarySection = () => {
             {v.department || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_STATUS)}>
-            {v.status
-              ? <Tag color={v.status === 'active' ? 'green' : 'red'}>{v.status.toUpperCase()}</Tag>
-              : '—'}
+            {v.status ? (
+              <Tag color={v.status === 'active' ? 'green' : 'red'}>{v.status.toUpperCase()}</Tag>
+            ) : (
+              '—'
+            )}
           </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_EMPLOYMENT_TYPE)}>
+          <Descriptions.Item
+            label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_EMPLOYMENT_TYPE)}
+          >
             {employmentTypes.find((o) => o.value === v.employmentType)?.label ?? '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_START_DATE)}>
@@ -60,10 +73,14 @@ const SummarySection = () => {
           </Descriptions.Item>
 
           {/* Preferences */}
-          <Descriptions.Item label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_REMOTE_ELIGIBLE)}>
+          <Descriptions.Item
+            label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_REMOTE_ELIGIBLE)}
+          >
             {v.remoteEligible ? 'Yes' : 'No'}
           </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}>
+          <Descriptions.Item
+            label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}
+          >
             {v.notificationsEnabled ? 'On' : 'Off'}
           </Descriptions.Item>
           <Descriptions.Item
@@ -72,16 +89,19 @@ const SummarySection = () => {
           >
             {v.notificationChannels?.length
               ? v.notificationChannels.map((c) => (
-                  <Tag key={c}>
-                    {notificationChannels.find((o) => o.value === c)?.label ?? c}
-                  </Tag>
+                  <Tag key={c}>{notificationChannels.find((o) => o.value === c)?.label ?? c}</Tag>
                 ))
               : intl.formatMessage(summaryMessages.DETAIL_SUMMARY_NONE)}
           </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_ACCESS_LEVEL)}>
+          <Descriptions.Item
+            label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_ACCESS_LEVEL)}
+          >
             {accessLevels.find((o) => o.value === v.accessLevel)?.label ?? '—'}
           </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTES)} span={2}>
+          <Descriptions.Item
+            label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTES)}
+            span={2}
+          >
             {v.notes || '—'}
           </Descriptions.Item>
         </Descriptions>

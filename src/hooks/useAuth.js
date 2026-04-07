@@ -27,8 +27,7 @@ export const oktaAuth = IS_MOCK_MODE
       issuer: process.env.REACT_APP_OKTA_ISSUER ?? '',
       clientId: process.env.REACT_APP_OKTA_CLIENT_ID ?? '',
       redirectUri:
-        process.env.REACT_APP_OKTA_REDIRECT_URI ??
-        window.location.origin + '/login/callback',
+        process.env.REACT_APP_OKTA_REDIRECT_URI ?? window.location.origin + '/login/callback',
       scopes: ['openid', 'profile', 'email'],
       pkce: true,
       tokenManager: {
@@ -41,8 +40,9 @@ export const oktaAuth = IS_MOCK_MODE
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated, isInitializing, user, accessToken, error } =
-    useAppSelector((state) => state.auth);
+  const { isAuthenticated, isInitializing, user, accessToken, error } = useAppSelector(
+    (state) => state.auth,
+  );
 
   // ── Mock implementations ───────────────────────────────────────────────────
 
@@ -69,8 +69,7 @@ export const useAuth = () => {
   const realLogout = useCallback(async () => {
     dispatch(clearCredentials());
     await oktaAuth.signOut({
-      postLogoutRedirectUri:
-        process.env.REACT_APP_OKTA_POST_LOGOUT_URI ?? window.location.origin,
+      postLogoutRedirectUri: process.env.REACT_APP_OKTA_POST_LOGOUT_URI ?? window.location.origin,
     });
   }, [dispatch]);
 

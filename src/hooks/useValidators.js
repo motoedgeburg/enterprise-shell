@@ -25,23 +25,17 @@ export const useValidators = () => {
   const intl = useIntl();
 
   return {
-    required: (msg) =>
-      required(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_REQUIRED)),
+    required: (msg) => required(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_REQUIRED)),
 
-    email: (msg) =>
-      email(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_EMAIL)),
+    email: (msg) => email(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_EMAIL)),
 
-    phone: (msg) =>
-      phone(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_PHONE)),
+    phone: (msg) => phone(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_PHONE)),
 
-    ssn: (msg) =>
-      ssn(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_SSN)),
+    ssn: (msg) => ssn(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_SSN)),
 
-    url: (msg) =>
-      url(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_URL)),
+    url: (msg) => url(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_URL)),
 
-    pastDate: (msg) =>
-      pastDate(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_PAST_DATE)),
+    pastDate: (msg) => pastDate(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_PAST_DATE)),
 
     minLength: (n, msg) =>
       minLength(n, msg ?? intl.formatMessage(validatorMessages.VALIDATOR_MIN_LENGTH, { min: n })),

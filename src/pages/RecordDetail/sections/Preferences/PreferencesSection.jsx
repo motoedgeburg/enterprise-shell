@@ -23,8 +23,8 @@ const PreferencesSection = () => {
   const { values } = useFormState({ subscription: { values: true } });
 
   const isInactive = values.status === 'inactive';
-  const isIntern   = values.employmentType === 'intern';
-  const notifsOff  = !values.notificationsEnabled;
+  const isIntern = values.employmentType === 'intern';
+  const notifsOff = !values.notificationsEnabled;
 
   // Work → Preferences: inactive employees are locked to read-only access
   useEffect(() => {
@@ -38,18 +38,21 @@ const PreferencesSection = () => {
 
   return (
     <Row gutter={[16, 0]}>
-
       {/* Cross-section constraint notices */}
       {isInactive && (
         <Col xs={24} style={{ marginBottom: 8 }}>
-          <Alert type="warning" showIcon
+          <Alert
+            type="warning"
+            showIcon
             message={intl.formatMessage(messages.DETAIL_CONSTRAINT_INACTIVE)}
           />
         </Col>
       )}
       {isIntern && (
         <Col xs={24} style={{ marginBottom: 8 }}>
-          <Alert type="info" showIcon
+          <Alert
+            type="info"
+            showIcon
             message={intl.formatMessage(messages.DETAIL_CONSTRAINT_INTERN)}
           />
         </Col>

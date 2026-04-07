@@ -59,9 +59,7 @@ describe('LoginPage — default state (unauthenticated)', () => {
 
   it('renders the SSO description text', () => {
     renderLoginPage({ isAuthenticated: false, isInitializing: false });
-    expect(
-      screen.getByText(/Sign in using your organization/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Sign in using your organization/i)).toBeInTheDocument();
   });
 
   it('renders the Sign in with Okta button', () => {

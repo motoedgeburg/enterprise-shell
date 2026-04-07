@@ -44,7 +44,7 @@ function renderLayout(authOverrides = {}, initialPath = '/dashboard') {
             <Routes>
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<div>Dashboard Content</div>} />
-                <Route path="/search"    element={<div>Search Content</div>} />
+                <Route path="/search" element={<div>Search Content</div>} />
               </Route>
             </Routes>
           </MemoryRouter>

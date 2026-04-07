@@ -20,25 +20,25 @@ const BASE = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:8080/api';
 const LOOKUPS = {
   departments: ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'Operations', 'HR'],
   statuses: [
-    { value: 'active',   label: 'Active' },
+    { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' },
   ],
   employmentTypes: [
     { value: 'full-time', label: 'Full-time' },
     { value: 'part-time', label: 'Part-time' },
-    { value: 'contract',  label: 'Contract' },
-    { value: 'intern',    label: 'Intern' },
+    { value: 'contract', label: 'Contract' },
+    { value: 'intern', label: 'Intern' },
   ],
   notificationChannels: [
     { value: 'email', label: 'Email' },
-    { value: 'sms',   label: 'SMS' },
+    { value: 'sms', label: 'SMS' },
     { value: 'slack', label: 'Slack' },
     { value: 'teams', label: 'Teams' },
   ],
   accessLevels: [
     { value: 'read-only', label: 'Read-only' },
-    { value: 'standard',  label: 'Standard' },
-    { value: 'admin',     label: 'Admin' },
+    { value: 'standard', label: 'Standard' },
+    { value: 'admin', label: 'Admin' },
   ],
 };
 
@@ -53,11 +53,11 @@ export const handlers = [
     const size = parseInt(url.searchParams.get('size') ?? '10', 10);
 
     const filters = {
-      name:       url.searchParams.get('name')       ?? '',
-      email:      url.searchParams.get('email')      ?? '',
+      name: url.searchParams.get('name') ?? '',
+      email: url.searchParams.get('email') ?? '',
       department: url.searchParams.get('department') ?? '',
-      status:     url.searchParams.get('status')     ?? '',
-      address:    url.searchParams.get('address')    ?? '',
+      status: url.searchParams.get('status') ?? '',
+      address: url.searchParams.get('address') ?? '',
     };
 
     const data = db.search(filters, page, size);

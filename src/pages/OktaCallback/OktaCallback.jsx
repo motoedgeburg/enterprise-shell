@@ -62,9 +62,7 @@ const OktaCallback = () => {
           showIcon
           message={intl.formatMessage(messages.CALLBACK_AUTH_FAILED_TITLE)}
           description={authError}
-          action={
-            <a href="/login">{intl.formatMessage(messages.CALLBACK_RETURN_TO_LOGIN)}</a>
-          }
+          action={<a href="/login">{intl.formatMessage(messages.CALLBACK_RETURN_TO_LOGIN)}</a>}
         />
       </div>
     );

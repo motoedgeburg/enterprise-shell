@@ -12,60 +12,52 @@
  * failing rule wins and subsequent rules are skipped.
  */
 
-export const required = (msg) =>
-  (value) => {
-    if (value === null || value === undefined) return msg;
-    if (typeof value === 'string' && value.trim() === '') return msg;
-    if (Array.isArray(value) && value.length === 0) return msg;
+export const required = (msg) => (value) => {
+  if (value === null || value === undefined) return msg;
+  if (typeof value === 'string' && value.trim() === '') return msg;
+  if (Array.isArray(value) && value.length === 0) return msg;
+  return undefined;
+};
+
+export const email = (msg) => (value) => {
+  if (!value) return undefined;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : msg;
+};
+
+export const phone = (msg) => (value) => {
+  if (!value) return undefined;
+  return /^\(\d{3}\)\s\d{3}-\d{4}$/.test(value) ? undefined : msg;
+};
+
+export const minLength = (n, msg) => (value) => {
+  if (!value) return undefined;
+  return value.length >= n ? undefined : msg;
+};
+
+export const maxLength = (n, msg) => (value) => {
+  if (!value) return undefined;
+  return value.length <= n ? undefined : msg;
+};
+
+export const pastDate = (msg) => (value) => {
+  if (!value) return undefined;
+  return new Date(value) < new Date() ? undefined : msg;
+};
+
+export const ssn = (msg) => (value) => {
+  if (!value) return undefined;
+  return /^\d{3}-\d{2}-\d{4}$/.test(value) ? undefined : msg;
+};
+
+export const url = (msg) => (value) => {
+  if (!value) return undefined;
+  try {
+    new URL(value);
     return undefined;
-  };
-
-export const email = (msg) =>
-  (value) => {
-    if (!value) return undefined;
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : msg;
-  };
-
-export const phone = (msg) =>
-  (value) => {
-    if (!value) return undefined;
-    return /^\(\d{3}\)\s\d{3}-\d{4}$/.test(value) ? undefined : msg;
-  };
-
-export const minLength = (n, msg) =>
-  (value) => {
-    if (!value) return undefined;
-    return value.length >= n ? undefined : msg;
-  };
-
-export const maxLength = (n, msg) =>
-  (value) => {
-    if (!value) return undefined;
-    return value.length <= n ? undefined : msg;
-  };
-
-export const pastDate = (msg) =>
-  (value) => {
-    if (!value) return undefined;
-    return new Date(value) < new Date() ? undefined : msg;
-  };
-
-export const ssn = (msg) =>
-  (value) => {
-    if (!value) return undefined;
-    return /^\d{3}-\d{2}-\d{4}$/.test(value) ? undefined : msg;
-  };
-
-export const url = (msg) =>
-  (value) => {
-    if (!value) return undefined;
-    try {
-      new URL(value);
-      return undefined;
-    } catch {
-      return msg;
-    }
-  };
+  } catch {
+    return msg;
+  }
+};
 
 /**
  * Runs validators left-to-right and returns the first error message found.

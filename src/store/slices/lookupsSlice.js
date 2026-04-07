@@ -25,15 +25,15 @@ export const fetchLookups = createAsyncThunk(
 // ─── Slice ────────────────────────────────────────────────────────────────────
 
 const initialState = {
-  status: 'idle',   // 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 
   // Shape mirrors the /api/lookups response
-  departments:          [],
-  statuses:             [],
-  employmentTypes:      [],
+  departments: [],
+  statuses: [],
+  employmentTypes: [],
   notificationChannels: [],
-  accessLevels:         [],
+  accessLevels: [],
 };
 
 const lookupsSlice = createSlice({
@@ -44,7 +44,7 @@ const lookupsSlice = createSlice({
     builder
       .addCase(fetchLookups.pending, (state) => {
         state.status = 'loading';
-        state.error  = null;
+        state.error = null;
       })
       .addCase(fetchLookups.fulfilled, (state, action) => {
         state.status = 'succeeded';
@@ -52,7 +52,7 @@ const lookupsSlice = createSlice({
       })
       .addCase(fetchLookups.rejected, (state, action) => {
         state.status = 'failed';
-        state.error  = action.payload ?? 'Unknown error';
+        state.error = action.payload ?? 'Unknown error';
       });
   },
 });

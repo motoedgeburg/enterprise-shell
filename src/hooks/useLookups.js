@@ -12,7 +12,7 @@ import { fetchLookups } from '../store/slices/lookupsSlice.js';
  */
 export const useLookups = () => {
   const dispatch = useAppDispatch();
-  const lookups  = useAppSelector((state) => state.lookups);
+  const lookups = useAppSelector((state) => state.lookups);
 
   useEffect(() => {
     dispatch(fetchLookups());

@@ -168,7 +168,9 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
 
   it('handleCallback uses idToken claims when available', async () => {
     const mockTokenObj = { accessToken: 'tok', claims: { sub: 'fallback' } };
-    const mockIdToken = { claims: { sub: 'from-id-token', email: 'id@example.com', name: 'ID User' } };
+    const mockIdToken = {
+      claims: { sub: 'from-id-token', email: 'id@example.com', name: 'ID User' },
+    };
     global.__oktaMock.token.parseFromUrl.mockResolvedValue({
       tokens: { accessToken: mockTokenObj, idToken: mockIdToken },
     });
