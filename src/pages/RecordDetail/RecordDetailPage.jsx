@@ -1,49 +1,31 @@
-import {
-  ArrowLeftOutlined,
-  DeleteOutlined,
-  SaveOutlined,
-} from '@ant-design/icons';
+import { ArrowLeftOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
 import {
   Alert,
   App,
   Button,
   Card,
   Collapse,
-  Descriptions,
-  Divider,
   Form,
   Popconfirm,
-  Row,
-  Col,
   Space,
   Spin,
-  Tag,
   Typography,
 } from 'antd';
 import { FORM_ERROR } from 'final-form';
 import { useCallback, useEffect, useState } from 'react';
-import { Form as FinalForm, FormSpy } from 'react-final-form';
+import { Form as FinalForm } from 'react-final-form';
 import { useIntl } from 'react-intl';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
-import {
-  CheckboxGroupField,
-  DateField,
-  EmailField,
-  RadioGroupField,
-  SelectField,
-  SwitchField,
-  TextAreaField,
-  TextField,
-} from '../../components/fields/index.js';
-import { useLookups } from '../../hooks/useLookups.js';
 
 import messages from './messages.js';
+import PersonalInfoSection from './sections/PersonalInfoSection.jsx';
+import PreferencesSection from './sections/PreferencesSection.jsx';
+import SummarySection from './sections/SummarySection.jsx';
+import WorkInfoSection from './sections/WorkInfoSection.jsx';
 
 const { Title, Text } = Typography;
-
-// ─── RecordDetailPage ──────────────────────────────────────────────────────────
 
 const RecordDetailPage = () => {
   const { id } = useParams();
@@ -51,22 +33,13 @@ const RecordDetailPage = () => {
   const location = useLocation();
   const { message } = App.useApp();
   const intl = useIntl();
-  const {
-    departments,
-    statuses:             statusOptions,
-    employmentTypes:      employmentTypeOptions,
-    notificationChannels: channelOptions,
-    accessLevels:         accessLevelOptions,
-  } = useLookups();
 
   const [record, setRecord]   = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Navigate back to the results page that spawned this detail view,
-  // preserving the search filters if they were passed via location state.
   const backPath = `/results${location.state?.search ? `?${location.state.search}` : ''}`;
 
-  // ─── Load record ───────────────────────────────────────────────────────────
+  // ─── Load ───────────────────────────────────────────────────────────────────
 
   const loadRecord = useCallback(async () => {
     setLoading(true);
@@ -82,7 +55,7 @@ const RecordDetailPage = () => {
 
   useEffect(() => { void loadRecord(); }, [loadRecord]);
 
-  // ─── Handlers ──────────────────────────────────────────────────────────────
+  // ─── Handlers ───────────────────────────────────────────────────────────────
 
   const handleSubmit = async (values) => {
     try {
@@ -104,8 +77,7 @@ const RecordDetailPage = () => {
     }
   };
 
-
-  // ─── Loading state ─────────────────────────────────────────────────────────
+  // ─── Loading / empty states ──────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -117,228 +89,32 @@ const RecordDetailPage = () => {
 
   if (!record) return null;
 
-  // ─── Accordion panel content helpers ───────────────────────────────────────
-
-  const personalPanel = (
-    <Row gutter={[16, 0]}>
-      <Col xs={24} sm={12}>
-        <TextField
-          name="name"
-          label={intl.formatMessage(messages.DETAIL_FIELD_NAME)}
-          placeholder="Jane Doe"
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <EmailField
-          name="email"
-          label={intl.formatMessage(messages.DETAIL_FIELD_EMAIL)}
-          placeholder="jane@company.com"
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <TextField
-          name="phone"
-          label={intl.formatMessage(messages.DETAIL_FIELD_PHONE)}
-          placeholder="(215) 555-0100"
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <TextField
-          name="address"
-          label={intl.formatMessage(messages.DETAIL_FIELD_ADDRESS)}
-          placeholder="123 Main St, Philadelphia, PA 19103"
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <DateField
-          name="dateOfBirth"
-          label={intl.formatMessage(messages.DETAIL_FIELD_DOB)}
-        />
-      </Col>
-      <Col xs={24}>
-        <TextAreaField
-          name="bio"
-          label={intl.formatMessage(messages.DETAIL_FIELD_BIO)}
-          placeholder="A short professional biography…"
-          rows={3}
-        />
-      </Col>
-    </Row>
-  );
-
-  const workPanel = (
-    <Row gutter={[16, 0]}>
-      <Col xs={24} sm={12}>
-        <TextField
-          name="jobTitle"
-          label={intl.formatMessage(messages.DETAIL_FIELD_JOB_TITLE)}
-          placeholder="Software Engineer"
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <TextField
-          name="manager"
-          label={intl.formatMessage(messages.DETAIL_FIELD_MANAGER)}
-          placeholder="Manager name"
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <SelectField
-          name="department"
-          label={intl.formatMessage(messages.DETAIL_FIELD_DEPARTMENT)}
-          options={departments.map((d) => ({ value: d, label: d }))}
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <SelectField
-          name="status"
-          label={intl.formatMessage(messages.DETAIL_FIELD_STATUS)}
-          options={statusOptions}
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <DateField
-          name="startDate"
-          label={intl.formatMessage(messages.DETAIL_FIELD_START_DATE)}
-        />
-      </Col>
-      <Col xs={24}>
-        <RadioGroupField
-          name="employmentType"
-          label={intl.formatMessage(messages.DETAIL_FIELD_EMPLOYMENT_TYPE)}
-          options={employmentTypeOptions}
-          optionType="button"
-          buttonStyle="solid"
-        />
-      </Col>
-    </Row>
-  );
-
-  const preferencesPanel = (
-    <Row gutter={[16, 0]}>
-      <Col xs={24} sm={12}>
-        <SwitchField
-          name="remoteEligible"
-          label={intl.formatMessage(messages.DETAIL_FIELD_REMOTE_ELIGIBLE)}
-          checkedLabel="Eligible"
-          uncheckedLabel="Not eligible"
-        />
-      </Col>
-      <Col xs={24} sm={12}>
-        <SwitchField
-          name="notificationsEnabled"
-          label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}
-          checkedLabel="On"
-          uncheckedLabel="Off"
-        />
-      </Col>
-      <Col xs={24}>
-        <CheckboxGroupField
-          name="notificationChannels"
-          label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATION_CHANNELS)}
-          options={channelOptions}
-        />
-      </Col>
-      <Col xs={24}>
-        <Divider style={{ margin: '8px 0 16px' }} />
-        <RadioGroupField
-          name="accessLevel"
-          label={intl.formatMessage(messages.DETAIL_FIELD_ACCESS_LEVEL)}
-          options={accessLevelOptions}
-          optionType="button"
-          buttonStyle="solid"
-        />
-      </Col>
-      <Col xs={24}>
-        <TextAreaField
-          name="notes"
-          label={intl.formatMessage(messages.DETAIL_FIELD_NOTES)}
-          placeholder="Internal notes visible to managers and HR only…"
-          rows={4}
-        />
-      </Col>
-    </Row>
-  );
-
-  const summaryPanel = (
-    <FormSpy subscription={{ values: true }}>
-      {({ values: v }) => (
-        <Descriptions bordered column={{ xs: 1, sm: 2 }} size="small">
-          {/* Personal */}
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_NAME)} span={2}>
-            {v.name || '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_EMAIL)}>
-            {v.email || '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_PHONE)}>
-            {v.phone || '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_ADDRESS)} span={2}>
-            {v.address || '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_DOB)}>
-            {v.dateOfBirth ? new Date(v.dateOfBirth).toLocaleDateString() : '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_BIO)} span={2}>
-            {v.bio || '—'}
-          </Descriptions.Item>
-
-          {/* Work */}
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_JOB_TITLE)}>
-            {v.jobTitle || '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_DEPARTMENT)}>
-            {v.department || '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_STATUS)}>
-            {v.status
-              ? <Tag color={v.status === 'active' ? 'green' : 'red'}>{v.status.toUpperCase()}</Tag>
-              : '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_EMPLOYMENT_TYPE)}>
-            {employmentTypeOptions.find((o) => o.value === v.employmentType)?.label ?? '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_START_DATE)}>
-            {v.startDate ? new Date(v.startDate).toLocaleDateString() : '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_MANAGER)}>
-            {v.manager || '—'}
-          </Descriptions.Item>
-
-          {/* Preferences */}
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_REMOTE_ELIGIBLE)}>
-            {v.remoteEligible ? 'Yes' : 'No'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}>
-            {v.notificationsEnabled ? 'On' : 'Off'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATION_CHANNELS)} span={2}>
-            {v.notificationChannels?.length
-              ? v.notificationChannels.map((c) => (
-                  <Tag key={c}>{channelOptions.find((o) => o.value === c)?.label ?? c}</Tag>
-                ))
-              : intl.formatMessage(messages.DETAIL_SUMMARY_NONE)}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_ACCESS_LEVEL)}>
-            {accessLevelOptions.find((o) => o.value === v.accessLevel)?.label ?? '—'}
-          </Descriptions.Item>
-          <Descriptions.Item label={intl.formatMessage(messages.DETAIL_FIELD_NOTES)} span={2}>
-            {v.notes || '—'}
-          </Descriptions.Item>
-        </Descriptions>
-      )}
-    </FormSpy>
-  );
+  // ─── Accordion items ─────────────────────────────────────────────────────────
 
   const collapseItems = [
-    { key: 'personal',    label: intl.formatMessage(messages.DETAIL_SECTION_PERSONAL),    children: personalPanel },
-    { key: 'work',        label: intl.formatMessage(messages.DETAIL_SECTION_WORK),        children: workPanel },
-    { key: 'preferences', label: intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES), children: preferencesPanel },
-    { key: 'summary',     label: intl.formatMessage(messages.DETAIL_SECTION_SUMMARY),     children: summaryPanel },
+    {
+      key:      'personal',
+      label:    intl.formatMessage(messages.DETAIL_SECTION_PERSONAL),
+      children: <PersonalInfoSection />,
+    },
+    {
+      key:      'work',
+      label:    intl.formatMessage(messages.DETAIL_SECTION_WORK),
+      children: <WorkInfoSection />,
+    },
+    {
+      key:      'preferences',
+      label:    intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES),
+      children: <PreferencesSection />,
+    },
+    {
+      key:      'summary',
+      label:    intl.formatMessage(messages.DETAIL_SECTION_SUMMARY),
+      children: <SummarySection />,
+    },
   ];
 
-  // ─── Render ────────────────────────────────────────────────────────────────
+  // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <App>
@@ -371,9 +147,7 @@ const RecordDetailPage = () => {
             </Space>
 
             {/* Form error banner */}
-            {submitError && (
-              <Alert type="error" message={submitError} showIcon />
-            )}
+            {submitError && <Alert type="error" message={submitError} showIcon />}
 
             {/* Accordion */}
             <Form layout="vertical" component="div">
@@ -384,7 +158,7 @@ const RecordDetailPage = () => {
               />
             </Form>
 
-            {/* Submit */}
+            {/* Submit footer */}
             <Card size="small">
               <Button
                 type="primary"
