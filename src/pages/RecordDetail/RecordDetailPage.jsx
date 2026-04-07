@@ -37,12 +37,11 @@ import {
   TextAreaField,
   TextField,
 } from '../../components/fields/index.js';
+import { useLookups } from '../../hooks/useLookups.js';
 
 import messages from './messages.js';
 
 const { Title, Text } = Typography;
-
-const DEPARTMENTS = ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'Operations', 'HR'];
 
 // ─── RecordDetailPage ──────────────────────────────────────────────────────────
 
@@ -52,6 +51,13 @@ const RecordDetailPage = () => {
   const location = useLocation();
   const { message } = App.useApp();
   const intl = useIntl();
+  const {
+    departments,
+    statuses:             statusOptions,
+    employmentTypes:      employmentTypeOptions,
+    notificationChannels: channelOptions,
+    accessLevels:         accessLevelOptions,
+  } = useLookups();
 
   const [record, setRecord]   = useState(null);
   const [loading, setLoading] = useState(true);
@@ -98,32 +104,6 @@ const RecordDetailPage = () => {
     }
   };
 
-  // ─── Option lists (built once per render) ──────────────────────────────────
-
-  const employmentTypeOptions = [
-    { value: 'full-time', label: intl.formatMessage(messages.DETAIL_EMPLOYMENT_FULL_TIME) },
-    { value: 'part-time', label: intl.formatMessage(messages.DETAIL_EMPLOYMENT_PART_TIME) },
-    { value: 'contract',  label: intl.formatMessage(messages.DETAIL_EMPLOYMENT_CONTRACT) },
-    { value: 'intern',    label: intl.formatMessage(messages.DETAIL_EMPLOYMENT_INTERN) },
-  ];
-
-  const statusOptions = [
-    { value: 'active',   label: intl.formatMessage(messages.DETAIL_STATUS_ACTIVE) },
-    { value: 'inactive', label: intl.formatMessage(messages.DETAIL_STATUS_INACTIVE) },
-  ];
-
-  const channelOptions = [
-    { value: 'email', label: intl.formatMessage(messages.DETAIL_CHANNEL_EMAIL) },
-    { value: 'sms',   label: intl.formatMessage(messages.DETAIL_CHANNEL_SMS) },
-    { value: 'slack', label: intl.formatMessage(messages.DETAIL_CHANNEL_SLACK) },
-    { value: 'teams', label: intl.formatMessage(messages.DETAIL_CHANNEL_TEAMS) },
-  ];
-
-  const accessLevelOptions = [
-    { value: 'read-only', label: intl.formatMessage(messages.DETAIL_ACCESS_READ_ONLY) },
-    { value: 'standard',  label: intl.formatMessage(messages.DETAIL_ACCESS_STANDARD) },
-    { value: 'admin',     label: intl.formatMessage(messages.DETAIL_ACCESS_ADMIN) },
-  ];
 
   // ─── Loading state ─────────────────────────────────────────────────────────
 
@@ -206,7 +186,7 @@ const RecordDetailPage = () => {
         <SelectField
           name="department"
           label={intl.formatMessage(messages.DETAIL_FIELD_DEPARTMENT)}
-          options={DEPARTMENTS.map((d) => ({ value: d, label: d }))}
+          options={departments.map((d) => ({ value: d, label: d }))}
         />
       </Col>
       <Col xs={24} sm={12}>

@@ -10,6 +10,7 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth.js';
+import { useLookups } from '../hooks/useLookups.js';
 
 import messages from './messages.js';
 
@@ -19,6 +20,10 @@ const Dashboard = () => {
   const { user } = useAuth();
   const intl = useIntl();
   const navigate = useNavigate();
+
+  // Fetch reference data on Dashboard mount so lookups are warm for all
+  // downstream pages (Search, RecordDetail, RecordFormModal).
+  useLookups();
 
   return (
     <Space direction="vertical" size="large" style={{ width: '100%' }}>

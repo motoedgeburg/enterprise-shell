@@ -13,8 +13,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from 'antd';
 import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
 
-import { appMessages } from '../../../tests/renderUtils.jsx';
+import { appMessages, buildStore } from '../../../tests/renderUtils.jsx';
 import RecordFormModal from '../RecordFormModal.jsx';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -28,13 +29,26 @@ const SAMPLE_RECORD = {
   status: 'active',
 };
 
+// Pre-seed lookups so selects render with options without hitting the network.
+const LOOKUPS_STATE = {
+  status: 'succeeded',
+  departments: ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'Operations', 'HR'],
+  statuses: [{ value: 'active', label: 'Active' }, { value: 'inactive', label: 'Inactive' }],
+  employmentTypes: [],
+  notificationChannels: [],
+  accessLevels: [],
+};
+
 function renderModal({ open = true, record = null, onSubmit = jest.fn(), onCancel = jest.fn() } = {}) {
+  const store = buildStore({}, LOOKUPS_STATE);
   return render(
-    <IntlProvider locale="en" messages={appMessages} defaultLocale="en">
-      <App>
-        <RecordFormModal open={open} record={record} onSubmit={onSubmit} onCancel={onCancel} />
-      </App>
-    </IntlProvider>,
+    <Provider store={store}>
+      <IntlProvider locale="en" messages={appMessages} defaultLocale="en">
+        <App>
+          <RecordFormModal open={open} record={record} onSubmit={onSubmit} onCancel={onCancel} />
+        </App>
+      </IntlProvider>
+    </Provider>,
   );
 }
 

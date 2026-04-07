@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 
-import authReducer from './slices/authSlice';
+import authReducer    from './slices/authSlice';
+import lookupsReducer from './slices/lookupsSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth:    authReducer,
+    lookups: lookupsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

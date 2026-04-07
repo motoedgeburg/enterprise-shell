@@ -13,7 +13,39 @@ const BASE = process.env.REACT_APP_API_BASE_URL ?? 'http://localhost:8080/api';
  *   PUT    /api/records/:id                               → Record
  *   DELETE /api/records/:id                               → 204
  */
+// ─── Static lookup data ──────────────────────────────────────────────────────
+// Mirrors what a Spring Boot @RestController would serve from a reference-data
+// table.  Kept here so it is co-located with the other mock handlers.
+
+const LOOKUPS = {
+  departments: ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'Operations', 'HR'],
+  statuses: [
+    { value: 'active',   label: 'Active' },
+    { value: 'inactive', label: 'Inactive' },
+  ],
+  employmentTypes: [
+    { value: 'full-time', label: 'Full-time' },
+    { value: 'part-time', label: 'Part-time' },
+    { value: 'contract',  label: 'Contract' },
+    { value: 'intern',    label: 'Intern' },
+  ],
+  notificationChannels: [
+    { value: 'email', label: 'Email' },
+    { value: 'sms',   label: 'SMS' },
+    { value: 'slack', label: 'Slack' },
+    { value: 'teams', label: 'Teams' },
+  ],
+  accessLevels: [
+    { value: 'read-only', label: 'Read-only' },
+    { value: 'standard',  label: 'Standard' },
+    { value: 'admin',     label: 'Admin' },
+  ],
+};
+
 export const handlers = [
+  // ── GET /api/lookups ─────────────────────────────────────────────────────────
+  http.get(`${BASE}/lookups`, () => HttpResponse.json(LOOKUPS)),
+
   // ── GET /api/records ────────────────────────────────────────────────────────
   http.get(`${BASE}/records`, ({ request }) => {
     const url = new URL(request.url);

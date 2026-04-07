@@ -3,15 +3,13 @@ import { Form as FinalForm } from 'react-final-form';
 import { useIntl } from 'react-intl';
 
 import { EmailField, SelectField, TextField } from '../../components/fields/index.js';
+import { useLookups } from '../../hooks/useLookups.js';
 
 import messages from './messages.js';
 
-// ─── Modal Component ──────────────────────────────────────────────────────────
-
-const DEPARTMENTS = ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'Operations', 'HR'];
-
 const RecordFormModal = ({ open, record, onSubmit, onCancel }) => {
   const intl = useIntl();
+  const { departments, statuses } = useLookups();
   const isEdit = Boolean(record);
   const title = isEdit
     ? intl.formatMessage(messages.MODAL_TITLE_EDIT)
@@ -120,16 +118,13 @@ const RecordFormModal = ({ open, record, onSubmit, onCancel }) => {
               name="department"
               label={intl.formatMessage(messages.MODAL_FIELD_DEPARTMENT)}
               placeholder={intl.formatMessage(messages.MODAL_FIELD_DEPARTMENT_PLACEHOLDER)}
-              options={DEPARTMENTS.map((d) => ({ value: d, label: d }))}
+              options={departments.map((d) => ({ value: d, label: d }))}
             />
 
             <SelectField
               name="status"
               label={intl.formatMessage(messages.MODAL_FIELD_STATUS)}
-              options={[
-                { value: 'active',   label: intl.formatMessage(messages.MODAL_STATUS_ACTIVE) },
-                { value: 'inactive', label: intl.formatMessage(messages.MODAL_STATUS_INACTIVE) },
-              ]}
+              options={statuses}
             />
           </Form>
         </Modal>

@@ -19,7 +19,8 @@ import recordDetailMessages from '../pages/RecordDetail/messages.js';
 import recordsMessages from '../pages/Records/messages.js';
 import resultsMessages from '../pages/Results/messages.js';
 import searchMessages from '../pages/Search/messages.js';
-import authReducer from '../store/slices/authSlice';
+import authReducer    from '../store/slices/authSlice';
+import lookupsReducer from '../store/slices/lookupsSlice';
 
 // ─── Message map ─────────────────────────────────────────────────────────────
 
@@ -52,10 +53,23 @@ export const DEFAULT_AUTH_STATE = {
   error: null,
 };
 
-export function buildStore(authOverrides = {}) {
+export const DEFAULT_LOOKUPS_STATE = {
+  status: 'idle',
+  error: null,
+  departments: [],
+  statuses: [],
+  employmentTypes: [],
+  notificationChannels: [],
+  accessLevels: [],
+};
+
+export function buildStore(authOverrides = {}, lookupsOverrides = {}) {
   return configureStore({
-    reducer: { auth: authReducer },
-    preloadedState: { auth: { ...DEFAULT_AUTH_STATE, ...authOverrides } },
+    reducer: { auth: authReducer, lookups: lookupsReducer },
+    preloadedState: {
+      auth:    { ...DEFAULT_AUTH_STATE,    ...authOverrides },
+      lookups: { ...DEFAULT_LOOKUPS_STATE, ...lookupsOverrides },
+    },
   });
 }
 
