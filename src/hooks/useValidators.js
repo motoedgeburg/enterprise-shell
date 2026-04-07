@@ -9,6 +9,7 @@ import {
   pastDate,
   phone,
   required,
+  ssn,
   url,
 } from '../utils/validators.js';
 
@@ -32,6 +33,9 @@ export const useValidators = () => {
 
     phone: (msg) =>
       phone(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_PHONE)),
+
+    ssn: (msg) =>
+      ssn(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_SSN)),
 
     url: (msg) =>
       url(msg ?? intl.formatMessage(validatorMessages.VALIDATOR_URL)),

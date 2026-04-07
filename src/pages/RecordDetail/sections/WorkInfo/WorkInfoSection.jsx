@@ -3,10 +3,11 @@ import { useEffect } from 'react';
 import { useForm, useFormState } from 'react-final-form';
 import { useIntl } from 'react-intl';
 
-import { DateField, RadioGroupField, SelectField, TextField } from '../../../components/fields/index.js';
-import { useLookups } from '../../../hooks/useLookups.js';
-import { useValidators } from '../../../hooks/useValidators.js';
-import messages from '../messages.js';
+import { DateField, RadioGroupField, SelectField, TextField } from '../../../../components/fields/index.js';
+import { useLookups } from '../../../../hooks/useLookups.js';
+import { useValidators } from '../../../../hooks/useValidators.js';
+
+import messages from './messages.js';
 
 const WorkInfoSection = () => {
   const intl = useIntl();

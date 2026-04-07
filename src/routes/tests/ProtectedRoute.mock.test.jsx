@@ -19,7 +19,7 @@ const { Provider } = require('react-redux');
 const { MemoryRouter, Route, Routes } = require('react-router-dom');
 
 // buildStore and appMessages don't depend on the env var
-const { buildStore, appMessages } = require('../../tests/renderUtils.jsx');
+const { buildStore, appMessages } = require('../../renderUtils.jsx');
 const ProtectedRouteMock = require('../ProtectedRoute.jsx').default;
 
 describe('ProtectedRoute — mock mode (IS_MOCK_MODE=true)', () => {

@@ -120,6 +120,12 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 
 ```
 src/
+├── App.jsx
+├── index.jsx
+├── renderUtils.jsx               # Shared test helpers (buildStore, appMessages, fixtures)
+├── setupTests.js                 # Jest setup (polyfills, MSW lifecycle, jsdom stubs)
+├── setupPolyfills.js
+│
 ├── api/
 │   ├── axiosInstance.js          # Centralized Axios instance with interceptors
 │   ├── lookupsService.js         # Reference data (departments, statuses, etc.)
@@ -145,6 +151,8 @@ src/
 │   │   ├── AntField.jsx          # Base adapter (Field → Form.Item)
 │   │   ├── TextField.jsx
 │   │   ├── EmailField.jsx
+│   │   ├── PhoneField.jsx        # Auto-formats to (NXX) NXX-XXXX as user types
+│   │   ├── SsnField.jsx          # Masked input, auto-formats to XXX-XX-XXXX
 │   │   ├── SelectField.jsx
 │   │   ├── TextAreaField.jsx
 │   │   ├── DateField.jsx         # ISO string ↔ dayjs conversion
@@ -156,32 +164,44 @@ src/
 │       └── AppLayout.test.jsx
 │
 ├── pages/
-│   ├── Dashboard.jsx             # Welcome + Search tile (warms lookups on mount)
-│   ├── LoginPage.jsx             # SSO entry point (no credentials form)
-│   ├── OktaCallback.jsx          # Token exchange + Redux dispatch
-│   ├── messages.js               # i18n descriptors for pages
-│   ├── tests/
-│   │   ├── Dashboard.test.jsx
-│   │   ├── LoginPage.test.jsx
-│   │   └── OktaCallback.test.jsx
+│   ├── messages.js               # Shared page messages (Dashboard, Login, Callback)
+│   ├── Dashboard/
+│   │   ├── Dashboard.jsx         # Welcome + centered Search tile
+│   │   └── tests/
+│   │       └── Dashboard.test.jsx
+│   ├── LoginPage/
+│   │   ├── LoginPage.jsx         # SSO entry point (no credentials form)
+│   │   └── tests/
+│   │       └── LoginPage.test.jsx
+│   ├── OktaCallback/
+│   │   ├── OktaCallback.jsx      # Token exchange + Redux dispatch
+│   │   └── tests/
+│   │       └── OktaCallback.test.jsx
 │   ├── Search/
 │   │   ├── SearchPage.jsx        # Filter form → navigate to /results
 │   │   └── messages.js
 │   ├── Results/
 │   │   ├── ResultsPage.jsx       # Paginated table; New Record → /records/new
 │   │   └── messages.js
-│   ├── RecordDetail/
-│   │   ├── RecordDetailPage.jsx  # Edit (/records/:id) + Create (/records/new)
-│   │   ├── messages.js
-│   │   └── sections/
-│   │       ├── PersonalInfoSection.jsx
-│   │       ├── WorkInfoSection.jsx   # Reads accessLevel → locks status when admin
-│   │       ├── PreferencesSection.jsx # Reads status/employmentType → locks access/remote
-│   │       └── SummarySection.jsx    # FormSpy live preview (read-only)
-│   └── Records/
-│       ├── RecordFormModal.jsx   # Legacy modal kept for reference
-│       ├── messages.js
-│       └── tests/
+│   └── RecordDetail/
+│       ├── RecordDetailPage.jsx  # Edit (/records/:id) + Create (/records/new)
+│       ├── messages.js           # Page chrome, section headings, delete/submit actions
+│       └── sections/
+│           ├── PersonalInfo/
+│           │   ├── PersonalInfoSection.jsx
+│           │   └── messages.js
+│           ├── WorkInfo/
+│           │   ├── WorkInfoSection.jsx   # Reads accessLevel → locks status when admin
+│           │   └── messages.js
+│           ├── Preferences/
+│           │   ├── PreferencesSection.jsx # Reads status/employmentType → locks fields
+│           │   └── messages.js
+│           ├── History/
+│           │   ├── HistorySection.jsx    # Emergency Contacts + Certifications tabs
+│           │   └── messages.js
+│           └── Summary/
+│               ├── SummarySection.jsx    # FormSpy live preview (read-only)
+│               └── messages.js
 │
 ├── hooks/
 │   ├── useAuth.js                # Okta client singleton + auth actions
@@ -191,20 +211,13 @@ src/
 │
 ├── utils/
 │   ├── validators.js             # Pure validator functions (no strings)
-│   └── validatorMessages.js     # i18n descriptors for validation errors
+│   └── validatorMessages.js      # i18n descriptors for validation errors
 │
-├── mocks/
-│   ├── data.js                   # In-memory DB (8 seed records + search/CRUD helpers)
-│   ├── handlers.js               # MSW handlers: /api/lookups, /api/records
-│   ├── browser.js                # MSW Service Worker (dev)
-│   └── server.js                 # MSW Node server (Jest)
-│
-├── tests/
-│   └── renderUtils.jsx           # buildStore, appMessages, MOCK_USER, AUTHED_STATE
-│
-├── App.jsx                       # ConfigProvider (theme tokens) + BrowserRouter
-├── index.jsx                     # React root + IntlProvider + MSW bootstrap
-└── setupTests.js                 # Jest setup (polyfills, MSW lifecycle, jsdom stubs)
+└── mocks/
+    ├── data.js                   # In-memory DB (8 seed records + search/CRUD helpers)
+    ├── handlers.js               # MSW handlers: /api/lookups, /api/records
+    ├── browser.js                # MSW Service Worker (dev)
+    └── server.js                 # MSW Node server (Jest)
 ```
 
 ---
@@ -217,6 +230,8 @@ All form fields are typed wrappers that bridge React Final Form's `<Field>` to A
 |---|---|---|
 | `TextField` | `Input` | `type` prop (default `text`) |
 | `EmailField` | `Input` | Shorthand for `TextField type="email"` |
+| `PhoneField` | `Input` | Auto-formats to `(NXX) NXX-XXXX` as user types |
+| `SsnField` | `Input.Password` | Masked; auto-formats to `XXX-XX-XXXX` |
 | `SelectField` | `Select` | `options: { value, label }[]` |
 | `TextAreaField` | `Input.TextArea` | `rows` prop |
 | `DateField` | `DatePicker` | Stores ISO string in form state |
@@ -239,7 +254,7 @@ const { required, email, composeValidators } = useValidators();
 />
 ```
 
-Available validators: `required`, `email`, `phone`, `url`, `minLength(n)`, `maxLength(n)`, `pastDate`, `composeValidators`.
+Available validators: `required`, `email`, `phone`, `ssn`, `url`, `minLength(n)`, `maxLength(n)`, `pastDate`, `composeValidators`.
 
 Submit/Search buttons are disabled while `hasValidationErrors` is true (React Final Form render prop).
 
@@ -257,6 +272,42 @@ Submit/Search buttons are disabled while `hasValidationErrors` is true (React Fi
 | `accessLevel = admin` (Preferences) | `status` (Work) | Forced to `active`; field disabled |
 
 Each active constraint surfaces an inline `Alert` inside the affected section explaining why the field is locked.
+
+---
+
+## Record Detail Accordion
+
+The accordion has five sections. Each section is self-contained with its own `messages.js`:
+
+| Section | Key fields |
+|---|---|
+| Personal Information | Name, email, phone (auto-formatted), SSN (masked), address, DOB, bio |
+| Work Information | Job title, department, status, employment type, start date, manager |
+| Preferences & Permissions | Remote eligibility, notifications, channels, access level, notes |
+| Contacts & Certifications | Emergency contacts tab + Professional certifications tab (full CRUD) |
+| Summary | Read-only live preview via `FormSpy` |
+
+The **Contacts & Certifications** section contains two tabbed grids:
+- **Emergency Contacts** — add/edit/delete contacts; star icon marks the primary contact
+- **Professional Certifications** — add/edit/delete certifications; expiry status shown as Active / Expired / No Expiry tag
+
+---
+
+## i18n Message Organization
+
+Each section owns its messages file, co-located with the component:
+
+| File | Scope |
+|---|---|
+| `src/pages/messages.js` | Dashboard, Login, Callback strings |
+| `src/components/messages.js` | App shell (header, sidebar) |
+| `src/utils/validatorMessages.js` | Validation error strings |
+| `RecordDetail/messages.js` | Page chrome, section headings, delete/submit actions |
+| `sections/PersonalInfo/messages.js` | Personal field labels |
+| `sections/WorkInfo/messages.js` | Work fields, employment types, statuses |
+| `sections/Preferences/messages.js` | Preference fields, channel/access options, constraints |
+| `sections/History/messages.js` | Contact and certification labels and actions |
+| `sections/Summary/messages.js` | Summary-specific strings |
 
 ---
 
@@ -285,8 +336,7 @@ Enable mocks in dev: `REACT_APP_ENABLE_MOCKS=true npm start`
 
 ## Tests
 
-145 tests across 12 suites, collocated with their source files.
-
+114 tests across 10 suites, collocated with their source files.
 
 ```bash
 npm test                   # single pass
@@ -300,6 +350,7 @@ Key patterns:
 - **Okta** is mocked via `jest.mock('@okta/okta-auth-js')` using a `global.__oktaMock` pattern to avoid Babel hoisting issues.
 - **IS_MOCK_MODE** tests live in separate `*.mock.test.js` files that use `require()` so the env var is set before any module loads.
 - **Ant Design Select** incompatibility with jsdom is handled by mocking the component that owns the Select at the test boundary.
+- **`renderUtils.jsx`** at `src/` root provides `buildStore`, `appMessages`, `MOCK_USER`, and `AUTHED_STATE` for all test suites.
 
 ---
 

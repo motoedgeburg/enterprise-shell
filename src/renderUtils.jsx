@@ -13,14 +13,13 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
-import componentMessages from '../components/messages.js';
-import pageMessages from '../pages/messages.js';
-import recordDetailMessages from '../pages/RecordDetail/messages.js';
-import recordsMessages from '../pages/Records/messages.js';
-import resultsMessages from '../pages/Results/messages.js';
-import searchMessages from '../pages/Search/messages.js';
-import authReducer    from '../store/slices/authSlice';
-import lookupsReducer from '../store/slices/lookupsSlice';
+import componentMessages from './components/messages.js';
+import pageMessages from './pages/messages.js';
+import recordDetailMessages from './pages/RecordDetail/messages.js';
+import resultsMessages from './pages/Results/messages.js';
+import searchMessages from './pages/Search/messages.js';
+import authReducer    from './store/slices/authSlice';
+import lookupsReducer from './store/slices/lookupsSlice';
 
 // ─── Message map ─────────────────────────────────────────────────────────────
 
@@ -37,7 +36,6 @@ const buildMessageMap = (...descriptorObjects) => {
 export const appMessages = buildMessageMap(
   componentMessages,
   pageMessages,
-  recordsMessages,
   recordDetailMessages,
   resultsMessages,
   searchMessages,

@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
-import recordsMessages from '../Records/messages.js';
 
 import messages from './messages.js';
 
@@ -39,7 +38,7 @@ const ResultsPage = () => {
         setRecords(data.content);
         setPagination((prev) => ({ ...prev, total: data.totalElements }));
       } catch {
-        void message.error(intl.formatMessage(recordsMessages.RECORDS_ERROR_LOAD));
+        void message.error(intl.formatMessage(messages.RECORDS_ERROR_LOAD));
       } finally {
         setLoading(false);
       }
@@ -60,28 +59,28 @@ const ResultsPage = () => {
 
   const columns = [
     {
-      title: intl.formatMessage(recordsMessages.RECORDS_COL_NAME),
+      title: intl.formatMessage(messages.RECORDS_COL_NAME),
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: intl.formatMessage(recordsMessages.RECORDS_COL_EMAIL),
+      title: intl.formatMessage(messages.RECORDS_COL_EMAIL),
       dataIndex: 'email',
       key: 'email',
     },
     {
-      title: intl.formatMessage(recordsMessages.RECORDS_COL_ADDRESS),
+      title: intl.formatMessage(messages.RECORDS_COL_ADDRESS),
       dataIndex: 'address',
       key: 'address',
     },
     {
-      title: intl.formatMessage(recordsMessages.RECORDS_COL_DEPARTMENT),
+      title: intl.formatMessage(messages.RECORDS_COL_DEPARTMENT),
       dataIndex: 'department',
       key: 'department',
     },
     {
-      title: intl.formatMessage(recordsMessages.RECORDS_COL_STATUS),
+      title: intl.formatMessage(messages.RECORDS_COL_STATUS),
       dataIndex: 'status',
       key: 'status',
       render: (status) => (
@@ -143,7 +142,7 @@ const ResultsPage = () => {
           ...pagination,
           showSizeChanger: true,
           showTotal: (total) =>
-            intl.formatMessage(recordsMessages.RECORDS_PAGINATION_TOTAL, { total }),
+            intl.formatMessage(messages.RECORDS_PAGINATION_TOTAL, { total }),
           onChange: (page, size) => void fetchResults(page, size),
         }}
         scroll={{ x: 900 }}

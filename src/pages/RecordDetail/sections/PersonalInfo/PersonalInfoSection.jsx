@@ -1,13 +1,14 @@
 import { Col, Row } from 'antd';
 import { useIntl } from 'react-intl';
 
-import { DateField, EmailField, TextAreaField, TextField } from '../../../components/fields/index.js';
-import { useValidators } from '../../../hooks/useValidators.js';
-import messages from '../messages.js';
+import { DateField, EmailField, PhoneField, SsnField, TextAreaField, TextField } from '../../../../components/fields/index.js';
+import { useValidators } from '../../../../hooks/useValidators.js';
+
+import messages from './messages.js';
 
 const PersonalInfoSection = () => {
   const intl = useIntl();
-  const { composeValidators, email, maxLength, minLength, pastDate, phone, required } = useValidators();
+  const { composeValidators, email, maxLength, minLength, pastDate, phone, required, ssn } = useValidators();
 
   return (
     <Row gutter={[16, 0]}>
@@ -28,10 +29,9 @@ const PersonalInfoSection = () => {
         />
       </Col>
       <Col xs={24} sm={12}>
-        <TextField
+        <PhoneField
           name="phone"
           label={intl.formatMessage(messages.DETAIL_FIELD_PHONE)}
-          placeholder="(215) 555-0100"
           validate={phone()}
         />
       </Col>
@@ -48,6 +48,13 @@ const PersonalInfoSection = () => {
           name="dateOfBirth"
           label={intl.formatMessage(messages.DETAIL_FIELD_DOB)}
           validate={pastDate()}
+        />
+      </Col>
+      <Col xs={24} sm={12}>
+        <SsnField
+          name="ssn"
+          label={intl.formatMessage(messages.DETAIL_FIELD_SSN)}
+          validate={ssn()}
         />
       </Col>
       <Col xs={24}>

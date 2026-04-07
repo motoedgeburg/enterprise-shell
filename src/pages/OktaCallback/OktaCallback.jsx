@@ -3,10 +3,9 @@ import { useEffect, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { useAuth } from '../hooks/useAuth.js';
-import { useAppSelector } from '../store';
-
-import messages from './messages.js';
+import { useAuth } from '../../hooks/useAuth.js';
+import { useAppSelector } from '../../store';
+import messages from '../messages.js';
 
 const { Title } = Typography;
 

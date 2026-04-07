@@ -50,6 +50,12 @@ export const pastDate = (msg) =>
     return new Date(value) < new Date() ? undefined : msg;
   };
 
+export const ssn = (msg) =>
+  (value) => {
+    if (!value) return undefined;
+    return /^\d{3}-\d{2}-\d{4}$/.test(value) ? undefined : msg;
+  };
+
 export const url = (msg) =>
   (value) => {
     if (!value) return undefined;

@@ -11,7 +11,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
-import { buildStore, appMessages, MOCK_USER, AUTHED_STATE } from '../../tests/renderUtils.jsx';
+import { buildStore, appMessages, MOCK_USER, AUTHED_STATE } from '../../../renderUtils.jsx';
 import Dashboard from '../Dashboard.jsx';
 
 jest.mock('@okta/okta-auth-js', () => ({

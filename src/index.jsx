@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import App from './App.jsx';
 import componentMessages from './components/messages.js';
 import pageMessages from './pages/messages.js';
-import recordsMessages from './pages/Records/messages.js';
+import resultsMessages from './pages/Results/messages.js';
 import { store } from './store';
 
 // Merge all message descriptors into a flat id→defaultMessage map
@@ -21,7 +21,7 @@ const buildMessageMap = (...descriptorObjects) => {
   return map;
 };
 
-const appMessages = buildMessageMap(componentMessages, pageMessages, recordsMessages);
+const appMessages = buildMessageMap(componentMessages, pageMessages, resultsMessages);
 
 async function enableMocking() {
   if (process.env.REACT_APP_ENABLE_MOCKS !== 'true') {

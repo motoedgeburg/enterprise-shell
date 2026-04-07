@@ -3,13 +3,13 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import AppLayout from '../components/AppLayout.jsx';
-import LoginPage from '../pages/LoginPage.jsx';
-import OktaCallback from '../pages/OktaCallback.jsx';
+import LoginPage from '../pages/LoginPage/LoginPage.jsx';
+import OktaCallback from '../pages/OktaCallback/OktaCallback.jsx';
 
 import ProtectedRoute from './ProtectedRoute.jsx';
 
 // Code-split protected pages
-const Dashboard        = lazy(() => import('../pages/Dashboard.jsx'));
+const Dashboard        = lazy(() => import('../pages/Dashboard/Dashboard.jsx'));
 const SearchPage       = lazy(() => import('../pages/Search/SearchPage.jsx'));
 const ResultsPage      = lazy(() => import('../pages/Results/ResultsPage.jsx'));
 const RecordDetailPage = lazy(() => import('../pages/RecordDetail/RecordDetailPage.jsx'));

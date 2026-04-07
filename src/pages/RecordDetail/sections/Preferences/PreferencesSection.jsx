@@ -8,10 +8,11 @@ import {
   RadioGroupField,
   SwitchField,
   TextAreaField,
-} from '../../../components/fields/index.js';
-import { useLookups } from '../../../hooks/useLookups.js';
-import { useValidators } from '../../../hooks/useValidators.js';
-import messages from '../messages.js';
+} from '../../../../components/fields/index.js';
+import { useLookups } from '../../../../hooks/useLookups.js';
+import { useValidators } from '../../../../hooks/useValidators.js';
+
+import messages from './messages.js';
 
 const PreferencesSection = () => {
   const intl = useIntl();

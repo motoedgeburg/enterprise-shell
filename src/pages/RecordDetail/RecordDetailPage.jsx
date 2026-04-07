@@ -20,10 +20,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { recordsService } from '../../api/recordsService';
 
 import messages from './messages.js';
-import PersonalInfoSection from './sections/PersonalInfoSection.jsx';
-import PreferencesSection from './sections/PreferencesSection.jsx';
-import SummarySection from './sections/SummarySection.jsx';
-import WorkInfoSection from './sections/WorkInfoSection.jsx';
+import HistorySection from './sections/History/HistorySection.jsx';
+import PersonalInfoSection from './sections/PersonalInfo/PersonalInfoSection.jsx';
+import PreferencesSection from './sections/Preferences/PreferencesSection.jsx';
+import SummarySection from './sections/Summary/SummarySection.jsx';
+import WorkInfoSection from './sections/WorkInfo/WorkInfoSection.jsx';
 
 const { Title, Text } = Typography;
 
@@ -120,6 +121,11 @@ const RecordDetailPage = () => {
       key:      'preferences',
       label:    intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES),
       children: <PreferencesSection />,
+    },
+    {
+      key:      'history',
+      label:    intl.formatMessage(messages.DETAIL_SECTION_HISTORY),
+      children: <HistorySection />,
     },
     {
       key:      'summary',
