@@ -32,7 +32,8 @@ const AppRoutes = () => (
         <Route element={<AppLayout />}>
           <Route path="/dashboard"    element={<Dashboard />} />
           <Route path="/search"       element={<SearchPage />} />
-          <Route path="/results"      element={<ResultsPage />} />
+          <Route path="/results"       element={<ResultsPage />} />
+          <Route path="/records/new"  element={<RecordDetailPage />} />
           <Route path="/records/:id"  element={<RecordDetailPage />} />
           {/* Fallback inside protected zone */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />

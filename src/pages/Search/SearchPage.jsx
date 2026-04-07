@@ -39,7 +39,7 @@ const SearchPage = () => {
 
       <Card>
         <FinalForm onSubmit={handleSearch}>
-          {({ handleSubmit, form }) => (
+          {({ handleSubmit, form, hasValidationErrors }) => (
             <Form layout="vertical" component="div">
               <Row gutter={[16, 0]}>
                 <Col xs={24} sm={12}>
@@ -90,6 +90,7 @@ const SearchPage = () => {
                 <Button
                   type="primary"
                   icon={<SearchOutlined />}
+                  disabled={hasValidationErrors}
                   onClick={() => void handleSubmit()}
                 >
                   {intl.formatMessage(messages.SEARCH_SUBMIT)}

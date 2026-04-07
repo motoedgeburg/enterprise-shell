@@ -1,4 +1,6 @@
-import { Col, Divider, Row } from 'antd';
+import { Alert, Col, Divider, Row } from 'antd';
+import { useEffect } from 'react';
+import { useForm, useFormState } from 'react-final-form';
 import { useIntl } from 'react-intl';
 
 import {
@@ -16,14 +18,49 @@ const PreferencesSection = () => {
   const { notificationChannels, accessLevels } = useLookups();
   const { maxLength, required } = useValidators();
 
+  const form = useForm();
+  const { values } = useFormState({ subscription: { values: true } });
+
+  const isInactive = values.status === 'inactive';
+  const isIntern   = values.employmentType === 'intern';
+  const notifsOff  = !values.notificationsEnabled;
+
+  // Work → Preferences: inactive employees are locked to read-only access
+  useEffect(() => {
+    if (isInactive) form.change('accessLevel', 'read-only');
+  }, [isInactive, form]);
+
+  // Work → Preferences: interns cannot be remote eligible
+  useEffect(() => {
+    if (isIntern) form.change('remoteEligible', false);
+  }, [isIntern, form]);
+
   return (
     <Row gutter={[16, 0]}>
+
+      {/* Cross-section constraint notices */}
+      {isInactive && (
+        <Col xs={24} style={{ marginBottom: 8 }}>
+          <Alert type="warning" showIcon
+            message={intl.formatMessage(messages.DETAIL_CONSTRAINT_INACTIVE)}
+          />
+        </Col>
+      )}
+      {isIntern && (
+        <Col xs={24} style={{ marginBottom: 8 }}>
+          <Alert type="info" showIcon
+            message={intl.formatMessage(messages.DETAIL_CONSTRAINT_INTERN)}
+          />
+        </Col>
+      )}
+
       <Col xs={24} sm={12}>
         <SwitchField
           name="remoteEligible"
           label={intl.formatMessage(messages.DETAIL_FIELD_REMOTE_ELIGIBLE)}
           checkedLabel="Eligible"
           uncheckedLabel="Not eligible"
+          disabled={isIntern}
         />
       </Col>
       <Col xs={24} sm={12}>
@@ -32,6 +69,7 @@ const PreferencesSection = () => {
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}
           checkedLabel="On"
           uncheckedLabel="Off"
+          disabled={isInactive}
         />
       </Col>
       <Col xs={24}>
@@ -39,6 +77,7 @@ const PreferencesSection = () => {
           name="notificationChannels"
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATION_CHANNELS)}
           options={notificationChannels}
+          disabled={notifsOff || isInactive}
         />
       </Col>
       <Col xs={24}>
@@ -50,6 +89,7 @@ const PreferencesSection = () => {
           optionType="button"
           buttonStyle="solid"
           validate={required()}
+          disabled={isInactive}
         />
       </Col>
       <Col xs={24}>

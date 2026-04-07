@@ -28,18 +28,20 @@ import WorkInfoSection from './sections/WorkInfoSection.jsx';
 const { Title, Text } = Typography;
 
 const RecordDetailPage = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { message } = App.useApp();
-  const intl = useIntl();
+  const { id }       = useParams();
+  const navigate     = useNavigate();
+  const location     = useLocation();
+  const { message }  = App.useApp();
+  const intl         = useIntl();
 
-  const [record, setRecord]   = useState(null);
-  const [loading, setLoading] = useState(true);
+  const isNew = id === undefined;   // mounted on /records/new (no :id param)
+
+  const [record, setRecord]   = useState(isNew ? {} : null);
+  const [loading, setLoading] = useState(!isNew);
 
   const backPath = `/results${location.state?.search ? `?${location.state.search}` : ''}`;
 
-  // ─── Load ───────────────────────────────────────────────────────────────────
+  // ─── Load (edit mode only) ───────────────────────────────────────────────────
 
   const loadRecord = useCallback(async () => {
     setLoading(true);
@@ -53,17 +55,29 @@ const RecordDetailPage = () => {
     }
   }, [id, message, intl]);
 
-  useEffect(() => { void loadRecord(); }, [loadRecord]);
+  useEffect(() => {
+    if (!isNew) void loadRecord();
+  }, [isNew, loadRecord]);
 
   // ─── Handlers ───────────────────────────────────────────────────────────────
 
   const handleSubmit = async (values) => {
     try {
-      await recordsService.update(parseInt(id, 10), values);
-      void message.success(intl.formatMessage(messages.DETAIL_SUCCESS));
-      setRecord(values);
+      if (isNew) {
+        const created = await recordsService.create(values);
+        void message.success(intl.formatMessage(messages.DETAIL_CREATE_SUCCESS));
+        navigate(`/records/${created.id}`, { replace: true, state: location.state });
+      } else {
+        await recordsService.update(parseInt(id, 10), values);
+        void message.success(intl.formatMessage(messages.DETAIL_SUCCESS));
+        setRecord(values);
+      }
     } catch {
-      return { [FORM_ERROR]: intl.formatMessage(messages.DETAIL_ERROR_SUBMIT) };
+      return {
+        [FORM_ERROR]: intl.formatMessage(
+          isNew ? messages.DETAIL_CREATE_ERROR : messages.DETAIL_ERROR_SUBMIT,
+        ),
+      };
     }
   };
 
@@ -87,7 +101,7 @@ const RecordDetailPage = () => {
     );
   }
 
-  if (!record) return null;
+  if (!isNew && !record) return null;
 
   // ─── Accordion items ─────────────────────────────────────────────────────────
 
@@ -118,17 +132,18 @@ const RecordDetailPage = () => {
 
   return (
     <FinalForm onSubmit={handleSubmit} initialValues={record}>
-        {({ handleSubmit: submit, submitting, submitError }) => (
-          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+      {({ handleSubmit: submit, submitting, submitError, hasValidationErrors }) => (
+        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
 
-            {/* Page header */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-              <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(backPath)}>
-                {intl.formatMessage(messages.DETAIL_BACK)}
-              </Button>
-              <Title level={4} style={{ margin: 0, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {record.name}
-              </Title>
+          {/* Page header */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(backPath)}>
+              {intl.formatMessage(messages.DETAIL_BACK)}
+            </Button>
+            <Title level={4} style={{ margin: 0, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {isNew ? intl.formatMessage(messages.DETAIL_CREATE_TITLE) : record.name}
+            </Title>
+            {!isNew && (
               <Popconfirm
                 title={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_TITLE)}
                 description={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_DESC, { name: record.name })}
@@ -141,39 +156,43 @@ const RecordDetailPage = () => {
                   {intl.formatMessage(messages.DETAIL_DELETE_OK)}
                 </Button>
               </Popconfirm>
-            </div>
+            )}
+          </div>
 
-            {/* Form error banner */}
-            {submitError && <Alert type="error" message={submitError} showIcon />}
+          {/* Form error banner */}
+          {submitError && <Alert type="error" message={submitError} showIcon />}
 
-            {/* Accordion */}
-            <Form layout="vertical" component="div">
-              <Collapse
-                items={collapseItems}
-                defaultActiveKey={['personal']}
-                style={{ background: 'transparent' }}
-              />
-            </Form>
+          {/* Accordion */}
+          <Form layout="vertical" component="div">
+            <Collapse
+              items={collapseItems}
+              defaultActiveKey={['personal']}
+              style={{ background: 'transparent' }}
+            />
+          </Form>
 
-            {/* Submit footer */}
-            <Card size="small">
-              <Button
-                type="primary"
-                icon={<SaveOutlined />}
-                loading={submitting}
-                onClick={() => void submit()}
-                size="large"
-              >
-                {intl.formatMessage(messages.DETAIL_SUBMIT)}
-              </Button>
-              <Text type="secondary" style={{ marginLeft: 16 }}>
-                Changes are saved across all sections on a single submit.
-              </Text>
-            </Card>
+          {/* Submit footer */}
+          <Card size="small">
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              loading={submitting}
+              disabled={hasValidationErrors}
+              onClick={() => void submit()}
+              size="large"
+            >
+              {intl.formatMessage(isNew ? messages.DETAIL_CREATE_SUBMIT : messages.DETAIL_SUBMIT)}
+            </Button>
+            <Text type="secondary" style={{ marginLeft: 16 }}>
+              {isNew
+                ? 'Fill in all sections then submit to create the record.'
+                : 'Changes are saved across all sections on a single submit.'}
+            </Text>
+          </Card>
 
-          </Space>
-        )}
-      </FinalForm>
+        </Space>
+      )}
+    </FinalForm>
   );
 };
 

@@ -6,6 +6,17 @@ const messages = {
   DETAIL_SUCCESS:      { id: 'DETAIL_SUCCESS',       defaultMessage: 'Record updated successfully.' },
   DETAIL_ERROR_LOAD:   { id: 'DETAIL_ERROR_LOAD',    defaultMessage: 'Failed to load record.' },
   DETAIL_ERROR_SUBMIT: { id: 'DETAIL_ERROR_SUBMIT',  defaultMessage: 'Failed to save changes. Please try again.' },
+
+  // ─── Cross-section constraint notices ────────────────────────────────────
+  DETAIL_CONSTRAINT_INACTIVE:    { id: 'DETAIL_CONSTRAINT_INACTIVE',    defaultMessage: 'Inactive employees are locked to Read-only access with notifications disabled.' },
+  DETAIL_CONSTRAINT_INTERN:      { id: 'DETAIL_CONSTRAINT_INTERN',      defaultMessage: 'Remote work eligibility is not available for interns.' },
+  DETAIL_CONSTRAINT_ADMIN:       { id: 'DETAIL_CONSTRAINT_ADMIN',       defaultMessage: 'Employees with Admin access must have Active status.' },
+
+  // ─── Create mode ──────────────────────────────────────────────────────────
+  DETAIL_CREATE_TITLE:   { id: 'DETAIL_CREATE_TITLE',   defaultMessage: 'New Record' },
+  DETAIL_CREATE_SUBMIT:  { id: 'DETAIL_CREATE_SUBMIT',  defaultMessage: 'Create Record' },
+  DETAIL_CREATE_SUCCESS: { id: 'DETAIL_CREATE_SUCCESS', defaultMessage: 'Record created successfully.' },
+  DETAIL_CREATE_ERROR:   { id: 'DETAIL_CREATE_ERROR',   defaultMessage: 'Failed to create record. Please try again.' },
   DETAIL_ERROR_DELETE: { id: 'DETAIL_ERROR_DELETE',  defaultMessage: 'Failed to delete record.' },
   DETAIL_DELETE_SUCCESS:      { id: 'DETAIL_DELETE_SUCCESS',       defaultMessage: 'Record deleted.' },
   DETAIL_DELETE_CONFIRM_TITLE: { id: 'DETAIL_DELETE_CONFIRM_TITLE', defaultMessage: 'Delete record' },

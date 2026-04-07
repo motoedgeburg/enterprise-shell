@@ -1,4 +1,6 @@
-import { Col, Row } from 'antd';
+import { Alert, Col, Row } from 'antd';
+import { useEffect } from 'react';
+import { useForm, useFormState } from 'react-final-form';
 import { useIntl } from 'react-intl';
 
 import { DateField, RadioGroupField, SelectField, TextField } from '../../../components/fields/index.js';
@@ -11,8 +13,28 @@ const WorkInfoSection = () => {
   const { departments, statuses, employmentTypes } = useLookups();
   const { pastDate, required } = useValidators();
 
+  const form = useForm();
+  const { values } = useFormState({ subscription: { values: true } });
+
+  const isAdmin = values.accessLevel === 'admin';
+
+  // Preferences → Work: admin access level requires active status
+  useEffect(() => {
+    if (isAdmin) form.change('status', 'active');
+  }, [isAdmin, form]);
+
   return (
     <Row gutter={[16, 0]}>
+
+      {/* Cross-section constraint notice */}
+      {isAdmin && (
+        <Col xs={24} style={{ marginBottom: 8 }}>
+          <Alert type="info" showIcon
+            message={intl.formatMessage(messages.DETAIL_CONSTRAINT_ADMIN)}
+          />
+        </Col>
+      )}
+
       <Col xs={24} sm={12}>
         <TextField
           name="jobTitle"
@@ -42,6 +64,7 @@ const WorkInfoSection = () => {
           label={intl.formatMessage(messages.DETAIL_FIELD_STATUS)}
           options={statuses}
           validate={required()}
+          disabled={isAdmin}
         />
       </Col>
       <Col xs={24} sm={12}>

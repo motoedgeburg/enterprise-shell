@@ -1,13 +1,11 @@
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Space, Table, Tag, Typography, App, Empty } from 'antd';
-import { FORM_ERROR } from 'final-form';
+import { App, Button, Empty, Space, Table, Tag, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
 import recordsMessages from '../Records/messages.js';
-import RecordFormModal from '../Records/RecordFormModal.jsx';
 
 import messages from './messages.js';
 
@@ -22,9 +20,7 @@ const ResultsPage = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
-  const [modalOpen, setModalOpen] = useState(false);
 
-  // Build filters object from URL params
   const filters = {
     name:       searchParams.get('name')       ?? '',
     email:      searchParams.get('email')      ?? '',
@@ -55,27 +51,6 @@ const ResultsPage = () => {
   useEffect(() => {
     void fetchResults();
   }, [fetchResults]);
-
-  // ─── Add handler ─────────────────────────────────────────────────────────────
-
-  const handleFormSubmit = async (values, form) => {
-    const dto = {
-      name:       values.name,
-      email:      values.email,
-      address:    values.address,
-      department: values.department,
-      status:     values.status,
-    };
-    try {
-      await recordsService.create(dto);
-      void message.success(intl.formatMessage(recordsMessages.RECORDS_SUCCESS_CREATED));
-      setModalOpen(false);
-      form.reset();
-      void fetchResults(pagination.current, pagination.pageSize);
-    } catch {
-      return { [FORM_ERROR]: intl.formatMessage(recordsMessages.RECORDS_ERROR_SUBMIT) };
-    }
-  };
 
   // ─── Active filter summary ────────────────────────────────────────────────────
 
@@ -118,73 +93,63 @@ const ResultsPage = () => {
   ];
 
   return (
-    <App>
-      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-        {/* Header */}
-        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-          <Space>
-            <Button
-              icon={<ArrowLeftOutlined />}
-              onClick={() => navigate('/search')}
-            >
-              {intl.formatMessage(messages.RESULTS_BACK_TO_SEARCH)}
-            </Button>
-            <Title level={4} style={{ marginBottom: 0 }}>
-              {intl.formatMessage(messages.RESULTS_PAGE_TITLE)}
-            </Title>
-          </Space>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
-            {intl.formatMessage(recordsMessages.RECORDS_ADD_BUTTON)}
-          </Button>
+    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/search')}>
+          {intl.formatMessage(messages.RESULTS_BACK_TO_SEARCH)}
+        </Button>
+        <Title level={4} style={{ margin: 0, flex: 1 }}>
+          {intl.formatMessage(messages.RESULTS_PAGE_TITLE)}
+        </Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => navigate('/records/new', { state: { search: searchParams.toString() } })}
+        >
+          {intl.formatMessage(messages.RESULTS_NEW_RECORD)}
+        </Button>
+      </div>
+
+      {/* Active filter summary */}
+      {activeFilters.length > 0 && (
+        <Space wrap>
+          <Text type="secondary">Filters:</Text>
+          {activeFilters.map(([key, val]) => (
+            <Tag key={key} color="blue">
+              {key}: {val}
+            </Tag>
+          ))}
         </Space>
+      )}
 
-        {/* Active filter summary */}
-        {activeFilters.length > 0 && (
-          <Space wrap>
-            <Text type="secondary">Filters:</Text>
-            {activeFilters.map(([key, val]) => (
-              <Tag key={key} color="blue">
-                {key}: {val}
-              </Tag>
-            ))}
-          </Space>
-        )}
-
-        {/* Results table — click a row to open Record Detail */}
-        <Table
-          dataSource={records}
-          columns={columns}
-          rowKey="id"
-          loading={loading}
-          locale={{
-            emptyText: <Empty description={intl.formatMessage(messages.RESULTS_EMPTY)} />,
-          }}
-          onRow={(record) => ({
-            onClick: () =>
-              navigate(`/records/${record.id}`, {
-                state: { search: searchParams.toString() },
-              }),
-            style: { cursor: 'pointer' },
-          })}
-          pagination={{
-            ...pagination,
-            showSizeChanger: true,
-            showTotal: (total) =>
-              intl.formatMessage(recordsMessages.RECORDS_PAGINATION_TOTAL, { total }),
-            onChange: (page, size) => void fetchResults(page, size),
-          }}
-          scroll={{ x: 900 }}
-          size="middle"
-        />
-      </Space>
-
-      <RecordFormModal
-        open={modalOpen}
-        record={null}
-        onSubmit={handleFormSubmit}
-        onCancel={() => setModalOpen(false)}
+      {/* Results table — click a row to open Record Detail */}
+      <Table
+        dataSource={records}
+        columns={columns}
+        rowKey="id"
+        loading={loading}
+        locale={{
+          emptyText: <Empty description={intl.formatMessage(messages.RESULTS_EMPTY)} />,
+        }}
+        onRow={(record) => ({
+          onClick: () =>
+            navigate(`/records/${record.id}`, {
+              state: { search: searchParams.toString() },
+            }),
+          style: { cursor: 'pointer' },
+        })}
+        pagination={{
+          ...pagination,
+          showSizeChanger: true,
+          showTotal: (total) =>
+            intl.formatMessage(recordsMessages.RECORDS_PAGINATION_TOTAL, { total }),
+          onChange: (page, size) => void fetchResults(page, size),
+        }}
+        scroll={{ x: 900 }}
+        size="middle"
       />
-    </App>
+    </Space>
   );
 };
 
