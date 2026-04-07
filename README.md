@@ -48,13 +48,15 @@ npm start
 
 ```
 Login (Okta SSO)
-  └─▶ Dashboard          — welcome + Search tile
-        └─▶ Search        — filter form (name, email, dept, status, address)
-              └─▶ Results — paginated table, click a row to open detail
-                    └─▶ Record Detail — 4-section accordion form (edit / delete)
+  └─▶ Dashboard            — welcome + Search tile
+        └─▶ Search          — filter form (name, email, dept, status, address)
+              └─▶ Results   — paginated table; New Record button or click a row
+                    └─▶ Record Detail (/records/:id)  — edit / delete
+                    └─▶ New Record    (/records/new)  — create via same accordion
 ```
 
-All navigation state (search filters) is preserved in URL query params so the browser Back button returns to the exact results page.
+- Search filters are preserved in URL query params so the browser Back button returns to the exact results page.
+- After creating a record, the page replaces itself with the new record's detail URL so Back still works correctly.
 
 ---
 
@@ -166,18 +168,18 @@ src/
 │   │   ├── SearchPage.jsx        # Filter form → navigate to /results
 │   │   └── messages.js
 │   ├── Results/
-│   │   ├── ResultsPage.jsx       # Paginated table, rows navigate to /records/:id
+│   │   ├── ResultsPage.jsx       # Paginated table; New Record → /records/new
 │   │   └── messages.js
 │   ├── RecordDetail/
-│   │   ├── RecordDetailPage.jsx  # 4-section accordion (FinalForm + Collapse)
+│   │   ├── RecordDetailPage.jsx  # Edit (/records/:id) + Create (/records/new)
 │   │   ├── messages.js
 │   │   └── sections/
 │   │       ├── PersonalInfoSection.jsx
-│   │       ├── WorkInfoSection.jsx
-│   │       ├── PreferencesSection.jsx
-│   │       └── SummarySection.jsx   # FormSpy live preview (read-only)
+│   │       ├── WorkInfoSection.jsx   # Reads accessLevel → locks status when admin
+│   │       ├── PreferencesSection.jsx # Reads status/employmentType → locks access/remote
+│   │       └── SummarySection.jsx    # FormSpy live preview (read-only)
 │   └── Records/
-│       ├── RecordFormModal.jsx   # Create modal (React Final Form)
+│       ├── RecordFormModal.jsx   # Legacy modal kept for reference
 │       ├── messages.js
 │       └── tests/
 │
@@ -239,6 +241,23 @@ const { required, email, composeValidators } = useValidators();
 
 Available validators: `required`, `email`, `phone`, `url`, `minLength(n)`, `maxLength(n)`, `pastDate`, `composeValidators`.
 
+Submit/Search buttons are disabled while `hasValidationErrors` is true (React Final Form render prop).
+
+---
+
+## Cross-Section Form Dependencies
+
+`RecordDetailPage` uses `useFormState` + `useForm` inside section components to enforce business rules across accordion panels. Enforced values are written back via `form.change()` so the submitted payload is always consistent.
+
+| Trigger (section) | Effect (section) | Behaviour |
+|---|---|---|
+| `status = inactive` (Work) | `accessLevel` (Preferences) | Forced to `read-only`; field disabled |
+| `status = inactive` (Work) | `notificationsEnabled`, `notificationChannels` (Preferences) | Disabled |
+| `employmentType = intern` (Work) | `remoteEligible` (Preferences) | Forced to `false`; field disabled |
+| `accessLevel = admin` (Preferences) | `status` (Work) | Forced to `active`; field disabled |
+
+Each active constraint surfaces an inline `Alert` inside the affected section explaining why the field is locked.
+
 ---
 
 ## Reference Data (Lookups)
@@ -267,6 +286,7 @@ Enable mocks in dev: `REACT_APP_ENABLE_MOCKS=true npm start`
 ## Tests
 
 145 tests across 12 suites, collocated with their source files.
+
 
 ```bash
 npm test                   # single pass
