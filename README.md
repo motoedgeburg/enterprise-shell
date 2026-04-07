@@ -161,7 +161,10 @@ src/
 │   │   ├── SwitchField.jsx
 │   │   └── index.js              # Barrel export
 │   └── tests/
-│       └── AppLayout.test.jsx
+│       ├── AppLayout.test.jsx
+│       └── fields/
+│           ├── PhoneField.test.jsx
+│           └── SsnField.test.jsx
 │
 ├── pages/
 │   ├── messages.js               # Shared page messages (Dashboard, Login, Callback)
@@ -179,29 +182,45 @@ src/
 │   │       └── OktaCallback.test.jsx
 │   ├── Search/
 │   │   ├── SearchPage.jsx        # Filter form → navigate to /results
-│   │   └── messages.js
+│   │   ├── messages.js
+│   │   └── tests/
+│   │       └── SearchPage.test.jsx
 │   ├── Results/
 │   │   ├── ResultsPage.jsx       # Paginated table; New Record → /records/new
-│   │   └── messages.js
+│   │   ├── messages.js
+│   │   └── tests/
+│   │       └── ResultsPage.test.jsx
 │   └── RecordDetail/
 │       ├── RecordDetailPage.jsx  # Edit (/records/:id) + Create (/records/new)
 │       ├── messages.js           # Page chrome, section headings, delete/submit actions
+│       ├── tests/
+│       │   └── RecordDetailPage.test.jsx
 │       └── sections/
 │           ├── PersonalInfo/
 │           │   ├── PersonalInfoSection.jsx
-│           │   └── messages.js
+│           │   ├── messages.js
+│           │   └── tests/
+│           │       └── PersonalInfoSection.test.jsx
 │           ├── WorkInfo/
 │           │   ├── WorkInfoSection.jsx   # Reads accessLevel → locks status when admin
-│           │   └── messages.js
+│           │   ├── messages.js
+│           │   └── tests/
+│           │       └── WorkInfoSection.test.jsx
 │           ├── Preferences/
 │           │   ├── PreferencesSection.jsx # Reads status/employmentType → locks fields
-│           │   └── messages.js
+│           │   ├── messages.js
+│           │   └── tests/
+│           │       └── PreferencesSection.test.jsx
 │           ├── History/
 │           │   ├── HistorySection.jsx    # Emergency Contacts + Certifications tabs
-│           │   └── messages.js
+│           │   ├── messages.js
+│           │   └── tests/
+│           │       └── HistorySection.test.jsx
 │           └── Summary/
 │               ├── SummarySection.jsx    # FormSpy live preview (read-only)
-│               └── messages.js
+│               ├── messages.js
+│               └── tests/
+│                   └── SummarySection.test.jsx
 │
 ├── hooks/
 │   ├── useAuth.js                # Okta client singleton + auth actions
@@ -211,7 +230,9 @@ src/
 │
 ├── utils/
 │   ├── validators.js             # Pure validator functions (no strings)
-│   └── validatorMessages.js      # i18n descriptors for validation errors
+│   ├── validatorMessages.js      # i18n descriptors for validation errors
+│   └── tests/
+│       └── validators.test.js
 │
 └── mocks/
     ├── data.js                   # In-memory DB (8 seed records + search/CRUD helpers)
@@ -336,20 +357,24 @@ Enable mocks in dev: `REACT_APP_ENABLE_MOCKS=true npm start`
 
 ## Tests
 
-114 tests across 10 suites, collocated with their source files.
+368 tests across 21 suites, collocated with their source files. Coverage: **85% statements / 79% branches / 81% functions**.
 
 ```bash
 npm test                   # single pass
 npm run test:watch         # watch mode
-npm test -- --coverage
+npm test -- --coverage     # with coverage report
 ```
+
+Coverage thresholds (enforced in `package.json`): 60% across all metrics.
 
 Key patterns:
 
 - **MSW v2** intercepts all Axios requests in Jest via the Node server. Axios is forced onto the `fetch` adapter in `setupTests.js` so MSW's interceptor applies.
 - **Okta** is mocked via `jest.mock('@okta/okta-auth-js')` using a `global.__oktaMock` pattern to avoid Babel hoisting issues.
 - **IS_MOCK_MODE** tests live in separate `*.mock.test.js` files that use `require()` so the env var is set before any module loads.
-- **Ant Design Select** incompatibility with jsdom is handled by mocking the component that owns the Select at the test boundary.
+- **Ant Design Select / Switch / CheckboxGroup** incompatibility with jsdom is handled by mocking the custom field components at the test boundary with native equivalents that integrate with React Final Form's `<Field>` render prop.
+- **Ant Design DatePicker** inside modals is avoided by opening and cancelling modals without submitting, keeping tests fast and jsdom-safe.
+- **`fireEvent.change` + `fireEvent.blur`** is used instead of `userEvent.type` when pasting long strings (e.g. bio maxLength) to avoid Jest's 5 s timeout.
 - **`renderUtils.jsx`** at `src/` root provides `buildStore`, `appMessages`, `MOCK_USER`, and `AUTHED_STATE` for all test suites.
 
 ---
