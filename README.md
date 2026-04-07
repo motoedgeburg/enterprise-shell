@@ -8,14 +8,15 @@ A production-grade React enterprise application shell with Okta SSO, Redux Toolk
 
 | Concern | Library |
 |---|---|
-| UI framework | [Ant Design 5](https://ant.design) |
+| UI framework | [Ant Design 5](https://ant.design) with ConfigProvider theming |
 | Routing | [React Router v6](https://reactrouter.com) |
 | Global state | [Redux Toolkit](https://redux-toolkit.js.org) |
 | HTTP client | [Axios](https://axios-http.com) with centralized interceptors |
-| Forms | [React Final Form](https://final-form.org/react) + Ant Design fields |
+| Forms | [React Final Form](https://final-form.org/react) + typed Ant Design field components |
+| Validation | Composable validator functions + `useValidators` hook (react-intl aware) |
 | Authentication | [Okta](https://okta.com) via `@okta/okta-auth-js` (PKCE flow) |
 | API mocking | [MSW v2](https://mswjs.io) (browser + Node) |
-| i18n | [react-intl](https://formatjs.io/docs/react-intl) |
+| i18n | [react-intl](https://formatjs.io/docs/react-intl) — all strings in message descriptor files |
 | Testing | Jest + [React Testing Library](https://testing-library.com) |
 | Linting | ESLint + Prettier |
 
@@ -40,6 +41,20 @@ REACT_APP_ENABLE_MOCKS=true npm start
 # 5. Or start pointing at a real backend
 npm start
 ```
+
+---
+
+## App Flow
+
+```
+Login (Okta SSO)
+  └─▶ Dashboard          — welcome + Search tile
+        └─▶ Search        — filter form (name, email, dept, status, address)
+              └─▶ Results — paginated table, click a row to open detail
+                    └─▶ Record Detail — 4-section accordion form (edit / delete)
+```
+
+All navigation state (search filters) is preserved in URL query params so the browser Back button returns to the exact results page.
 
 ---
 
@@ -105,66 +120,166 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 src/
 ├── api/
 │   ├── axiosInstance.js          # Centralized Axios instance with interceptors
-│   ├── recordsService.js         # Records CRUD service module
+│   ├── lookupsService.js         # Reference data (departments, statuses, etc.)
+│   ├── recordsService.js         # Records CRUD + search
 │   └── tests/
 │       └── recordsService.test.js
 │
 ├── store/
-│   ├── index.js                  # Redux store configuration + typed hooks
-│   ├── slices/
-│   │   └── authSlice.js          # Auth state (token, user, flags)
-│   └── tests/
-│       └── authSlice.test.js
+│   ├── index.js                  # Redux store + typed hooks
+│   └── slices/
+│       ├── authSlice.js          # Auth state (token, user, flags)
+│       └── lookupsSlice.js       # Reference data (fetched once, condition-guarded)
 │
 ├── routes/
-│   ├── index.jsx                 # Route tree (public + protected)
-│   ├── ProtectedRoute.jsx        # HOC — redirects unauthenticated users
+│   ├── index.jsx                 # Route tree (public + protected, lazy-loaded)
+│   ├── ProtectedRoute.jsx        # Redirects unauthenticated users to /login
 │   └── tests/
-│       ├── ProtectedRoute.test.jsx
-│       └── ProtectedRoute.mock.test.jsx   # IS_MOCK_MODE=true path
 │
 ├── components/
-│   ├── AppLayout.jsx             # Ant Design Layout with sidebar + header
-│   ├── messages.js               # i18n message descriptors
+│   ├── AppLayout.jsx             # Dark sidebar + header shell (Ant Design Layout)
+│   ├── messages.js               # i18n descriptors for shell chrome
+│   ├── fields/                   # Typed React Final Form ↔ Ant Design field components
+│   │   ├── AntField.jsx          # Base adapter (Field → Form.Item)
+│   │   ├── TextField.jsx
+│   │   ├── EmailField.jsx
+│   │   ├── SelectField.jsx
+│   │   ├── TextAreaField.jsx
+│   │   ├── DateField.jsx         # ISO string ↔ dayjs conversion
+│   │   ├── RadioGroupField.jsx
+│   │   ├── CheckboxGroupField.jsx
+│   │   ├── SwitchField.jsx
+│   │   └── index.js              # Barrel export
 │   └── tests/
 │       └── AppLayout.test.jsx
 │
 ├── pages/
-│   ├── Dashboard.jsx             # Main landing page post-auth
+│   ├── Dashboard.jsx             # Welcome + Search tile (warms lookups on mount)
 │   ├── LoginPage.jsx             # SSO entry point (no credentials form)
 │   ├── OktaCallback.jsx          # Token exchange + Redux dispatch
-│   ├── messages.js               # i18n message descriptors
+│   ├── messages.js               # i18n descriptors for pages
 │   ├── tests/
 │   │   ├── Dashboard.test.jsx
 │   │   ├── LoginPage.test.jsx
 │   │   └── OktaCallback.test.jsx
+│   ├── Search/
+│   │   ├── SearchPage.jsx        # Filter form → navigate to /results
+│   │   └── messages.js
+│   ├── Results/
+│   │   ├── ResultsPage.jsx       # Paginated table, rows navigate to /records/:id
+│   │   └── messages.js
+│   ├── RecordDetail/
+│   │   ├── RecordDetailPage.jsx  # 4-section accordion (FinalForm + Collapse)
+│   │   ├── messages.js
+│   │   └── sections/
+│   │       ├── PersonalInfoSection.jsx
+│   │       ├── WorkInfoSection.jsx
+│   │       ├── PreferencesSection.jsx
+│   │       └── SummarySection.jsx   # FormSpy live preview (read-only)
 │   └── Records/
-│       ├── RecordsPage.jsx       # Table + search + CRUD actions
-│       ├── RecordFormModal.jsx   # React Final Form + Ant Design fields
+│       ├── RecordFormModal.jsx   # Create modal (React Final Form)
 │       ├── messages.js
 │       └── tests/
-│           ├── RecordsPage.test.jsx
-│           └── RecordFormModal.test.jsx
 │
 ├── hooks/
 │   ├── useAuth.js                # Okta client singleton + auth actions
+│   ├── useLookups.js             # Dispatches fetchLookups (condition-guarded)
+│   ├── useValidators.js          # Localized validator factories via useIntl
 │   └── tests/
-│       ├── useAuth.test.js
-│       └── useAuth.mock.test.js  # IS_MOCK_MODE=true path
+│
+├── utils/
+│   ├── validators.js             # Pure validator functions (no strings)
+│   └── validatorMessages.js     # i18n descriptors for validation errors
 │
 ├── mocks/
-│   ├── data.js                   # In-memory DB (seed + CRUD helpers)
-│   ├── handlers.js               # MSW request handlers
-│   ├── browser.js                # MSW Service Worker setup
+│   ├── data.js                   # In-memory DB (8 seed records + search/CRUD helpers)
+│   ├── handlers.js               # MSW handlers: /api/lookups, /api/records
+│   ├── browser.js                # MSW Service Worker (dev)
 │   └── server.js                 # MSW Node server (Jest)
 │
 ├── tests/
-│   └── renderUtils.jsx           # Shared render helpers + store factory
+│   └── renderUtils.jsx           # buildStore, appMessages, MOCK_USER, AUTHED_STATE
 │
-├── App.jsx                       # Ant Design ConfigProvider + BrowserRouter
-├── index.jsx                     # React root + MSW bootstrap
+├── App.jsx                       # ConfigProvider (theme tokens) + BrowserRouter
+├── index.jsx                     # React root + IntlProvider + MSW bootstrap
 └── setupTests.js                 # Jest setup (polyfills, MSW lifecycle, jsdom stubs)
 ```
+
+---
+
+## Field Components
+
+All form fields are typed wrappers that bridge React Final Form's `<Field>` to Ant Design inputs. They handle value/onChange/onBlur, touched+error display, and forward a `validate` prop to Final Form.
+
+| Component | Ant Design input | Notes |
+|---|---|---|
+| `TextField` | `Input` | `type` prop (default `text`) |
+| `EmailField` | `Input` | Shorthand for `TextField type="email"` |
+| `SelectField` | `Select` | `options: { value, label }[]` |
+| `TextAreaField` | `Input.TextArea` | `rows` prop |
+| `DateField` | `DatePicker` | Stores ISO string in form state |
+| `RadioGroupField` | `Radio.Group` | Supports `optionType="button"` |
+| `CheckboxGroupField` | `Checkbox.Group` | Stores `string[]` |
+| `SwitchField` | `Switch` | `checkedLabel` / `uncheckedLabel` captions |
+
+---
+
+## Validation
+
+Validators are **pure functions** in `src/utils/validators.js` that take a `msg` string and return `(value) => string | undefined`. Components use the `useValidators()` hook which injects localized error messages via `useIntl()`.
+
+```js
+const { required, email, composeValidators } = useValidators();
+
+<EmailField
+  name="email"
+  validate={composeValidators(required(), email())}
+/>
+```
+
+Available validators: `required`, `email`, `phone`, `url`, `minLength(n)`, `maxLength(n)`, `pastDate`, `composeValidators`.
+
+---
+
+## Reference Data (Lookups)
+
+`GET /api/lookups` returns departments, statuses, employment types, notification channels, and access levels. The response is stored in the `lookups` Redux slice via `createAsyncThunk` with a condition guard that prevents duplicate fetches.
+
+`Dashboard` dispatches the fetch on mount so lookups are warm for all downstream pages. Components consume them via the `useLookups()` hook.
+
+---
+
+## MSW Mock API
+
+| Method | URL | Description |
+|---|---|---|
+| `GET` | `/api/lookups` | Reference data (departments, statuses, etc.) |
+| `GET` | `/api/records` | Paginated + filtered list |
+| `GET` | `/api/records/:id` | Single record |
+| `POST` | `/api/records` | Create (returns 201) |
+| `PUT` | `/api/records/:id` | Update |
+| `DELETE` | `/api/records/:id` | Delete (returns 204) |
+
+Enable mocks in dev: `REACT_APP_ENABLE_MOCKS=true npm start`
+
+---
+
+## Tests
+
+145 tests across 12 suites, collocated with their source files.
+
+```bash
+npm test                   # single pass
+npm run test:watch         # watch mode
+npm test -- --coverage
+```
+
+Key patterns:
+
+- **MSW v2** intercepts all Axios requests in Jest via the Node server. Axios is forced onto the `fetch` adapter in `setupTests.js` so MSW's interceptor applies.
+- **Okta** is mocked via `jest.mock('@okta/okta-auth-js')` using a `global.__oktaMock` pattern to avoid Babel hoisting issues.
+- **IS_MOCK_MODE** tests live in separate `*.mock.test.js` files that use `require()` so the env var is set before any module loads.
+- **Ant Design Select** incompatibility with jsdom is handled by mocking the component that owns the Select at the test boundary.
 
 ---
 
@@ -196,44 +311,7 @@ In your Okta Admin console:
 
 ---
 
-## Tests
-
-169 tests across 15 suites, collocated with their source files.
-
-```bash
-npm test              # single pass
-npm run test:watch    # watch mode
-npm test -- --coverage
-```
-
-Key testing patterns:
-
-- **MSW v2** intercepts all Axios requests in Jest via the Node server (`src/mocks/server.js`). Axios is forced onto the `fetch` adapter in `setupTests.js` so MSW's interceptor applies.
-- **Okta** is mocked via `jest.mock('@okta/okta-auth-js')` using a `global.__oktaMock` pattern to avoid Babel hoisting issues.
-- **IS_MOCK_MODE** tests (env-var-gated code paths) live in separate `*.mock.test.js` files that use `require()` so the env var is set before any module loads.
-- **Ant Design** modals and popovers are tested via React Testing Library's ARIA queries.
-
----
-
-## MSW Mock API
-
-The mock handlers in `src/mocks/handlers.js` mirror a Spring Boot `@RestController`:
-
-| Method | URL | Description |
-|---|---|---|
-| `GET` | `/api/records?page=0&size=10` | Paginated list (Spring `Page<Record>` shape) |
-| `GET` | `/api/records/:id` | Single record |
-| `POST` | `/api/records` | Create record (returns 201) |
-| `PUT` | `/api/records/:id` | Update record |
-| `DELETE` | `/api/records/:id` | Delete record (returns 204) |
-
-Enable mocks in dev: `REACT_APP_ENABLE_MOCKS=true npm start`
-
----
-
 ## Environment Variables
-
-See [.env.example](.env.example) for all required variables:
 
 | Variable | Description |
 |---|---|

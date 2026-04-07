@@ -2,8 +2,8 @@ import { Input } from 'antd';
 
 import AntField from './AntField.jsx';
 
-const TextField = ({ name, label, placeholder, type = 'text', ...inputProps }) => (
-  <AntField name={name} label={label}>
+const TextField = ({ name, label, placeholder, type = 'text', validate, ...inputProps }) => (
+  <AntField name={name} label={label} validate={validate}>
     {({ value, onChange, onBlur }) => (
       <Input
         type={type}

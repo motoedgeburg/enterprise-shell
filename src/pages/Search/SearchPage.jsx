@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { SelectField, TextField } from '../../components/fields/index.js';
 import { useLookups } from '../../hooks/useLookups.js';
+import { useValidators } from '../../hooks/useValidators.js';
 
 import messages from './messages.js';
 
@@ -15,6 +16,7 @@ const SearchPage = () => {
   const intl = useIntl();
   const navigate = useNavigate();
   const { departments, statuses } = useLookups();
+  const { email, minLength } = useValidators();
 
   const handleSearch = (values) => {
     const params = new URLSearchParams();
@@ -45,6 +47,7 @@ const SearchPage = () => {
                     name="name"
                     label={intl.formatMessage(messages.SEARCH_FIELD_NAME)}
                     placeholder={intl.formatMessage(messages.SEARCH_FIELD_NAME_PLACEHOLDER)}
+                    validate={minLength(2)}
                   />
                 </Col>
                 <Col xs={24} sm={12}>
@@ -52,6 +55,7 @@ const SearchPage = () => {
                     name="email"
                     label={intl.formatMessage(messages.SEARCH_FIELD_EMAIL)}
                     placeholder={intl.formatMessage(messages.SEARCH_FIELD_EMAIL_PLACEHOLDER)}
+                    validate={email()}
                   />
                 </Col>
                 <Col xs={24} sm={12}>
@@ -59,6 +63,7 @@ const SearchPage = () => {
                     name="address"
                     label={intl.formatMessage(messages.SEARCH_FIELD_ADDRESS)}
                     placeholder={intl.formatMessage(messages.SEARCH_FIELD_ADDRESS_PLACEHOLDER)}
+                    validate={minLength(2)}
                   />
                 </Col>
                 <Col xs={24} sm={12}>

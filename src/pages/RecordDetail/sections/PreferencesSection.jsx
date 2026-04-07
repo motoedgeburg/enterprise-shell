@@ -8,11 +8,13 @@ import {
   TextAreaField,
 } from '../../../components/fields/index.js';
 import { useLookups } from '../../../hooks/useLookups.js';
+import { useValidators } from '../../../hooks/useValidators.js';
 import messages from '../messages.js';
 
 const PreferencesSection = () => {
   const intl = useIntl();
   const { notificationChannels, accessLevels } = useLookups();
+  const { maxLength, required } = useValidators();
 
   return (
     <Row gutter={[16, 0]}>
@@ -47,6 +49,7 @@ const PreferencesSection = () => {
           options={accessLevels}
           optionType="button"
           buttonStyle="solid"
+          validate={required()}
         />
       </Col>
       <Col xs={24}>
@@ -55,6 +58,7 @@ const PreferencesSection = () => {
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTES)}
           placeholder="Internal notes visible to managers and HR only…"
           rows={4}
+          validate={maxLength(1000)}
         />
       </Col>
     </Row>

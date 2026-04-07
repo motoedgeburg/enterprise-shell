@@ -117,21 +117,18 @@ const RecordDetailPage = () => {
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
-    <App>
-      <FinalForm onSubmit={handleSubmit} initialValues={record}>
+    <FinalForm onSubmit={handleSubmit} initialValues={record}>
         {({ handleSubmit: submit, submitting, submitError }) => (
           <Space direction="vertical" size="middle" style={{ width: '100%' }}>
 
             {/* Page header */}
-            <Space style={{ width: '100%', justifyContent: 'space-between' }} wrap>
-              <Space>
-                <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(backPath)}>
-                  {intl.formatMessage(messages.DETAIL_BACK)}
-                </Button>
-                <Title level={4} style={{ marginBottom: 0 }}>
-                  {record.name}
-                </Title>
-              </Space>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(backPath)}>
+                {intl.formatMessage(messages.DETAIL_BACK)}
+              </Button>
+              <Title level={4} style={{ margin: 0, flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {record.name}
+              </Title>
               <Popconfirm
                 title={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_TITLE)}
                 description={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_DESC, { name: record.name })}
@@ -144,7 +141,7 @@ const RecordDetailPage = () => {
                   {intl.formatMessage(messages.DETAIL_DELETE_OK)}
                 </Button>
               </Popconfirm>
-            </Space>
+            </div>
 
             {/* Form error banner */}
             {submitError && <Alert type="error" message={submitError} showIcon />}
@@ -177,7 +174,6 @@ const RecordDetailPage = () => {
           </Space>
         )}
       </FinalForm>
-    </App>
   );
 };
 
