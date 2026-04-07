@@ -29,7 +29,11 @@ const oktaMock = vi.hoisted(() => ({
 }));
 
 vi.mock('@okta/okta-auth-js', () => ({
-  OktaAuth: class { constructor() { return oktaMock; } },
+  OktaAuth: class {
+    constructor() {
+      return oktaMock;
+    }
+  },
 }));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

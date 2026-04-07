@@ -296,7 +296,9 @@ describe('HistorySection — certifications tab', () => {
     renderSection();
     await switchToCerts(user);
     await waitFor(() =>
-      expect(screen.getAllByRole('button', { name: /Add Certification/i }).length).toBeGreaterThan(0),
+      expect(screen.getAllByRole('button', { name: /Add Certification/i }).length).toBeGreaterThan(
+        0,
+      ),
     );
     await user.click(screen.getAllByRole('button', { name: /Add Certification/i })[0]);
     await waitFor(() =>

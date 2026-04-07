@@ -15,10 +15,9 @@
  * native equivalents that integrate with React Final Form via Field.
  */
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { Field } from 'react-final-form';
-import { Form as FinalForm } from 'react-final-form';
-import { IntlProvider } from 'react-intl';
 import userEvent from '@testing-library/user-event';
+import { Field, Form as FinalForm } from 'react-final-form';
+import { IntlProvider } from 'react-intl';
 
 import { appMessages } from '../../../../../renderUtils.jsx';
 import PreferencesSection from '../PreferencesSection.jsx';

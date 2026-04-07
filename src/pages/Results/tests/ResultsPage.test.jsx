@@ -20,7 +20,9 @@ import { buildStore, appMessages, AUTHED_STATE } from '../../../renderUtils.jsx'
 import ResultsPage from '../ResultsPage.jsx';
 
 vi.mock('@okta/okta-auth-js', () => ({
-  OktaAuth: class { constructor() {} },
+  OktaAuth: class {
+    constructor() {}
+  },
 }));
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

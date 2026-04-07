@@ -13,10 +13,9 @@
  * field-change behaviour without jsdom crashes.
  */
 import { render, screen, waitFor } from '@testing-library/react';
-import { Field } from 'react-final-form';
-import { Form as FinalForm } from 'react-final-form';
-import { IntlProvider } from 'react-intl';
 import userEvent from '@testing-library/user-event';
+import { Field, Form as FinalForm } from 'react-final-form';
+import { IntlProvider } from 'react-intl';
 
 import { appMessages } from '../../../../../renderUtils.jsx';
 import WorkInfoSection from '../WorkInfoSection.jsx';

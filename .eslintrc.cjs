@@ -11,7 +11,6 @@ module.exports = {
   env: {
     browser: true,
     es2022: true,
-    jest: true,
     node: true,
   },
   extends: [
@@ -23,19 +22,11 @@ module.exports = {
     'plugin:import/recommended',
     'prettier',
   ],
-  plugins: [
-    'react',
-    'react-hooks',
-    'jsx-a11y',
-    'import',
-  ],
+  plugins: ['react', 'react-hooks', 'jsx-a11y', 'import'],
   rules: {
-    // React
     'react/prop-types': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-
-    // Imports
     'import/order': [
       'error',
       {
@@ -45,15 +36,24 @@ module.exports = {
       },
     ],
     'import/no-duplicates': 'error',
-
-    // General
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     eqeqeq: ['error', 'always'],
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
   overrides: [
     {
-      files: ['src/mocks/**', '**/*.test.js', '**/*.test.jsx'],
+      files: ['src/mocks/**', '**/*.test.js', '**/*.test.jsx', 'src/setupTests.js'],
+      globals: {
+        vi: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+      },
       rules: {
         'no-unused-vars': 'off',
       },
