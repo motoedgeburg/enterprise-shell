@@ -2,7 +2,7 @@ import { OktaAuth } from '@okta/okta-auth-js';
 import { useCallback } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../store';
-import { clearCredentials, setCredentials } from '../store/slices/authSlice';
+import { clearCredentials, setAuthError, setCredentials } from '../store/slices/authSlice';
 
 const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
 
@@ -62,8 +62,11 @@ export const useAuth = () => {
 
   /** Redirect to Okta's /authorize endpoint (PKCE flow) */
   const realLogin = useCallback(() => {
-    void oktaAuth.signInWithRedirect();
-  }, []);
+    oktaAuth.signInWithRedirect().catch((err) => {
+      console.error('[useAuth] signInWithRedirect failed:', err);
+      dispatch(setAuthError(err instanceof Error ? err.message : String(err)));
+    });
+  }, [dispatch]);
 
   /** Sign out from Okta and clear local Redux state */
   const realLogout = useCallback(async () => {

@@ -293,24 +293,9 @@ Submit/Search buttons are disabled while `hasValidationErrors` is true (React Fi
 
 ---
 
-## Cross-Section Form Dependencies
-
-`RecordDetailPage` uses `useFormState` + `useForm` inside section components to enforce business rules across accordion panels. Enforced values are written back via `form.change()` so the submitted payload is always consistent.
-
-| Trigger (section) | Effect (section) | Behaviour |
-|---|---|---|
-| `status = inactive` (Work) | `accessLevel` (Preferences) | Forced to `read-only`; field disabled |
-| `status = inactive` (Work) | `notificationsEnabled`, `notificationChannels` (Preferences) | Disabled |
-| `employmentType = intern` (Work) | `remoteEligible` (Preferences) | Forced to `false`; field disabled |
-| `accessLevel = admin` (Preferences) | `status` (Work) | Forced to `active`; field disabled |
-
-Each active constraint surfaces an inline `Alert` inside the affected section explaining why the field is locked.
-
----
-
 ## Record Detail Accordion
 
-The accordion has five sections. Each section is self-contained with its own `messages.js`:
+The accordion has five sections, each self-contained with its own `messages.js`:
 
 | Section | Key fields |
 |---|---|
@@ -320,27 +305,7 @@ The accordion has five sections. Each section is self-contained with its own `me
 | Contacts & Certifications | Emergency contacts tab + Professional certifications tab (full CRUD) |
 | Summary | Read-only live preview via `FormSpy` |
 
-The **Contacts & Certifications** section contains two tabbed grids:
-- **Emergency Contacts** — add/edit/delete contacts; star icon marks the primary contact
-- **Professional Certifications** — add/edit/delete certifications; expiry status shown as Active / Expired / No Expiry tag
-
----
-
-## i18n Message Organization
-
-Each section owns its messages file, co-located with the component:
-
-| File | Scope |
-|---|---|
-| `src/pages/messages.js` | Dashboard, Login, Callback strings |
-| `src/components/messages.js` | App shell (header, sidebar) |
-| `src/utils/validatorMessages.js` | Validation error strings |
-| `RecordDetail/messages.js` | Page chrome, section headings, delete/submit actions |
-| `sections/PersonalInfo/messages.js` | Personal field labels |
-| `sections/WorkInfo/messages.js` | Work fields, employment types, statuses |
-| `sections/Preferences/messages.js` | Preference fields, channel/access options, constraints |
-| `sections/History/messages.js` | Contact and certification labels and actions |
-| `sections/Summary/messages.js` | Summary-specific strings |
+Section components enforce cross-field business rules via `useFormState` + `form.change()`. When a rule fires, the affected field is disabled and an inline `Alert` explains why.
 
 ---
 
@@ -369,26 +334,13 @@ Enable mocks in dev: `VITE_ENABLE_MOCKS=true npm start`
 
 ## Tests
 
-379 tests across 22 suites, collocated with their source files. Coverage: **86% statements / 81% branches / 80% functions**.
+Tests are collocated with their source files. Coverage thresholds are enforced at 60% across all metrics (`vite.config.js`).
 
 ```bash
 npm test                    # single pass
 npm run test:watch          # watch mode
 npm run test:coverage       # with coverage report
 ```
-
-Coverage thresholds (enforced in `vite.config.js`): 60% across all metrics.
-
-Key patterns:
-
-- **MSW v2** intercepts all Axios requests in Vitest via the Node server. Axios is forced onto the `fetch` adapter in `setupTests.js` so MSW's interceptor applies.
-- **Okta** is mocked with `vi.mock('@okta/okta-auth-js')` using a `class` constructor so `new OktaAuth()` returns the mock instance correctly under Vitest's ESM module system.
-- **IS_MOCK_MODE** tests live in separate `*.mock.test.jsx` files that use `vi.stubEnv` + `vi.resetModules` + dynamic `import()` so the env var is set before any module evaluates.
-- **Ant Design Select / Switch / CheckboxGroup** incompatibility with jsdom is handled by mocking the custom field components at the test boundary with native equivalents that integrate with React Final Form's `<Field>` render prop.
-- **Ant Design DatePicker** inside modals is avoided by opening modals and verifying content without submitting, keeping tests fast and jsdom-safe.
-- **`fireEvent.change` + `fireEvent.blur`** is used instead of `userEvent.type` when pasting long strings (e.g. bio maxLength) to avoid timeout issues.
-- **`vi.hoisted()`** is used to declare mock objects that are referenced inside `vi.mock` factories, since Vitest hoists `vi.mock` calls above all imports.
-- **`renderUtils.jsx`** at `src/` root provides `buildStore`, `appMessages`, `MOCK_USER`, and `AUTHED_STATE` for all test suites.
 
 ---
 
@@ -402,6 +354,7 @@ In your Okta Admin console:
 4. Enable **Authorization Code with PKCE** grant type
 5. Add scopes: `openid`, `profile`, `email`
 6. Copy the **Client ID** and your **Okta domain** to `.env`
+
 
 ---
 

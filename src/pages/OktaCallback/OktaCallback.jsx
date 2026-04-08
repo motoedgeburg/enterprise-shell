@@ -4,7 +4,8 @@ import { useIntl } from 'react-intl';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/useAuth.js';
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { setAuthError } from '../../store/slices/authSlice.js';
 import messages from '../messages.js';
 
 const { Title } = Typography;
@@ -23,6 +24,7 @@ const { Title } = Typography;
 const OktaCallback = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
   const { handleCallback, error: authError } = useAuth();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const intl = useIntl();
@@ -43,16 +45,20 @@ const OktaCallback = () => {
       })
       .catch((err) => {
         console.error('[OktaCallback] Token exchange failed:', err);
-        // authError will be set by the hook via Redux; we stay on this page to show it
+        dispatch(setAuthError(err instanceof Error ? err.message : String(err)));
       });
+    // Deps intentionally omitted: this runs once on mount only.
+    // `handled` ref prevents double-invocation in React StrictMode.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // If already authenticated (e.g. back-button), skip straight to dashboard
-  if (isAuthenticated) {
-    navigate('/dashboard', { replace: true });
-    return null;
-  }
+  // If already authenticated (e.g. back-button), redirect in an effect
+  // to avoid calling navigate() during render.
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   if (authError) {
     return (

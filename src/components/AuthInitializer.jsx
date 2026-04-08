@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { oktaAuth } from '../hooks/useAuth';
 import { useAppDispatch } from '../store';
-import { clearCredentials, setCredentials } from '../store/slices/authSlice';
+import { clearCredentials, setAuthError, setCredentials } from '../store/slices/authSlice';
 
 /**
  * Bootstraps Okta auth state on app startup (real mode only).
@@ -15,9 +15,15 @@ const AuthInitializer = ({ children }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const unsubscribe = oktaAuth.authStateManager.subscribe((authState) => {
+    const handleAuthState = (authState) => {
       if (authState.isAuthenticated) {
         const { accessToken, idToken } = authState;
+
+        if (!accessToken?.accessToken) {
+          dispatch(setAuthError('Okta returned an authenticated state with no access token.'));
+          return;
+        }
+
         const claims = idToken?.claims ?? accessToken?.claims ?? {};
         dispatch(
           setCredentials({
@@ -33,12 +39,16 @@ const AuthInitializer = ({ children }) => {
       } else {
         dispatch(clearCredentials());
       }
+    };
+
+    oktaAuth.authStateManager.subscribe(handleAuthState);
+    oktaAuth.start().catch((err) => {
+      console.error('[AuthInitializer] oktaAuth.start() failed:', err);
+      dispatch(setAuthError(err?.message ?? 'Failed to initialize authentication.'));
     });
 
-    oktaAuth.start();
-
     return () => {
-      oktaAuth.authStateManager.unsubscribe(unsubscribe);
+      oktaAuth.authStateManager.unsubscribe(handleAuthState);
       oktaAuth.stop();
     };
   }, [dispatch]);

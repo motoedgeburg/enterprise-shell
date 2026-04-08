@@ -33,7 +33,7 @@ const oktaMock = vi.hoisted(() => {
       // helper used in tests to fire a state change
       emit: (authState) => _subscriber?.(authState),
     },
-    start: vi.fn(),
+    start: vi.fn().mockResolvedValue(undefined),
     stop: vi.fn(),
   };
 });
