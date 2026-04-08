@@ -16,6 +16,8 @@ const AuthInitializer = ({ children }) => {
 
   useEffect(() => {
     const handleAuthState = (authState) => {
+      if (authState.isPending) return;
+
       if (authState.isAuthenticated) {
         const { accessToken, idToken } = authState;
 
