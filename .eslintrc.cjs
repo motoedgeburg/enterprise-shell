@@ -42,6 +42,12 @@ module.exports = {
   },
   overrides: [
     {
+      files: ['*.config.js', '*.config.cjs'],
+      rules: {
+        'import/no-unresolved': 'off',
+      },
+    },
+    {
       files: ['src/mocks/**', '**/*.test.js', '**/*.test.jsx', 'src/setupTests.js'],
       globals: {
         vi: 'readonly',

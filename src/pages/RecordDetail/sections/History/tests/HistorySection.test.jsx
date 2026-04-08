@@ -14,17 +14,47 @@
  * HistorySection uses Ant Design Modal, Table, Tabs, and Select.
  * Modals render in the document body via portals — wrapping with antd <App>
  * is required so static methods and portals resolve correctly.
- * The ant Select (relationship) and DatePicker are only inside modals;
- * we open and cancel modals without submitting to avoid jsdom incompatibility.
+ * SelectField wraps Ant Design Select which is incompatible with jsdom —
+ * it is mocked with a native <select> so relationship dropdowns work in tests.
  */
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from 'antd';
-import { Form as FinalForm } from 'react-final-form';
+import { Field, Form as FinalForm } from 'react-final-form';
 import { IntlProvider } from 'react-intl';
 
 import { appMessages } from '../../../../../renderUtils.jsx';
 import HistorySection from '../HistorySection.jsx';
+
+// ─── Mocks ────────────────────────────────────────────────────────────────────
+
+vi.mock('../../../../../components/fields/SelectField.jsx', () => ({
+  default: function MockSelectField({ name, label, options = [], validate }) {
+    return (
+      <Field name={name} validate={validate}>
+        {({ input }) => (
+          <div>
+            <label htmlFor={name}>{label}</label>
+            <select id={name} {...input} data-testid={`select-${name}`}>
+              <option value="">-- select --</option>
+              {options.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </Field>
+    );
+  },
+}));
+
+vi.mock('../../../../../hooks/useLookups.js', () => ({
+  useLookups: () => ({
+    relationships: ['Spouse', 'Partner', 'Parent', 'Child', 'Sibling', 'Friend', 'Colleague', 'Other'],
+  }),
+}));
 
 // ─── Seed data ────────────────────────────────────────────────────────────────
 
@@ -148,8 +178,6 @@ describe('HistorySection — contacts table', () => {
 
   it('hides the set-primary star button for the primary contact', () => {
     renderSection({ emergencyContacts: CONTACTS });
-    // Alice is primary — her row should not have a "Set as primary" button.
-    // Bob's row should have it (not primary).
     const aliceRow = screen.getByText('Alice Smith').closest('tr');
     expect(within(aliceRow).queryByTitle('Set as primary contact')).not.toBeInTheDocument();
   });
@@ -176,7 +204,6 @@ describe('HistorySection — Add Contact modal', () => {
     renderSection();
     await user.click(screen.getByRole('button', { name: /Add Contact/i }));
     await waitFor(() => expect(screen.getByText('Add Emergency Contact')).toBeInTheDocument());
-    // Verify the Cancel button is rendered and can be clicked without error
     const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
     expect(cancelBtn).toBeInTheDocument();
     await user.click(cancelBtn);
@@ -187,12 +214,25 @@ describe('HistorySection — Add Contact modal', () => {
     renderSection();
     await user.click(screen.getByRole('button', { name: /Add Contact/i }));
     await waitFor(() => screen.getByText('Add Emergency Contact'));
-    // Check form labels inside the modal
     const modal = document.querySelector('.ant-modal-body');
     expect(within(modal).getAllByText('Name').length).toBeGreaterThan(0);
     expect(within(modal).getByText('Relationship')).toBeInTheDocument();
     expect(within(modal).getAllByText('Phone').length).toBeGreaterThan(0);
     expect(within(modal).getAllByText('Email').length).toBeGreaterThan(0);
+  });
+
+  it('renders relationship options from useLookups', async () => {
+    const user = userEvent.setup();
+    renderSection();
+    await user.click(screen.getByRole('button', { name: /Add Contact/i }));
+    await waitFor(() => screen.getByText('Add Emergency Contact'));
+    const modal = document.querySelector('.ant-modal-body');
+    const opts = Array.from(within(modal).getByTestId('select-relationship').options).map(
+      (o) => o.value,
+    );
+    expect(opts).toContain('Spouse');
+    expect(opts).toContain('Parent');
+    expect(opts).toContain('Other');
   });
 });
 
@@ -202,7 +242,6 @@ describe('HistorySection — Edit Contact modal', () => {
   it('opens with "Edit Emergency Contact" title on Edit click', async () => {
     const user = userEvent.setup();
     renderSection({ emergencyContacts: CONTACTS });
-    // Icon-only buttons have no accessible name — find via icon class
     const editBtn = document.querySelector('.anticon-edit')?.closest('button');
     await user.click(editBtn);
     await waitFor(() => expect(screen.getByText('Edit Emergency Contact')).toBeInTheDocument());
@@ -277,7 +316,6 @@ describe('HistorySection — certifications tab', () => {
     const user = userEvent.setup();
     renderSection();
     await switchToCerts(user);
-    // Both tab panels render; pick the visible "Add Certification" button
     await waitFor(() =>
       expect(screen.getAllByRole('button', { name: /Add Certification/i }).length).toBeGreaterThan(
         0,
@@ -285,7 +323,6 @@ describe('HistorySection — certifications tab', () => {
     );
     const addBtn = screen.getAllByRole('button', { name: /Add Certification/i })[0];
     await user.click(addBtn);
-    // Scope to the modal title div to avoid matching the button text
     await waitFor(() =>
       expect(document.querySelector('.ant-modal-title')).toHaveTextContent('Add Certification'),
     );

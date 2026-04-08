@@ -42,8 +42,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint src --ext .js,.jsx --max-warnings 0",
-    "lint:fix": "eslint src --ext .js,.jsx --fix",
+    "lint": "eslint src --ext .js,.jsx --max-warnings 0 && eslint *.config.js",
+    "lint:fix": "eslint src --ext .js,.jsx --fix && eslint *.config.js --fix",
+    "lint:report": "eslint src --ext .js,.jsx *.config.js --format html --output-file reports/eslint/eslint.html ; eslint src --ext .js,.jsx *.config.js --format json --output-file reports/eslint/eslint.json",
     "format": "prettier --write \"src/**/*.{js,jsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,css,json}\""
   },

@@ -30,6 +30,7 @@ const initialState = {
 
   // Shape mirrors the /api/lookups response
   departments: [],
+  relationships: [],
   statuses: [],
   employmentTypes: [],
   notificationChannels: [],

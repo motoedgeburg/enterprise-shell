@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
@@ -10,6 +10,8 @@ export default defineConfig({
     setupFiles: ['./src/setupTests.js'],
     coverage: {
       provider: 'v8',
+      reporter: ['text', 'html', 'json'],
+      reportsDirectory: './reports/coverage',
       include: ['src/**/*.{js,jsx}'],
       exclude: ['src/mocks/**', 'src/index.jsx'],
       thresholds: {
