@@ -68,10 +68,16 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
+│  0. App mounts → AuthInitializer subscribes to Okta's           │
+│     authStateManager and calls oktaAuth.start().                │
+│     This resolves isInitializing (true → false) whether or      │
+│     not the user has an existing session.                        │
+│                                                                 │
 │  1. User navigates to any protected route (e.g. /dashboard)     │
 │                                                                 │
 │  2. ProtectedRoute checks Redux auth state:                     │
-│     • isAuthenticated = false  →  redirect to /login            │
+│     • isInitializing = true   →  render nothing (wait)          │
+│     • isAuthenticated = false →  redirect to /login             │
 │                                                                 │
 │  3. LoginPage renders a single "Sign in with Okta" button       │
 │     No username/password fields.                                │
@@ -149,6 +155,7 @@ src/
 │   └── tests/
 │
 ├── components/
+│   ├── AuthInitializer.jsx       # Bootstraps Okta auth state on startup (real mode only)
 │   ├── AppLayout.jsx             # Dark sidebar + header shell (Ant Design Layout)
 │   ├── messages.js               # i18n descriptors for shell chrome
 │   ├── fields/                   # Typed React Final Form ↔ Ant Design field components
@@ -165,6 +172,7 @@ src/
 │   │   ├── SwitchField.jsx
 │   │   └── index.js              # Barrel export
 │   └── tests/
+│       ├── AuthInitializer.test.jsx
 │       ├── AppLayout.test.jsx
 │       └── fields/
 │           ├── PhoneField.test.jsx
@@ -361,7 +369,7 @@ Enable mocks in dev: `VITE_ENABLE_MOCKS=true npm start`
 
 ## Tests
 
-368 tests across 21 suites, collocated with their source files. Coverage: **85% statements / 79% branches / 81% functions**.
+379 tests across 22 suites, collocated with their source files. Coverage: **86% statements / 81% branches / 80% functions**.
 
 ```bash
 npm test                    # single pass

@@ -19,7 +19,16 @@ const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api';
 
 const LOOKUPS = {
   departments: ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'Operations', 'HR'],
-  relationships: ['Spouse', 'Partner', 'Parent', 'Child', 'Sibling', 'Friend', 'Colleague', 'Other'],
+  relationships: [
+    'Spouse',
+    'Partner',
+    'Parent',
+    'Child',
+    'Sibling',
+    'Friend',
+    'Colleague',
+    'Other',
+  ],
   statuses: [
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' },

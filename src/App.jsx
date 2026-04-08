@@ -1,7 +1,10 @@
 import { ConfigProvider, theme } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
 
+import AuthInitializer from './components/AuthInitializer.jsx';
 import AppRoutes from './routes/index.jsx';
+
+const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
 
 const App = () => {
   return (
@@ -32,7 +35,13 @@ const App = () => {
       }}
     >
       <BrowserRouter>
-        <AppRoutes />
+        {IS_MOCK_MODE ? (
+          <AppRoutes />
+        ) : (
+          <AuthInitializer>
+            <AppRoutes />
+          </AuthInitializer>
+        )}
       </BrowserRouter>
     </ConfigProvider>
   );

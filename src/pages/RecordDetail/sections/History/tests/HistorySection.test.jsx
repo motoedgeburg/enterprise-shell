@@ -52,7 +52,16 @@ vi.mock('../../../../../components/fields/SelectField.jsx', () => ({
 
 vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
-    relationships: ['Spouse', 'Partner', 'Parent', 'Child', 'Sibling', 'Friend', 'Colleague', 'Other'],
+    relationships: [
+      'Spouse',
+      'Partner',
+      'Parent',
+      'Child',
+      'Sibling',
+      'Friend',
+      'Colleague',
+      'Other',
+    ],
   }),
 }));
 
