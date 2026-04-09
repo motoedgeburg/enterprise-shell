@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { oktaAuth } from '../hooks/useAuth';
 import { useAppDispatch } from '../store';
 import { clearCredentials, setAuthError, setCredentials } from '../store/slices/authSlice';
+import { createLogger } from '../utils/logger.js';
+
+const log = createLogger('AuthInitializer');
 
 /**
  * Bootstraps Okta auth state on app startup (real mode only).
@@ -45,7 +48,7 @@ const AuthInitializer = ({ children }) => {
 
     oktaAuth.authStateManager.subscribe(handleAuthState);
     oktaAuth.start().catch((err) => {
-      console.error('[AuthInitializer] oktaAuth.start() failed:', err);
+      log.error('oktaAuth.start() failed', err);
       dispatch(setAuthError(err?.message ?? 'Failed to initialize authentication.'));
     });
 

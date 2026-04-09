@@ -3,6 +3,9 @@ import { useCallback } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../store';
 import { clearCredentials, setAuthError, setCredentials } from '../store/slices/authSlice';
+import { createLogger } from '../utils/logger.js';
+
+const log = createLogger('Auth');
 
 const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
 
@@ -21,11 +24,28 @@ const MOCK_USER = {
 const MOCK_TOKEN = 'mock-access-token-for-dev';
 
 // ─── Okta client (singleton, real mode only) ─────────────────────────────────
-export const oktaAuth = IS_MOCK_MODE
-  ? null
-  : new OktaAuth({
-      issuer: import.meta.env.VITE_OKTA_ISSUER ?? '',
-      clientId: import.meta.env.VITE_OKTA_CLIENT_ID ?? '',
+
+function createOktaClient() {
+  const issuer = import.meta.env.VITE_OKTA_ISSUER;
+  const clientId = import.meta.env.VITE_OKTA_CLIENT_ID;
+
+  // Skip validation in test mode — OktaAuth is mocked and env vars aren't set
+  if (!issuer || !clientId) {
+    if (import.meta.env.MODE === 'test') {
+      return new OktaAuth({ issuer: issuer ?? '', clientId: clientId ?? '' });
+    }
+    throw new Error(
+      '[Auth] Missing required Okta env vars. ' +
+        `VITE_OKTA_ISSUER=${issuer ? '(set)' : '(empty)'}, ` +
+        `VITE_OKTA_CLIENT_ID=${clientId ? '(set)' : '(empty)'}. ` +
+        'Set these in .env or use VITE_ENABLE_MOCKS=true to bypass Okta.',
+    );
+  }
+
+  try {
+    return new OktaAuth({
+      issuer,
+      clientId,
       redirectUri:
         import.meta.env.VITE_OKTA_REDIRECT_URI ?? window.location.origin + '/login/callback',
       scopes: ['openid', 'profile', 'email'],
@@ -35,6 +55,12 @@ export const oktaAuth = IS_MOCK_MODE
         storage: 'memory',
       },
     });
+  } catch (err) {
+    throw new Error(`[Auth] Failed to initialize Okta client: ${err.message}`);
+  }
+}
+
+export const oktaAuth = IS_MOCK_MODE ? null : createOktaClient();
 
 // ─── Hook ────────────────────────────────────────────────────────────────────
 
@@ -63,7 +89,7 @@ export const useAuth = () => {
   /** Redirect to Okta's /authorize endpoint (PKCE flow) */
   const realLogin = useCallback(() => {
     oktaAuth.signInWithRedirect().catch((err) => {
-      console.error('[useAuth] signInWithRedirect failed:', err);
+      log.error('signInWithRedirect failed', err);
       dispatch(setAuthError(err instanceof Error ? err.message : String(err)));
     });
   }, [dispatch]);

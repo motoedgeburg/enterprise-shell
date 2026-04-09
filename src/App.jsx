@@ -2,6 +2,7 @@ import { ConfigProvider, theme } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
 
 import AuthInitializer from './components/AuthInitializer.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import AppRoutes from './routes/index.jsx';
 
 const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
@@ -34,15 +35,17 @@ const App = () => {
         },
       }}
     >
-      <BrowserRouter>
-        {IS_MOCK_MODE ? (
-          <AppRoutes />
-        ) : (
-          <AuthInitializer>
+      <ErrorBoundary>
+        <BrowserRouter>
+          {IS_MOCK_MODE ? (
             <AppRoutes />
-          </AuthInitializer>
-        )}
-      </BrowserRouter>
+          ) : (
+            <AuthInitializer>
+              <AppRoutes />
+            </AuthInitializer>
+          )}
+        </BrowserRouter>
+      </ErrorBoundary>
     </ConfigProvider>
   );
 };

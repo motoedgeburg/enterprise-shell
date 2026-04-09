@@ -2,6 +2,9 @@ import axios from 'axios';
 
 import { store } from '../store';
 import { clearCredentials } from '../store/slices/authSlice';
+import { createLogger } from '../utils/logger.js';
+
+const log = createLogger('API');
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api';
 
@@ -33,28 +36,15 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or revoked — clear Redux state so ProtectedRoute redirects
+      // Token expired or revoked — clear Redux state and redirect to login.
+      // ProtectedRoute and the login page handle the full re-auth flow,
+      // so there's no need to manually construct an Okta authorize URL here.
       store.dispatch(clearCredentials());
-
-      const issuer = import.meta.env.VITE_OKTA_ISSUER ?? '';
-      const clientId = import.meta.env.VITE_OKTA_CLIENT_ID ?? '';
-      const redirectUri = import.meta.env.VITE_OKTA_REDIRECT_URI ?? '';
-
-      if (issuer && clientId && redirectUri) {
-        const authorizeUrl =
-          `${issuer}/v1/authorize` +
-          `?client_id=${clientId}` +
-          `&response_type=token` +
-          `&scope=openid profile email` +
-          `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-          `&nonce=${crypto.randomUUID()}` +
-          `&state=${crypto.randomUUID()}`;
-        window.location.href = authorizeUrl;
-      }
+      window.location.assign('/login');
     }
 
     if (error.response?.status === 403) {
-      console.warn('[API] 403 Forbidden — user lacks required permissions.');
+      log.warn('403 Forbidden — user lacks required permissions.');
     }
 
     return Promise.reject(error);

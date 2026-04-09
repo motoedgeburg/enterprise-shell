@@ -6,7 +6,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { setAuthError } from '../../store/slices/authSlice.js';
+import { createLogger } from '../../utils/logger.js';
 import messages from '../messages.js';
+
+const log = createLogger('OktaCallback');
 
 const { Title } = Typography;
 
@@ -44,7 +47,7 @@ const OktaCallback = () => {
         navigate(from, { replace: true });
       })
       .catch((err) => {
-        console.error('[OktaCallback] Token exchange failed:', err);
+        log.error('Token exchange failed', err);
         dispatch(setAuthError(err instanceof Error ? err.message : String(err)));
       });
     // Deps intentionally omitted: this runs once on mount only.

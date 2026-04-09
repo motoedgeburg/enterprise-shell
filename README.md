@@ -1,6 +1,6 @@
 # Enterprise Shell
 
-A production-grade React enterprise application shell with Okta SSO, Redux Toolkit, Ant Design, Axios, React Final Form, and MSW.
+A production-grade React 19 enterprise application shell with Okta SSO, Redux Toolkit, Ant Design, Axios, React Final Form, and MSW.
 
 ---
 
@@ -12,11 +12,12 @@ A production-grade React enterprise application shell with Okta SSO, Redux Toolk
 | Routing | [React Router v6](https://reactrouter.com) |
 | Global state | [Redux Toolkit](https://redux-toolkit.js.org) |
 | HTTP client | [Axios](https://axios-http.com) with centralized interceptors |
-| Forms | [React Final Form](https://final-form.org/react) + typed Ant Design field components |
+| Forms | [React Final Form 7](https://final-form.org/react) + typed Ant Design field components |
 | Validation | Composable validator functions + `useValidators` hook (react-intl aware) |
 | Authentication | [Okta](https://okta.com) via `@okta/okta-auth-js` (PKCE flow) |
 | API mocking | [MSW v2](https://mswjs.io) (browser + Node) |
-| i18n | [react-intl](https://formatjs.io/docs/react-intl) — all strings in message descriptor files |
+| i18n | [react-intl 7](https://formatjs.io/docs/react-intl) — all strings in message descriptor files |
+| Logging | Structured logger (`src/utils/logger.js`) with level-gated output |
 | Build | [Vite](https://vitejs.dev) — instant dev server, native ESM |
 | Testing | [Vitest](https://vitest.dev) + [React Testing Library](https://testing-library.com) |
 | Linting | ESLint + Prettier |
@@ -109,7 +110,7 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 │     via the request interceptor in src/api/axiosInstance.js    │
 │                                                                 │
 │ 10. On 401 response: interceptor calls clearCredentials()      │
-│     and redirects back to Okta /authorize                      │
+│     and redirects to /login, re-entering the auth flow         │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -120,6 +121,28 @@ This app uses **Okta as the identity provider** with no login form. Here is the 
 - The Okta SDK's token manager is also configured for `storage: 'memory'`
 - This prevents XSS attacks from stealing long-lived refresh tokens
 - Trade-off: tokens don't survive a page refresh; Okta's silent re-authentication handles renewal transparently
+
+---
+
+## Error Handling
+
+The app wraps the entire component tree in a top-level `<ErrorBoundary>` (in `App.jsx`). If any component throws an unhandled error during rendering, the boundary catches it and displays a recovery screen with "Try Again" and "Go to Dashboard" options instead of a blank page.
+
+---
+
+## Logging
+
+All runtime logging goes through `createLogger(source)` from `src/utils/logger.js`. Each logger instance provides `debug`, `info`, `warn`, and `error` methods that tag output with the source name (e.g. `[Auth]`, `[API]`).
+
+In production builds (`import.meta.env.PROD`), `debug` and `info` messages are suppressed — only `warn` and `error` are emitted.
+
+```js
+import { createLogger } from '../utils/logger.js';
+const log = createLogger('MyComponent');
+
+log.info('loaded');           // silent in production
+log.error('fetch failed', err); // always emitted
+```
 
 ---
 
@@ -157,6 +180,7 @@ src/
 ├── components/
 │   ├── AuthInitializer.jsx       # Bootstraps Okta auth state on startup (real mode only)
 │   ├── AppLayout.jsx             # Dark sidebar + header shell (Ant Design Layout)
+│   ├── ErrorBoundary.jsx         # Top-level error boundary with recovery UI
 │   ├── messages.js               # i18n descriptors for shell chrome
 │   ├── fields/                   # Typed React Final Form ↔ Ant Design field components
 │   │   ├── AntField.jsx          # Base adapter (Field → Form.Item)
@@ -174,6 +198,7 @@ src/
 │   └── tests/
 │       ├── AuthInitializer.test.jsx
 │       ├── AppLayout.test.jsx
+│       ├── ErrorBoundary.test.jsx
 │       └── fields/
 │           ├── PhoneField.test.jsx
 │           └── SsnField.test.jsx
@@ -241,6 +266,7 @@ src/
 │   └── tests/
 │
 ├── utils/
+│   ├── logger.js                 # Structured logger (createLogger) with level gating
 │   ├── validators.js             # Pure validator functions (no strings)
 │   ├── validatorMessages.js      # i18n descriptors for validation errors
 │   └── tests/
@@ -381,8 +407,8 @@ All variables are prefixed with `VITE_` and accessed via `import.meta.env` (Vite
 
 | Variable | Description |
 |---|---|
-| `VITE_OKTA_ISSUER` | Okta authorization server URL |
-| `VITE_OKTA_CLIENT_ID` | Okta OIDC client ID |
+| `VITE_OKTA_ISSUER` | Okta authorization server URL (required outside mock mode) |
+| `VITE_OKTA_CLIENT_ID` | Okta OIDC client ID (required outside mock mode) |
 | `VITE_OKTA_REDIRECT_URI` | Callback URL (must match Okta app config) |
 | `VITE_OKTA_POST_LOGOUT_URI` | Post-logout redirect URL |
 | `VITE_API_BASE_URL` | Backend base URL |
