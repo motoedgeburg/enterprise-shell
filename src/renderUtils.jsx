@@ -13,7 +13,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
-import componentMessages from './components/messages.js';
+import componentMessages from './components/AppLayout/messages.js';
 import dashboardMessages from './pages/Dashboard/messages.js';
 import loginMessages from './pages/LoginPage/messages.js';
 import callbackMessages from './pages/OktaCallback/messages.js';

@@ -181,43 +181,50 @@ src/
 │   └── tests/
 │
 ├── components/
-│   ├── AuthInitializer.jsx       # Bootstraps Okta auth state on startup (real mode only)
-│   ├── AppLayout.jsx             # Dark sidebar + header shell (Ant Design Layout)
-│   ├── ErrorBoundary.jsx         # Top-level error boundary with recovery UI
-│   ├── messages.js               # i18n descriptors for shell chrome
-│   ├── fields/                   # Typed React Final Form ↔ Ant Design field components
-│   │   ├── AntField.jsx          # Base adapter (Field → Form.Item)
-│   │   ├── TextField.jsx
-│   │   ├── EmailField.jsx
-│   │   ├── PhoneField.jsx        # Auto-formats to (NXX) NXX-XXXX as user types
-│   │   ├── SsnField.jsx          # Masked input, auto-formats to XXX-XX-XXXX
-│   │   ├── SelectField.jsx
-│   │   ├── TextAreaField.jsx
-│   │   ├── DateField.jsx         # ISO string ↔ dayjs conversion
-│   │   ├── RadioGroupField.jsx
-│   │   ├── CheckboxGroupField.jsx
-│   │   ├── SwitchField.jsx
-│   │   └── index.js              # Barrel export
-│   └── tests/
-│       ├── AuthInitializer.test.jsx
-│       ├── AppLayout.test.jsx
-│       ├── ErrorBoundary.test.jsx
-│       └── fields/
+│   ├── AppLayout/
+│   │   ├── AppLayout.jsx         # Dark sidebar + header shell (Ant Design Layout)
+│   │   ├── messages.js           # i18n descriptors for shell chrome
+│   │   └── tests/
+│   │       └── AppLayout.test.jsx
+│   ├── AuthInitializer/
+│   │   ├── AuthInitializer.jsx   # Bootstraps Okta auth state on startup (real mode only)
+│   │   └── tests/
+│   │       └── AuthInitializer.test.jsx
+│   ├── ErrorBoundary/
+│   │   ├── ErrorBoundary.jsx     # Top-level error boundary with recovery UI
+│   │   └── tests/
+│   │       └── ErrorBoundary.test.jsx
+│   └── fields/                   # Typed React Final Form ↔ Ant Design field components
+│       ├── AntField.jsx          # Base adapter (Field → Form.Item)
+│       ├── TextField.jsx
+│       ├── EmailField.jsx
+│       ├── PhoneField.jsx        # Auto-formats to (NXX) NXX-XXXX as user types
+│       ├── SsnField.jsx          # Masked input, auto-formats to XXX-XX-XXXX
+│       ├── SelectField.jsx
+│       ├── TextAreaField.jsx
+│       ├── DateField.jsx         # ISO string ↔ dayjs conversion
+│       ├── RadioGroupField.jsx
+│       ├── CheckboxGroupField.jsx
+│       ├── SwitchField.jsx
+│       ├── index.js              # Barrel export
+│       └── tests/
 │           ├── PhoneField.test.jsx
 │           └── SsnField.test.jsx
 │
 ├── pages/
-│   ├── messages.js               # Shared page messages (Dashboard, Login, Callback)
 │   ├── Dashboard/
 │   │   ├── Dashboard.jsx         # Welcome + centered Search tile
+│   │   ├── messages.js
 │   │   └── tests/
 │   │       └── Dashboard.test.jsx
 │   ├── LoginPage/
 │   │   ├── LoginPage.jsx         # SSO entry point (no credentials form)
+│   │   ├── messages.js
 │   │   └── tests/
 │   │       └── LoginPage.test.jsx
 │   ├── OktaCallback/
 │   │   ├── OktaCallback.jsx      # Token exchange + Redux dispatch
+│   │   ├── messages.js
 │   │   └── tests/
 │   │       └── OktaCallback.test.jsx
 │   ├── Search/

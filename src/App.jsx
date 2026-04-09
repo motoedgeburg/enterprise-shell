@@ -1,8 +1,8 @@
 import { ConfigProvider, theme } from 'antd';
 import { BrowserRouter } from 'react-router-dom';
 
-import AuthInitializer from './components/AuthInitializer.jsx';
-import ErrorBoundary from './components/ErrorBoundary.jsx';
+import AuthInitializer from './components/AuthInitializer/AuthInitializer.jsx';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.jsx';
 import AppRoutes from './routes/index.jsx';
 
 const IS_MOCK_AUTH = import.meta.env.VITE_MOCK_AUTH === 'true';

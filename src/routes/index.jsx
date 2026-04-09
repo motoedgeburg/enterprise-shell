@@ -2,7 +2,7 @@ import { Spin } from 'antd';
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import AppLayout from '../components/AppLayout.jsx';
+import AppLayout from '../components/AppLayout/AppLayout.jsx';
 import LoginPage from '../pages/LoginPage/LoginPage.jsx';
 import OktaCallback from '../pages/OktaCallback/OktaCallback.jsx';
 

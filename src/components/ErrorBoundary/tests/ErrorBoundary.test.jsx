@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import ErrorBoundary from './ErrorBoundary.jsx';
+import ErrorBoundary from '../ErrorBoundary.jsx';
 
 const ThrowingChild = () => {
   throw new Error('Test explosion');

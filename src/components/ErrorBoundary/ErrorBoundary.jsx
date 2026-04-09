@@ -1,7 +1,7 @@
 import { Button, Result } from 'antd';
 import { Component } from 'react';
 
-import { createLogger } from '../utils/logger.js';
+import { createLogger } from '../../utils/logger.js';
 
 const log = createLogger('ErrorBoundary');
 

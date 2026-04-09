@@ -15,7 +15,7 @@ import { render } from '@testing-library/react';
 import { act } from 'react';
 import { Provider } from 'react-redux';
 
-import { buildStore, MOCK_USER } from '../../renderUtils.jsx';
+import { buildStore, MOCK_USER } from '../../../renderUtils.jsx';
 import AuthInitializer from '../AuthInitializer.jsx';
 
 // ─── Okta mock ────────────────────────────────────────────────────────────────

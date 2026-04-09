@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { oktaAuth } from '../hooks/useAuth';
-import { useAppDispatch } from '../store';
-import { clearCredentials, setAuthError, setCredentials } from '../store/slices/authSlice';
-import { createLogger } from '../utils/logger.js';
+import { oktaAuth } from '../../hooks/useAuth';
+import { useAppDispatch } from '../../store';
+import { clearCredentials, setAuthError, setCredentials } from '../../store/slices/authSlice';
+import { createLogger } from '../../utils/logger.js';
 
 const log = createLogger('AuthInitializer');
 

@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
-import { useAuth } from '../hooks/useAuth.js';
+import { useAuth } from '../../hooks/useAuth.js';
 
 import messages from './messages.js';
 
