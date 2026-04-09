@@ -131,20 +131,20 @@ const ResultsPage = () => {
       <Table
         dataSource={records}
         columns={columns}
-        rowKey="id"
+        rowKey="uuid"
         loading={loading}
         locale={{
           emptyText: <Empty description={intl.formatMessage(messages.RESULTS_EMPTY)} />,
         }}
         onRow={(record) => ({
           onClick: () =>
-            navigate(`/records/${record.id}`, {
+            navigate(`/records/${record.uuid}`, {
               state: { search: searchParams.toString() },
             }),
           onKeyDown: (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              navigate(`/records/${record.id}`, {
+              navigate(`/records/${record.uuid}`, {
                 state: { search: searchParams.toString() },
               });
             }

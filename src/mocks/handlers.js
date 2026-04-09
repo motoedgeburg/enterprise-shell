@@ -84,12 +84,11 @@ export const handlers = [
 
   // ── GET /api/records/:id ────────────────────────────────────────────────────
   http.get(`${BASE}/records/:id`, ({ params }) => {
-    const id = parseInt(params['id'], 10);
-    const record = db.getById(id);
+    const record = db.getById(params['id']);
 
     if (!record) {
       return HttpResponse.json(
-        { message: `Record with id ${id} not found`, status: 404 },
+        { message: `Record with id ${params['id']} not found`, status: 404 },
         { status: 404 },
       );
     }
@@ -114,13 +113,12 @@ export const handlers = [
 
   // ── PUT /api/records/:id ────────────────────────────────────────────────────
   http.put(`${BASE}/records/:id`, async ({ params, request }) => {
-    const id = parseInt(params['id'], 10);
     const body = await request.json();
 
-    const updated = db.update(id, body);
+    const updated = db.update(params['id'], body);
     if (!updated) {
       return HttpResponse.json(
-        { message: `Record with id ${id} not found`, status: 404 },
+        { message: `Record with id ${params['id']} not found`, status: 404 },
         { status: 404 },
       );
     }
@@ -130,12 +128,11 @@ export const handlers = [
 
   // ── DELETE /api/records/:id ─────────────────────────────────────────────────
   http.delete(`${BASE}/records/:id`, ({ params }) => {
-    const id = parseInt(params['id'], 10);
-    const existed = db.remove(id);
+    const existed = db.remove(params['id']);
 
     if (!existed) {
       return HttpResponse.json(
-        { message: `Record with id ${id} not found`, status: 404 },
+        { message: `Record with id ${params['id']} not found`, status: 404 },
         { status: 404 },
       );
     }

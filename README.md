@@ -168,7 +168,7 @@ src/
 ├── api/
 │   ├── axiosInstance.js          # Centralized Axios instance with interceptors
 │   ├── lookupsService.js         # Reference data (departments, statuses, etc.)
-│   ├── recordsService.js         # Records CRUD + search
+│   ├── recordsService.js         # Records CRUD + search (UUID surrogate keys)
 │   └── tests/
 │       └── recordsService.test.js
 │
@@ -368,14 +368,16 @@ Section components enforce cross-field business rules via `useFormState` + `form
 
 ## MSW Mock API
 
+Records use **UUID surrogate keys** — the internal numeric `id` is never exposed in API responses. All endpoints accept and return a `uuid` field as the public identifier. Secondary data (emergency contacts, certifications) keeps plain IDs since they are only accessed through their parent record.
+
 | Method | URL | Description |
 |---|---|---|
 | `GET` | `/api/lookups` | Reference data (departments, statuses, etc.) |
-| `GET` | `/api/records` | Paginated + filtered list |
-| `GET` | `/api/records/:id` | Single record |
-| `POST` | `/api/records` | Create (returns 201) |
-| `PUT` | `/api/records/:id` | Update |
-| `DELETE` | `/api/records/:id` | Delete (returns 204) |
+| `GET` | `/api/records` | Paginated + filtered list (returns `uuid`, no `id`) |
+| `GET` | `/api/records/:uuid` | Single record |
+| `POST` | `/api/records` | Create (returns 201 with server-generated `uuid`) |
+| `PUT` | `/api/records/:uuid` | Update |
+| `DELETE` | `/api/records/:uuid` | Delete (returns 204) |
 
 Enable MSW mocks in dev: `VITE_ENABLE_MOCKS=true npm start`
 

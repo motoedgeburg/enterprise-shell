@@ -2,6 +2,7 @@
 export const seedRecords = [
   {
     id: 1,
+    uuid: 'b3a1c5d0-7f2e-4a8b-9c6d-1e0f3a5b7d9e',
     personalInfo: {
       name: 'Alice Johnson',
       email: 'alice.johnson@company.com',
@@ -58,6 +59,7 @@ export const seedRecords = [
   },
   {
     id: 2,
+    uuid: 'e7d4f2a1-3b6c-48e9-a5d0-2f1c7e9b4a3d',
     personalInfo: {
       name: 'Bob Martinez',
       email: 'bob.martinez@company.com',
@@ -114,6 +116,7 @@ export const seedRecords = [
   },
   {
     id: 3,
+    uuid: 'a9c3e5f1-2d4b-4a7c-8e6f-0b3d5a7c9e1f',
     personalInfo: {
       name: 'Carol White',
       email: 'carol.white@company.com',
@@ -144,6 +147,7 @@ export const seedRecords = [
   },
   {
     id: 4,
+    uuid: 'f1d3b5a7-9e2c-4f6a-8d0b-3c5e7a1f9d2b',
     personalInfo: {
       name: 'David Kim',
       email: 'david.kim@company.com',
@@ -200,6 +204,7 @@ export const seedRecords = [
   },
   {
     id: 5,
+    uuid: 'c2e4a6f8-0d1b-4c3e-9a5f-7b2d4e6a8c0f',
     personalInfo: {
       name: 'Eva Brown',
       email: 'eva.brown@company.com',
@@ -239,6 +244,7 @@ export const seedRecords = [
   },
   {
     id: 6,
+    uuid: 'd5f7a9c1-3e2b-4d6a-8f0c-1b3e5a7d9f2c',
     personalInfo: {
       name: 'Frank Lee',
       email: 'frank.lee@company.com',
@@ -269,6 +275,7 @@ export const seedRecords = [
   },
   {
     id: 7,
+    uuid: 'a1b2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d',
     personalInfo: {
       name: 'Grace Chen',
       email: 'grace.chen@company.com',
@@ -325,6 +332,7 @@ export const seedRecords = [
   },
   {
     id: 8,
+    uuid: 'e6f7a8b9-c0d1-4e2f-3a4b-5c6d7e8f9a0b',
     personalInfo: {
       name: 'Henry Davis',
       email: 'henry.davis@company.com',
@@ -392,10 +400,17 @@ export const seedRecords = [
 let records = [...seedRecords];
 let nextId = records.length + 1;
 
+/** Strip the internal numeric id from a record before returning it. */
+const toPublic = (record) => {
+  if (!record) return record;
+  const { id: _id, ...rest } = record;
+  return rest;
+};
+
 export const db = {
   getAll: (page, size) => {
     const start = page * size;
-    const content = records.slice(start, start + size);
+    const content = records.slice(start, start + size).map(toPublic);
     return {
       content,
       totalElements: records.length,
@@ -429,7 +444,7 @@ export const db = {
 
     const start = page * size;
     return {
-      content: result.slice(start, start + size),
+      content: result.slice(start, start + size).map(toPublic),
       totalElements: result.length,
       totalPages: Math.ceil(result.length / size),
       size,
@@ -437,22 +452,23 @@ export const db = {
     };
   },
 
-  getById: (id) => records.find((r) => r.id === id) ?? null,
+  getById: (uuid) => toPublic(records.find((r) => r.uuid === uuid)) ?? null,
 
   create: (dto) => {
     const newRecord = {
       ...dto,
       id: nextId++,
+      uuid: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
     };
     records = [...records, newRecord];
-    return newRecord;
+    return toPublic(newRecord);
   },
 
-  update: (id, dto) => {
+  update: (uuid, dto) => {
     let updated = null;
     records = records.map((r) => {
-      if (r.id === id) {
+      if (r.uuid === uuid) {
         updated = {
           ...r,
           personalInfo: { ...r.personalInfo, ...dto.personalInfo },
@@ -465,12 +481,12 @@ export const db = {
       }
       return r;
     });
-    return updated;
+    return toPublic(updated);
   },
 
-  remove: (id) => {
-    const existed = records.some((r) => r.id === id);
-    records = records.filter((r) => r.id !== id);
+  remove: (uuid) => {
+    const existed = records.some((r) => r.uuid === uuid);
+    records = records.filter((r) => r.uuid !== uuid);
     return existed;
   },
 

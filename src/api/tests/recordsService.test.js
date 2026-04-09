@@ -6,6 +6,13 @@ import { recordsService } from '../recordsService';
 
 // MSW server lifecycle is managed by src/setupTests.js
 
+// UUID of Alice Johnson (seed record 1)
+const ALICE_UUID = 'b3a1c5d0-7f2e-4a8b-9c6d-1e0f3a5b7d9e';
+// UUID of Bob Martinez (seed record 2)
+const BOB_UUID = 'e7d4f2a1-3b6c-48e9-a5d0-2f1c7e9b4a3d';
+// UUID of Carol White (seed record 3)
+const CAROL_UUID = 'a9c3e5f1-2d4b-4a7c-8e6f-0b3d5a7c9e1f';
+
 beforeEach(() => {
   db.reset();
 });
@@ -44,11 +51,11 @@ describe('recordsService.getAll', () => {
     expect(result.content).toHaveLength(0);
   });
 
-  it('returns records with nested structure', async () => {
+  it('returns records with uuid and nested structure (no internal id)', async () => {
     const result = await recordsService.getAll(0, 1);
     const first = result.content[0];
     expect(first).toMatchObject({
-      id: expect.any(Number),
+      uuid: expect.any(String),
       personalInfo: { name: expect.any(String), email: expect.any(String) },
       workInfo: {
         department: expect.any(String),
@@ -56,22 +63,23 @@ describe('recordsService.getAll', () => {
       },
       createdAt: expect.any(String),
     });
+    expect(first.id).toBeUndefined();
   });
 });
 
 // ─── getById ─────────────────────────────────────────────────────────────────
 
 describe('recordsService.getById', () => {
-  it('returns the record matching the given id (flattened)', async () => {
-    const record = await recordsService.getById(1);
-    expect(record.id).toBe(1);
+  it('returns the record matching the given uuid (flattened)', async () => {
+    const record = await recordsService.getById(ALICE_UUID);
+    expect(record.uuid).toBe(ALICE_UUID);
     expect(record.name).toBe('Alice Johnson');
   });
 
   it('returns all expected flat fields', async () => {
-    const record = await recordsService.getById(2);
+    const record = await recordsService.getById(BOB_UUID);
     expect(record).toMatchObject({
-      id: 2,
+      uuid: BOB_UUID,
       name: 'Bob Martinez',
       email: 'bob.martinez@company.com',
       department: 'Product',
@@ -79,8 +87,8 @@ describe('recordsService.getById', () => {
     });
   });
 
-  it('throws (404) for a non-existent id', async () => {
-    await expect(recordsService.getById(9999)).rejects.toThrow();
+  it('throws (404) for a non-existent uuid', async () => {
+    await expect(recordsService.getById('non-existent-uuid')).rejects.toThrow();
   });
 });
 
@@ -94,10 +102,11 @@ describe('recordsService.create', () => {
     status: 'active',
   };
 
-  it('returns the created record with a server-assigned id (flattened)', async () => {
+  it('returns the created record with a server-assigned uuid (flattened)', async () => {
     const created = await recordsService.create(newRecord);
-    expect(created.id).toBeDefined();
-    expect(typeof created.id).toBe('number');
+    expect(created.uuid).toBeDefined();
+    expect(typeof created.uuid).toBe('string');
+    expect(created.id).toBeUndefined();
   });
 
   it('returns a createdAt timestamp', async () => {
@@ -137,27 +146,27 @@ describe('recordsService.create', () => {
 
 describe('recordsService.update', () => {
   it('updates a field and returns the full flattened record', async () => {
-    const original = await recordsService.getById(1);
-    const updated = await recordsService.update(1, { ...original, name: 'Alice Updated' });
+    const original = await recordsService.getById(ALICE_UUID);
+    const updated = await recordsService.update(ALICE_UUID, { ...original, name: 'Alice Updated' });
     expect(updated.name).toBe('Alice Updated');
-    expect(updated.id).toBe(1);
+    expect(updated.uuid).toBe(ALICE_UUID);
   });
 
   it('leaves unmodified fields intact', async () => {
-    const original = await recordsService.getById(1);
-    const updated = await recordsService.update(1, { ...original, name: 'New Name' });
+    const original = await recordsService.getById(ALICE_UUID);
+    const updated = await recordsService.update(ALICE_UUID, { ...original, name: 'New Name' });
     expect(updated.email).toBe(original.email);
     expect(updated.department).toBe(original.department);
   });
 
   it('can update status', async () => {
-    const original = await recordsService.getById(3);
-    const updated = await recordsService.update(3, { ...original, status: 'active' });
+    const original = await recordsService.getById(CAROL_UUID);
+    const updated = await recordsService.update(CAROL_UUID, { ...original, status: 'active' });
     expect(updated.status).toBe('active');
   });
 
-  it('throws (404) when updating a non-existent id', async () => {
-    await expect(recordsService.update(9999, { name: 'Ghost' })).rejects.toThrow();
+  it('throws (404) when updating a non-existent uuid', async () => {
+    await expect(recordsService.update('non-existent-uuid', { name: 'Ghost' })).rejects.toThrow();
   });
 });
 
@@ -165,27 +174,27 @@ describe('recordsService.update', () => {
 
 describe('recordsService.remove', () => {
   it('resolves without throwing for an existing record', async () => {
-    await expect(recordsService.remove(1)).resolves.not.toThrow();
+    await expect(recordsService.remove(ALICE_UUID)).resolves.not.toThrow();
   });
 
   it('reduces the total count after deletion', async () => {
-    await recordsService.remove(1);
+    await recordsService.remove(ALICE_UUID);
     const list = await recordsService.getAll(0, 100);
     expect(list.totalElements).toBe(7);
   });
 
   it('makes the deleted record unretrievable', async () => {
-    await recordsService.remove(1);
-    await expect(recordsService.getById(1)).rejects.toThrow();
+    await recordsService.remove(ALICE_UUID);
+    await expect(recordsService.getById(ALICE_UUID)).rejects.toThrow();
   });
 
-  it('throws (404) when deleting a non-existent id', async () => {
-    await expect(recordsService.remove(9999)).rejects.toThrow();
+  it('throws (404) when deleting a non-existent uuid', async () => {
+    await expect(recordsService.remove('non-existent-uuid')).rejects.toThrow();
   });
 
-  it('throws a second time when deleting the same id twice', async () => {
-    await recordsService.remove(1);
-    await expect(recordsService.remove(1)).rejects.toThrow();
+  it('throws a second time when deleting the same uuid twice', async () => {
+    await recordsService.remove(ALICE_UUID);
+    await expect(recordsService.remove(ALICE_UUID)).rejects.toThrow();
   });
 });
 

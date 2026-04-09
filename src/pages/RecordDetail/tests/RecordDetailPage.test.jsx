@@ -119,9 +119,12 @@ describe('RecordDetailPage — create mode (/records/new)', () => {
 
 // ─── Edit mode ───────────────────────────────────────────────────────────────
 
-describe('RecordDetailPage — edit mode (/records/1)', () => {
+// UUID of Alice Johnson (seed record 1)
+const ALICE_UUID = 'b3a1c5d0-7f2e-4a8b-9c6d-1e0f3a5b7d9e';
+
+describe(`RecordDetailPage — edit mode (/records/${ALICE_UUID})`, () => {
   it('shows a loading spinner initially then renders the record name', async () => {
-    renderPage('/records/1');
+    renderPage(`/records/${ALICE_UUID}`);
     // Spinner shown while loading
     expect(document.querySelector('.ant-spin')).toBeInTheDocument();
     // After MSW responds, record name appears
@@ -129,20 +132,20 @@ describe('RecordDetailPage — edit mode (/records/1)', () => {
   });
 
   it('renders "Save Changes" as the submit button label', async () => {
-    renderPage('/records/1');
+    renderPage(`/records/${ALICE_UUID}`);
     await waitFor(() => screen.getByText('Alice Johnson'));
     expect(screen.getByRole('button', { name: /Save Changes/i })).toBeInTheDocument();
   });
 
   it('renders the Delete button in edit mode', async () => {
-    renderPage('/records/1');
+    renderPage(`/records/${ALICE_UUID}`);
     await waitFor(() => screen.getByText('Alice Johnson'));
     expect(screen.getByRole('button', { name: /Delete/i })).toBeInTheDocument();
   });
 
   it('navigates to /results when Back is clicked', async () => {
     const user = userEvent.setup();
-    renderPage('/records/1');
+    renderPage(`/records/${ALICE_UUID}`);
     await waitFor(() => screen.getByText('Alice Johnson'));
     await user.click(screen.getByRole('button', { name: /Back to Results/i }));
     await waitFor(() => expect(capturedLocation?.pathname).toBe('/results'));
@@ -154,7 +157,7 @@ describe('RecordDetailPage — edit mode (/records/1)', () => {
 describe('RecordDetailPage — save', () => {
   it('save button is present and clickable after record loads', async () => {
     const user = userEvent.setup();
-    renderPage('/records/1');
+    renderPage(`/records/${ALICE_UUID}`);
     await waitFor(() => screen.getByText('Alice Johnson'));
     const saveBtn = screen.getByRole('button', { name: /Save Changes/i });
     expect(saveBtn).toBeInTheDocument();

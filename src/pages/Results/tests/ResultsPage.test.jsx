@@ -144,7 +144,7 @@ describe('ResultsPage — table', () => {
     renderResults('?name=Alice');
     await waitFor(() => screen.getByText('Alice Johnson'));
     await user.click(screen.getByText('Alice Johnson'));
-    await waitFor(() => expect(capturedLocation?.pathname).toMatch(/^\/records\/\d+$/));
+    await waitFor(() => expect(capturedLocation?.pathname).toMatch(/^\/records\/[a-f0-9-]+$/));
   });
 
   it('renders empty state when no results match', async () => {

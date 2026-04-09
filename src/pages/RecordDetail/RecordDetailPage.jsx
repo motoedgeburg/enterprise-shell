@@ -50,7 +50,7 @@ const RecordDetailPage = () => {
   const loadRecord = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await recordsService.getById(parseInt(id, 10));
+      const data = await recordsService.getById(id);
       setRecord(data);
     } catch (err) {
       log.error('Failed to load record', err);
@@ -71,9 +71,9 @@ const RecordDetailPage = () => {
       if (isNew) {
         const created = await recordsService.create(values);
         void message.success(intl.formatMessage(messages.DETAIL_CREATE_SUCCESS));
-        navigate(`/records/${created.id}`, { replace: true, state: location.state });
+        navigate(`/records/${created.uuid}`, { replace: true, state: location.state });
       } else {
-        await recordsService.update(parseInt(id, 10), values);
+        await recordsService.update(id, values);
         void message.success(intl.formatMessage(messages.DETAIL_SUCCESS));
         setRecord(values);
       }
@@ -89,7 +89,7 @@ const RecordDetailPage = () => {
 
   const handleDelete = async () => {
     try {
-      await recordsService.remove(parseInt(id, 10));
+      await recordsService.remove(id);
       void message.success(intl.formatMessage(messages.DETAIL_DELETE_SUCCESS));
       navigate(backPath);
     } catch (err) {

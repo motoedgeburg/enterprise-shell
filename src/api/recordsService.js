@@ -7,10 +7,17 @@ import axiosInstance from './axiosInstance';
 /** API nested → flat form values */
 export function flattenRecord(record) {
   if (!record) return record;
-  const { id, personalInfo, workInfo, preferences, emergencyContacts, certifications, createdAt } =
-    record;
+  const {
+    uuid,
+    personalInfo,
+    workInfo,
+    preferences,
+    emergencyContacts,
+    certifications,
+    createdAt,
+  } = record;
   return {
-    id,
+    uuid,
     ...personalInfo,
     ...workInfo,
     ...preferences,
@@ -80,20 +87,20 @@ export const recordsService = {
       .then((res) => res.data);
   },
 
-  /** GET /api/records/:id — returns flattened record for form use */
-  getById: (id) =>
-    axiosInstance.get(`${RECORDS_PATH}/${id}`).then((res) => flattenRecord(res.data)),
+  /** GET /api/records/:uuid — returns flattened record for form use */
+  getById: (uuid) =>
+    axiosInstance.get(`${RECORDS_PATH}/${uuid}`).then((res) => flattenRecord(res.data)),
 
   /** POST /api/records — nests flat form values before sending */
   create: (values) =>
     axiosInstance.post(RECORDS_PATH, nestRecord(values)).then((res) => flattenRecord(res.data)),
 
-  /** PUT /api/records/:id — nests flat form values before sending */
-  update: (id, values) =>
+  /** PUT /api/records/:uuid — nests flat form values before sending */
+  update: (uuid, values) =>
     axiosInstance
-      .put(`${RECORDS_PATH}/${id}`, nestRecord(values))
+      .put(`${RECORDS_PATH}/${uuid}`, nestRecord(values))
       .then((res) => flattenRecord(res.data)),
 
-  /** DELETE /api/records/:id */
-  remove: (id) => axiosInstance.delete(`${RECORDS_PATH}/${id}`).then((res) => res.data),
+  /** DELETE /api/records/:uuid */
+  remove: (uuid) => axiosInstance.delete(`${RECORDS_PATH}/${uuid}`).then((res) => res.data),
 };
