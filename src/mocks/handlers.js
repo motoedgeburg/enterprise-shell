@@ -67,8 +67,6 @@ export const handlers = [
   // ── GET /api/records ────────────────────────────────────────────────────────
   http.get(`${BASE}/records`, ({ request }) => {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') ?? '0', 10);
-    const size = parseInt(url.searchParams.get('size') ?? '10', 10);
 
     const filters = {
       name: url.searchParams.get('name') ?? '',
@@ -78,8 +76,7 @@ export const handlers = [
       address: url.searchParams.get('address') ?? '',
     };
 
-    const data = db.search(filters, page, size);
-    return HttpResponse.json(data);
+    return HttpResponse.json(db.search(filters));
   }),
 
   // ── GET /api/records/:id ────────────────────────────────────────────────────

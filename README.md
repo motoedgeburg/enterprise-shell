@@ -373,8 +373,8 @@ Records use **UUID surrogate keys** — the internal numeric `id` is never expos
 | Method | URL | Description |
 |---|---|---|
 | `GET` | `/api/lookups` | Reference data (departments, statuses, etc.) |
-| `GET` | `/api/records` | Paginated + filtered list (returns `uuid`, no `id`) |
-| `GET` | `/api/records/:uuid` | Single record |
+| `GET` | `/api/records` | Flat summary list (`uuid`, `name`, `address`, `department`, `status`); client-side pagination |
+| `GET` | `/api/records/:uuid` | Full nested record (detail view) |
 | `POST` | `/api/records` | Create (returns 201 with server-generated `uuid`) |
 | `PUT` | `/api/records/:uuid` | Update |
 | `DELETE` | `/api/records/:uuid` | Delete (returns 204) |

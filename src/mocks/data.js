@@ -407,25 +407,22 @@ const toPublic = (record) => {
   return rest;
 };
 
-export const db = {
-  getAll: (page, size) => {
-    const start = page * size;
-    const content = records.slice(start, start + size).map(toPublic);
-    return {
-      content,
-      totalElements: records.length,
-      totalPages: Math.ceil(records.length / size),
-      size,
-      number: page,
-    };
-  },
+/** Project a record down to the flat summary shape used by search/list. */
+const toSummary = (record) => ({
+  uuid: record.uuid,
+  name: record.personalInfo.name,
+  address: record.personalInfo.address,
+  department: record.workInfo.department,
+  status: record.workInfo.status,
+});
 
+export const db = {
   /**
-   * Filter records by any combination of fields, then paginate.
-   * Filters reference nested fields (personalInfo.name, workInfo.department, etc.).
-   * Empty / absent filter values are ignored (match all).
+   * Filter records by any combination of fields.
+   * Returns a flat summary array (no pagination wrapper — the frontend handles
+   * client-side pagination via Ant Design Table).
    */
-  search: (filters = {}, page = 0, size = 10) => {
+  search: (filters = {}) => {
     const { name, email, department, status, address } = filters;
     let result = records;
 
@@ -442,14 +439,7 @@ export const db = {
         r.personalInfo.address?.toLowerCase().includes(address.toLowerCase()),
       );
 
-    const start = page * size;
-    return {
-      content: result.slice(start, start + size).map(toPublic),
-      totalElements: result.length,
-      totalPages: Math.ceil(result.length / size),
-      size,
-      number: page,
-    };
+    return result.map(toSummary);
   },
 
   getById: (uuid) => toPublic(records.find((r) => r.uuid === uuid)) ?? null,

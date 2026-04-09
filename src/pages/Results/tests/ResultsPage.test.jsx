@@ -123,7 +123,7 @@ describe('ResultsPage — table', () => {
   it('renders column headers', async () => {
     renderResults();
     await waitFor(() => expect(screen.getAllByText('Name').length).toBeGreaterThan(0));
-    expect(screen.getAllByText('Email').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Address').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Department').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Status').length).toBeGreaterThan(0);
   });

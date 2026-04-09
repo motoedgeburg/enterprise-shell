@@ -17,53 +17,36 @@ beforeEach(() => {
   db.reset();
 });
 
-// ─── getAll ───────────────────────────────────────────────────────────────────
+// ─── search ──────────────────────────────────────────────────────────────────
 
-describe('recordsService.getAll', () => {
-  it('returns the first page of records', async () => {
-    const result = await recordsService.getAll(0, 5);
-    expect(result.content).toHaveLength(5);
-    expect(result.totalElements).toBe(8);
-    expect(result.number).toBe(0);
-    expect(result.size).toBe(5);
-  });
-
-  it('returns the second page', async () => {
-    const result = await recordsService.getAll(1, 5);
-    expect(result.content).toHaveLength(3);
-    expect(result.number).toBe(1);
-  });
-
-  it('defaults to page 0 size 10', async () => {
-    const result = await recordsService.getAll();
-    expect(result.number).toBe(0);
-    expect(result.size).toBe(10);
-    expect(result.content).toHaveLength(8);
-  });
-
-  it('totalPages is calculated correctly', async () => {
-    const result = await recordsService.getAll(0, 3);
-    expect(result.totalPages).toBe(3); // ceil(8/3)
-  });
-
-  it('returns empty content for a page beyond the last', async () => {
-    const result = await recordsService.getAll(10, 10);
-    expect(result.content).toHaveLength(0);
-  });
-
-  it('returns records with uuid and nested structure (no internal id)', async () => {
-    const result = await recordsService.getAll(0, 1);
-    const first = result.content[0];
-    expect(first).toMatchObject({
+describe('recordsService.search', () => {
+  it('returns all records as flat summaries when no filters', async () => {
+    const result = await recordsService.search();
+    expect(result).toHaveLength(8);
+    expect(result[0]).toMatchObject({
       uuid: expect.any(String),
-      personalInfo: { name: expect.any(String), email: expect.any(String) },
-      workInfo: {
-        department: expect.any(String),
-        status: expect.stringMatching(/^(active|inactive)$/),
-      },
-      createdAt: expect.any(String),
+      name: expect.any(String),
+      department: expect.any(String),
+      status: expect.stringMatching(/^(active|inactive)$/),
     });
-    expect(first.id).toBeUndefined();
+    expect(result[0].id).toBeUndefined();
+    expect(result[0].personalInfo).toBeUndefined();
+  });
+
+  it('filters by name', async () => {
+    const result = await recordsService.search({ name: 'Alice' });
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe('Alice Johnson');
+  });
+
+  it('filters by department', async () => {
+    const result = await recordsService.search({ department: 'Engineering' });
+    expect(result.every((r) => r.department === 'Engineering')).toBe(true);
+  });
+
+  it('returns empty array when no matches', async () => {
+    const result = await recordsService.search({ name: 'ZZZNONEXISTENT' });
+    expect(result).toHaveLength(0);
   });
 });
 
@@ -125,8 +108,8 @@ describe('recordsService.create', () => {
 
   it('increments the total count after creation', async () => {
     await recordsService.create(newRecord);
-    const list = await recordsService.getAll(0, 100);
-    expect(list.totalElements).toBe(9);
+    const list = await recordsService.search();
+    expect(list).toHaveLength(9);
   });
 
   it('throws (400) when name is missing', async () => {
@@ -179,8 +162,8 @@ describe('recordsService.remove', () => {
 
   it('reduces the total count after deletion', async () => {
     await recordsService.remove(ALICE_UUID);
-    const list = await recordsService.getAll(0, 100);
-    expect(list.totalElements).toBe(7);
+    const list = await recordsService.search();
+    expect(list).toHaveLength(7);
   });
 
   it('makes the deleted record unretrievable', async () => {
@@ -207,6 +190,6 @@ describe('recordsService — network errors', () => {
         HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 }),
       ),
     );
-    await expect(recordsService.getAll()).rejects.toThrow();
+    await expect(recordsService.search()).rejects.toThrow();
   });
 });

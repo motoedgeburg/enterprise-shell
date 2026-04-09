@@ -70,21 +70,16 @@ export function nestRecord(values) {
 const RECORDS_PATH = '/records';
 
 export const recordsService = {
-  /** GET /api/records — paginated list, no filters */
-  getAll: (page = 0, size = 10) =>
-    axiosInstance.get(RECORDS_PATH, { params: { page, size } }).then((res) => res.data),
-
   /**
-   * GET /api/records — paginated list with optional attribute filters.
+   * GET /api/records — flat summary list with optional filters.
+   * Returns an array of { uuid, name, address, department, status }.
    * Empty / null filter values are stripped before sending.
    */
-  search: (filters = {}, page = 0, size = 10) => {
+  search: (filters = {}) => {
     const activeFilters = Object.fromEntries(
       Object.entries(filters).filter(([, v]) => v !== '' && v !== null),
     );
-    return axiosInstance
-      .get(RECORDS_PATH, { params: { page, size, ...activeFilters } })
-      .then((res) => res.data);
+    return axiosInstance.get(RECORDS_PATH, { params: activeFilters }).then((res) => res.data);
   },
 
   /** GET /api/records/:uuid — returns flattened record for form use */
