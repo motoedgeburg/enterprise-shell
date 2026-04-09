@@ -14,7 +14,9 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
 import componentMessages from './components/messages.js';
-import pageMessages from './pages/messages.js';
+import dashboardMessages from './pages/Dashboard/messages.js';
+import loginMessages from './pages/LoginPage/messages.js';
+import callbackMessages from './pages/OktaCallback/messages.js';
 import recordDetailMessages from './pages/RecordDetail/messages.js';
 import summaryMessages from './pages/RecordDetail/sections/Summary/messages.js';
 import resultsMessages from './pages/Results/messages.js';
@@ -36,7 +38,9 @@ const buildMessageMap = (...descriptorObjects) => {
 
 export const appMessages = buildMessageMap(
   componentMessages,
-  pageMessages,
+  dashboardMessages,
+  loginMessages,
+  callbackMessages,
   recordDetailMessages,
   resultsMessages,
   searchMessages,

@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/useAuth.js';
 import { useLookups } from '../../hooks/useLookups.js';
-import messages from '../messages.js';
+
+import messages from './messages.js';
 
 const { Title, Paragraph, Text } = Typography;
 

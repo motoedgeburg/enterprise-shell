@@ -7,7 +7,8 @@ import { useAuth } from '../../hooks/useAuth.js';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { setAuthError } from '../../store/slices/authSlice.js';
 import { createLogger } from '../../utils/logger.js';
-import messages from '../messages.js';
+
+import messages from './messages.js';
 
 const log = createLogger('OktaCallback');
 

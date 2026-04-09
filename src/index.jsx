@@ -5,7 +5,9 @@ import { Provider } from 'react-redux';
 
 import App from './App.jsx';
 import componentMessages from './components/messages.js';
-import pageMessages from './pages/messages.js';
+import dashboardMessages from './pages/Dashboard/messages.js';
+import loginMessages from './pages/LoginPage/messages.js';
+import callbackMessages from './pages/OktaCallback/messages.js';
 import resultsMessages from './pages/Results/messages.js';
 import { store } from './store';
 
@@ -21,7 +23,13 @@ const buildMessageMap = (...descriptorObjects) => {
   return map;
 };
 
-const appMessages = buildMessageMap(componentMessages, pageMessages, resultsMessages);
+const appMessages = buildMessageMap(
+  componentMessages,
+  dashboardMessages,
+  loginMessages,
+  callbackMessages,
+  resultsMessages,
+);
 
 async function enableMocking() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== 'true') {
