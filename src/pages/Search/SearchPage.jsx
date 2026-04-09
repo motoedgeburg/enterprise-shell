@@ -71,7 +71,7 @@ const SearchPage = () => {
                     name="department"
                     label={intl.formatMessage(messages.SEARCH_FIELD_DEPARTMENT)}
                     placeholder={intl.formatMessage(messages.SEARCH_FIELD_DEPARTMENT_PLACEHOLDER)}
-                    options={departments.map((d) => ({ value: d, label: d }))}
+                    options={departments}
                     allowClear
                   />
                 </Col>

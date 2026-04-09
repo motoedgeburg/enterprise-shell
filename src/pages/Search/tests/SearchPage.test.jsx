@@ -36,7 +36,11 @@ function renderSearch(lookupsOverrides = {}) {
   capturedLocation = null;
   const store = buildStore(AUTHED_STATE, {
     status: 'succeeded',
-    departments: ['Engineering', 'Product', 'Design'],
+    departments: [
+      { value: 'Engineering', label: 'Engineering' },
+      { value: 'Product', label: 'Product' },
+      { value: 'Design', label: 'Design' },
+    ],
     statuses: [
       { value: 'active', label: 'Active' },
       { value: 'inactive', label: 'Inactive' },

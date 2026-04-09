@@ -18,16 +18,24 @@ const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api';
 // table.  Kept here so it is co-located with the other mock handlers.
 
 const LOOKUPS = {
-  departments: ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'Operations', 'HR'],
+  departments: [
+    { value: 'Engineering', label: 'Engineering' },
+    { value: 'Product', label: 'Product' },
+    { value: 'Design', label: 'Design' },
+    { value: 'Marketing', label: 'Marketing' },
+    { value: 'Sales', label: 'Sales' },
+    { value: 'Operations', label: 'Operations' },
+    { value: 'HR', label: 'HR' },
+  ],
   relationships: [
-    'Spouse',
-    'Partner',
-    'Parent',
-    'Child',
-    'Sibling',
-    'Friend',
-    'Colleague',
-    'Other',
+    { value: 'Spouse', label: 'Spouse' },
+    { value: 'Partner', label: 'Partner' },
+    { value: 'Parent', label: 'Parent' },
+    { value: 'Child', label: 'Child' },
+    { value: 'Sibling', label: 'Sibling' },
+    { value: 'Friend', label: 'Friend' },
+    { value: 'Colleague', label: 'Colleague' },
+    { value: 'Other', label: 'Other' },
   ],
   statuses: [
     { value: 'active', label: 'Active' },

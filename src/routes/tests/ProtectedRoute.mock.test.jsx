@@ -1,8 +1,8 @@
 /**
- * ProtectedRoute — mock mode tests (IS_MOCK_MODE = true).
+ * ProtectedRoute — mock mode tests (IS_MOCK_AUTH = true).
  *
  * vi.stubEnv + vi.resetModules + dynamic import ensures ProtectedRoute is
- * evaluated with VITE_ENABLE_MOCKS=true so IS_MOCK_MODE is true.
+ * evaluated with VITE_MOCK_AUTH=true so IS_MOCK_AUTH is true.
  */
 import { render, screen } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
@@ -14,7 +14,7 @@ import { buildStore, appMessages } from '../../renderUtils.jsx';
 let ProtectedRouteMock;
 
 beforeAll(async () => {
-  vi.stubEnv('VITE_ENABLE_MOCKS', 'true');
+  vi.stubEnv('VITE_MOCK_AUTH', 'true');
   vi.resetModules();
   const mod = await import('../ProtectedRoute.jsx');
   ProtectedRouteMock = mod.default;
@@ -24,7 +24,7 @@ afterAll(() => {
   vi.unstubAllEnvs();
 });
 
-describe('ProtectedRoute — mock mode (IS_MOCK_MODE=true)', () => {
+describe('ProtectedRoute — mock mode (IS_MOCK_AUTH=true)', () => {
   it('renders the outlet even when auth state is unauthenticated', () => {
     const store = buildStore({ isAuthenticated: false, isInitializing: false });
 

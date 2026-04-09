@@ -190,7 +190,7 @@ const EmergencyContactsTab = () => {
                 name="relationship"
                 label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_RELATIONSHIP)}
                 placeholder="Select relationship"
-                options={relationships.map((r) => ({ value: r, label: r }))}
+                options={relationships}
                 validate={required()}
               />
               <PhoneField

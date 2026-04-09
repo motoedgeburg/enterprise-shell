@@ -1,14 +1,14 @@
 /**
  * useAuth hook tests.
  *
- * The hook has two code paths gated on IS_MOCK_MODE
- * (process.env.VITE_ENABLE_MOCKS === 'true').
+ * The hook has two code paths gated on IS_MOCK_AUTH
+ * (import.meta.env.VITE_MOCK_AUTH === 'true').
  *
- * Real-mode path (IS_MOCK_MODE = false, default in tests):
+ * Real-mode path (IS_MOCK_AUTH = false, default in tests):
  *   Delegates login/logout/handleCallback to the OktaAuth singleton.
  *   OktaAuth is mocked to prevent construction failure with empty credentials.
  *
- * Mock-mode path (IS_MOCK_MODE = true):
+ * Mock-mode path (IS_MOCK_AUTH = true):
  *   Bypasses OktaAuth entirely; all operations dispatch straight to Redux.
  *   Tested by re-requiring the module after setting the env var.
  *
@@ -91,8 +91,8 @@ describe('useAuth — state from Redux store', () => {
 
 // ─── Real-mode implementations (IS_MOCK_MODE = false) ────────────────────────
 
-describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
-  // In tests, VITE_ENABLE_MOCKS is not set so IS_MOCK_MODE=false.
+describe('useAuth — real mode (IS_MOCK_AUTH=false)', () => {
+  // In tests, VITE_MOCK_AUTH is not set so IS_MOCK_AUTH=false.
   // OktaAuth is mocked at the top of this file to avoid constructor failure.
   // mockOktaMethods is the same object returned by every new OktaAuth() call.
 
@@ -224,6 +224,6 @@ describe('useAuth — real mode (IS_MOCK_MODE=false)', () => {
   });
 });
 
-// ─── Mock-mode implementations (IS_MOCK_MODE = true) ─────────────────────────
+// ─── Mock-mode implementations (IS_MOCK_AUTH = true) ─────────────────────────
 
-// Note: IS_MOCK_MODE=true tests live in useAuth.mock.test.js
+// Note: IS_MOCK_AUTH=true tests live in useAuth.mock.test.jsx

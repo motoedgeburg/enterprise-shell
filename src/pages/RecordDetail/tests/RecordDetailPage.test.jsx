@@ -60,7 +60,7 @@ function renderPage(path) {
   capturedLocation = null;
   const store = buildStore(AUTHED_STATE, {
     status: 'succeeded',
-    departments: ['Engineering'],
+    departments: [{ value: 'Engineering', label: 'Engineering' }],
     statuses: [{ value: 'active', label: 'Active' }],
     employmentTypes: [{ value: 'full-time', label: 'Full-time' }],
     notificationChannels: [{ value: 'email', label: 'Email' }],

@@ -7,10 +7,10 @@ import { createLogger } from '../utils/logger.js';
 
 const log = createLogger('Auth');
 
-const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
+const IS_MOCK_AUTH = import.meta.env.VITE_MOCK_AUTH === 'true';
 
 // ─── Mock auth (no Okta needed) ──────────────────────────────────────────────
-// When VITE_ENABLE_MOCKS=true, skip real Okta initialisation entirely.
+// When VITE_MOCK_AUTH=true, skip real Okta initialisation entirely.
 // OktaAuth throws on construction if the issuer URL is empty/invalid, which
 // crashes the app before any component renders.
 
@@ -38,7 +38,7 @@ function createOktaClient() {
       '[Auth] Missing required Okta env vars. ' +
         `VITE_OKTA_ISSUER=${issuer ? '(set)' : '(empty)'}, ` +
         `VITE_OKTA_CLIENT_ID=${clientId ? '(set)' : '(empty)'}. ` +
-        'Set these in .env or use VITE_ENABLE_MOCKS=true to bypass Okta.',
+        'Set these in .env or use VITE_MOCK_AUTH=true to bypass Okta.',
     );
   }
 
@@ -60,7 +60,7 @@ function createOktaClient() {
   }
 }
 
-export const oktaAuth = IS_MOCK_MODE ? null : createOktaClient();
+export const oktaAuth = IS_MOCK_AUTH ? null : createOktaClient();
 
 // ─── Hook ────────────────────────────────────────────────────────────────────
 
@@ -134,8 +134,8 @@ export const useAuth = () => {
     user,
     accessToken,
     error,
-    login: IS_MOCK_MODE ? mockLogin : realLogin,
-    logout: IS_MOCK_MODE ? mockLogout : realLogout,
-    handleCallback: IS_MOCK_MODE ? mockHandleCallback : realHandleCallback,
+    login: IS_MOCK_AUTH ? mockLogin : realLogin,
+    logout: IS_MOCK_AUTH ? mockLogout : realLogout,
+    handleCallback: IS_MOCK_AUTH ? mockHandleCallback : realHandleCallback,
   };
 };

@@ -37,10 +37,13 @@ cp .env.example .env
 # 3. Initialize MSW service worker (one-time)
 npx msw init public/ --save
 
-# 4. Start with mocks enabled (no real backend needed)
-VITE_ENABLE_MOCKS=true npm start
+# 4. Start with all mocks (no Okta, no backend)
+VITE_MOCK_AUTH=true VITE_ENABLE_MOCKS=true npm start
 
-# 5. Or start pointing at a real backend
+# 5. Mock Okta auth but use real backend at localhost:8080
+VITE_MOCK_AUTH=true npm start
+
+# 6. Full production mode (real Okta + real backend)
 npm start
 ```
 
@@ -354,7 +357,7 @@ Section components enforce cross-field business rules via `useFormState` + `form
 | `PUT` | `/api/records/:id` | Update |
 | `DELETE` | `/api/records/:id` | Delete (returns 204) |
 
-Enable mocks in dev: `VITE_ENABLE_MOCKS=true npm start`
+Enable MSW mocks in dev: `VITE_ENABLE_MOCKS=true npm start`
 
 ---
 
@@ -412,4 +415,5 @@ All variables are prefixed with `VITE_` and accessed via `import.meta.env` (Vite
 | `VITE_OKTA_REDIRECT_URI` | Callback URL (must match Okta app config) |
 | `VITE_OKTA_POST_LOGOUT_URI` | Post-logout redirect URL |
 | `VITE_API_BASE_URL` | Backend base URL |
-| `VITE_ENABLE_MOCKS` | Set `true` to enable MSW in development |
+| `VITE_MOCK_AUTH` | Set `true` to bypass Okta and use a fake user |
+| `VITE_ENABLE_MOCKS` | Set `true` to enable MSW mock API in development |

@@ -61,7 +61,7 @@ const WorkInfoSection = () => {
         <SelectField
           name="department"
           label={intl.formatMessage(messages.DETAIL_FIELD_DEPARTMENT)}
-          options={departments.map((d) => ({ value: d, label: d }))}
+          options={departments}
           validate={required()}
         />
       </Col>

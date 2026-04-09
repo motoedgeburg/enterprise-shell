@@ -5,7 +5,7 @@ import AuthInitializer from './components/AuthInitializer.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import AppRoutes from './routes/index.jsx';
 
-const IS_MOCK_MODE = import.meta.env.VITE_ENABLE_MOCKS === 'true';
+const IS_MOCK_AUTH = import.meta.env.VITE_MOCK_AUTH === 'true';
 
 const App = () => {
   return (
@@ -37,7 +37,7 @@ const App = () => {
     >
       <ErrorBoundary>
         <BrowserRouter>
-          {IS_MOCK_MODE ? (
+          {IS_MOCK_AUTH ? (
             <AppRoutes />
           ) : (
             <AuthInitializer>

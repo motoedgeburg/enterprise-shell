@@ -1,8 +1,8 @@
 /**
- * useAuth — mock mode tests (IS_MOCK_MODE = true).
+ * useAuth — mock mode tests (IS_MOCK_AUTH = true).
  *
  * vi.stubEnv + vi.resetModules + dynamic import ensures the module is
- * evaluated with VITE_ENABLE_MOCKS=true, mirroring Jest's require()-after-
+ * evaluated with VITE_MOCK_AUTH=true, mirroring Jest's require()-after-
  * process.env pattern.
  */
 import { act, renderHook } from '@testing-library/react';
@@ -15,7 +15,7 @@ vi.mock('@okta/okta-auth-js', () => ({ OktaAuth: vi.fn() }));
 let useAuth;
 
 beforeAll(async () => {
-  vi.stubEnv('VITE_ENABLE_MOCKS', 'true');
+  vi.stubEnv('VITE_MOCK_AUTH', 'true');
   vi.resetModules();
   const mod = await import('../useAuth.js');
   useAuth = mod.useAuth;
@@ -32,7 +32,7 @@ function createWrapper(store) {
   return Wrapper;
 }
 
-describe('useAuth — mock mode (IS_MOCK_MODE=true)', () => {
+describe('useAuth — mock mode (IS_MOCK_AUTH=true)', () => {
   it('login dispatches setCredentials with the mock user', () => {
     const store = buildStore();
     const { result } = renderHook(() => useAuth(), { wrapper: createWrapper(store) });

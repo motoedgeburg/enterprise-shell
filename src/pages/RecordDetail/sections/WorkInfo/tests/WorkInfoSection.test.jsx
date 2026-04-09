@@ -72,7 +72,11 @@ vi.mock('../../../../../components/fields/RadioGroupField.jsx', () => ({
 
 vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
-    departments: ['Engineering', 'Product', 'Design'],
+    departments: [
+      { value: 'Engineering', label: 'Engineering' },
+      { value: 'Product', label: 'Product' },
+      { value: 'Design', label: 'Design' },
+    ],
     statuses: [
       { value: 'active', label: 'Active' },
       { value: 'inactive', label: 'Inactive' },
