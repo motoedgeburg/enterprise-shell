@@ -6,7 +6,7 @@ import {
   MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import { App, Layout, Menu, Avatar, Dropdown, Typography, Space } from 'antd';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -37,28 +37,34 @@ const AppLayout = () => {
   const { user, logout } = useAuth();
   const intl = useIntl();
 
-  const navItems = [
-    {
-      key: '/dashboard',
-      icon: <DashboardOutlined />,
-      label: intl.formatMessage(messages.NAV_DASHBOARD),
-    },
-    {
-      key: '/search',
-      icon: <SearchOutlined />,
-      label: intl.formatMessage(messages.NAV_SEARCH),
-    },
-  ];
+  const navItems = useMemo(
+    () => [
+      {
+        key: '/dashboard',
+        icon: <DashboardOutlined />,
+        label: intl.formatMessage(messages.NAV_DASHBOARD),
+      },
+      {
+        key: '/search',
+        icon: <SearchOutlined />,
+        label: intl.formatMessage(messages.NAV_SEARCH),
+      },
+    ],
+    [intl],
+  );
 
-  const userMenuItems = [
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: intl.formatMessage(messages.USER_MENU_SIGN_OUT),
-      danger: true,
-      onClick: () => void logout(),
-    },
-  ];
+  const userMenuItems = useMemo(
+    () => [
+      {
+        key: 'logout',
+        icon: <LogoutOutlined />,
+        label: intl.formatMessage(messages.USER_MENU_SIGN_OUT),
+        danger: true,
+        onClick: () => void logout(),
+      },
+    ],
+    [intl, logout],
+  );
 
   const displayName = user?.name ?? user?.email ?? intl.formatMessage(messages.USER_FALLBACK_NAME);
   const initials = getInitials(user?.name);
@@ -158,7 +164,10 @@ const AppLayout = () => {
 
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
               <Space style={{ cursor: 'pointer' }}>
-                <Avatar style={{ backgroundColor: '#1d4ed8', fontWeight: 600, fontSize: 13 }}>
+                <Avatar
+                  style={{ backgroundColor: '#1d4ed8', fontWeight: 600, fontSize: 13 }}
+                  aria-label={displayName}
+                >
                   {initials}
                 </Avatar>
                 <Text

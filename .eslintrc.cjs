@@ -36,7 +36,7 @@ module.exports = {
       },
     ],
     'import/no-duplicates': 'error',
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
     eqeqeq: ['error', 'always'],
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },

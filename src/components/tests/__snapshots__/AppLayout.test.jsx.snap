@@ -152,6 +152,7 @@ exports[`AppLayout — snapshots > matches snapshot when authenticated 1`] = `
               class="ant-space-item"
             >
               <span
+                aria-label="Test User"
                 class="ant-avatar ant-avatar-circle css-dev-only-do-not-override-mncuj7"
                 style="background-color: rgb(29, 78, 216); font-weight: 600; font-size: 13px;"
               >

@@ -1,12 +1,15 @@
 import { ArrowLeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { App, Button, Empty, Space, Table, Tag, Typography } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
+import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
+
+const log = createLogger('Results');
 
 const { Title, Text } = Typography;
 
@@ -37,7 +40,8 @@ const ResultsPage = () => {
         const data = await recordsService.search(filters, page - 1, size);
         setRecords(data.content);
         setPagination((prev) => ({ ...prev, total: data.totalElements }));
-      } catch {
+      } catch (err) {
+        log.error('Failed to load search results', err);
         void message.error(intl.formatMessage(messages.RECORDS_ERROR_LOAD));
       } finally {
         setLoading(false);
@@ -57,37 +61,40 @@ const ResultsPage = () => {
 
   // ─── Table columns ────────────────────────────────────────────────────────────
 
-  const columns = [
-    {
-      title: intl.formatMessage(messages.RECORDS_COL_NAME),
-      dataIndex: 'name',
-      key: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name),
-    },
-    {
-      title: intl.formatMessage(messages.RECORDS_COL_EMAIL),
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: intl.formatMessage(messages.RECORDS_COL_ADDRESS),
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: intl.formatMessage(messages.RECORDS_COL_DEPARTMENT),
-      dataIndex: 'department',
-      key: 'department',
-    },
-    {
-      title: intl.formatMessage(messages.RECORDS_COL_STATUS),
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => (
-        <Tag color={status === 'active' ? 'green' : 'red'}>{status.toUpperCase()}</Tag>
-      ),
-    },
-  ];
+  const columns = useMemo(
+    () => [
+      {
+        title: intl.formatMessage(messages.RECORDS_COL_NAME),
+        dataIndex: 'name',
+        key: 'name',
+        sorter: (a, b) => a.name.localeCompare(b.name),
+      },
+      {
+        title: intl.formatMessage(messages.RECORDS_COL_EMAIL),
+        dataIndex: 'email',
+        key: 'email',
+      },
+      {
+        title: intl.formatMessage(messages.RECORDS_COL_ADDRESS),
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: intl.formatMessage(messages.RECORDS_COL_DEPARTMENT),
+        dataIndex: 'department',
+        key: 'department',
+      },
+      {
+        title: intl.formatMessage(messages.RECORDS_COL_STATUS),
+        dataIndex: 'status',
+        key: 'status',
+        render: (status) => (
+          <Tag color={status === 'active' ? 'green' : 'red'}>{status.toUpperCase()}</Tag>
+        ),
+      },
+    ],
+    [intl],
+  );
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -111,7 +118,7 @@ const ResultsPage = () => {
       {/* Active filter summary */}
       {activeFilters.length > 0 && (
         <Space wrap>
-          <Text type="secondary">Filters:</Text>
+          <Text type="secondary">{intl.formatMessage(messages.RESULTS_FILTERS_LABEL)}</Text>
           {activeFilters.map(([key, val]) => (
             <Tag key={key} color="blue">
               {key}: {val}
@@ -134,6 +141,16 @@ const ResultsPage = () => {
             navigate(`/records/${record.id}`, {
               state: { search: searchParams.toString() },
             }),
+          onKeyDown: (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              navigate(`/records/${record.id}`, {
+                state: { search: searchParams.toString() },
+              });
+            }
+          },
+          tabIndex: 0,
+          role: 'link',
           style: { cursor: 'pointer' },
         })}
         pagination={{

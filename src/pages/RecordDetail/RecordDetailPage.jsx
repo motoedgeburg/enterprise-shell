@@ -18,6 +18,7 @@ import { useIntl } from 'react-intl';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
+import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
 import HistorySection from './sections/History/HistorySection.jsx';
@@ -25,6 +26,8 @@ import PersonalInfoSection from './sections/PersonalInfo/PersonalInfoSection.jsx
 import PreferencesSection from './sections/Preferences/PreferencesSection.jsx';
 import SummarySection from './sections/Summary/SummarySection.jsx';
 import WorkInfoSection from './sections/WorkInfo/WorkInfoSection.jsx';
+
+const log = createLogger('RecordDetail');
 
 const { Title, Text } = Typography;
 
@@ -49,7 +52,8 @@ const RecordDetailPage = () => {
     try {
       const data = await recordsService.getById(parseInt(id, 10));
       setRecord(data);
-    } catch {
+    } catch (err) {
+      log.error('Failed to load record', err);
       void message.error(intl.formatMessage(messages.DETAIL_ERROR_LOAD));
     } finally {
       setLoading(false);
@@ -73,7 +77,8 @@ const RecordDetailPage = () => {
         void message.success(intl.formatMessage(messages.DETAIL_SUCCESS));
         setRecord(values);
       }
-    } catch {
+    } catch (err) {
+      log.error(isNew ? 'Failed to create record' : 'Failed to save record', err);
       return {
         [FORM_ERROR]: intl.formatMessage(
           isNew ? messages.DETAIL_CREATE_ERROR : messages.DETAIL_ERROR_SUBMIT,
@@ -87,7 +92,8 @@ const RecordDetailPage = () => {
       await recordsService.remove(parseInt(id, 10));
       void message.success(intl.formatMessage(messages.DETAIL_DELETE_SUCCESS));
       navigate(backPath);
-    } catch {
+    } catch (err) {
+      log.error('Failed to delete record', err);
       void message.error(intl.formatMessage(messages.DETAIL_ERROR_DELETE));
     }
   };
@@ -177,7 +183,7 @@ const RecordDetailPage = () => {
           </div>
 
           {/* Form error banner */}
-          {submitError && <Alert type="error" message={submitError} showIcon />}
+          {submitError && <Alert type="error" message={submitError} showIcon closable />}
 
           {/* Accordion */}
           <Form layout="vertical" component="div">
@@ -201,9 +207,7 @@ const RecordDetailPage = () => {
               {intl.formatMessage(isNew ? messages.DETAIL_CREATE_SUBMIT : messages.DETAIL_SUBMIT)}
             </Button>
             <Text type="secondary" style={{ marginLeft: 16 }}>
-              {isNew
-                ? 'Fill in all sections then submit to create the record.'
-                : 'Changes are saved across all sections on a single submit.'}
+              {intl.formatMessage(isNew ? messages.DETAIL_HINT_CREATE : messages.DETAIL_HINT_EDIT)}
             </Text>
           </Card>
         </Space>

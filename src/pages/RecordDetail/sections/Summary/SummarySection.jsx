@@ -37,7 +37,7 @@ const SummarySection = () => {
             {v.address || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_DOB)}>
-            {v.dateOfBirth ? new Date(v.dateOfBirth).toLocaleDateString() : '—'}
+            {v.dateOfBirth ? intl.formatDate(v.dateOfBirth) : '—'}
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_BIO)}
@@ -66,7 +66,7 @@ const SummarySection = () => {
             {employmentTypes.find((o) => o.value === v.employmentType)?.label ?? '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_START_DATE)}>
-            {v.startDate ? new Date(v.startDate).toLocaleDateString() : '—'}
+            {v.startDate ? intl.formatDate(v.startDate) : '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_MANAGER)}>
             {v.manager || '—'}
@@ -76,12 +76,20 @@ const SummarySection = () => {
           <Descriptions.Item
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_REMOTE_ELIGIBLE)}
           >
-            {v.remoteEligible ? 'Yes' : 'No'}
+            {intl.formatMessage(
+              v.remoteEligible
+                ? summaryMessages.DETAIL_SUMMARY_YES
+                : summaryMessages.DETAIL_SUMMARY_NO,
+            )}
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}
           >
-            {v.notificationsEnabled ? 'On' : 'Off'}
+            {intl.formatMessage(
+              v.notificationsEnabled
+                ? summaryMessages.DETAIL_SUMMARY_ON
+                : summaryMessages.DETAIL_SUMMARY_OFF,
+            )}
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTIFICATION_CHANNELS)}

@@ -52,6 +52,16 @@ const messages = {
     defaultMessage: 'Contacts & Certifications',
   },
   DETAIL_SECTION_SUMMARY: { id: 'DETAIL_SECTION_SUMMARY', defaultMessage: 'Summary' },
+
+  // ─── Footer hints ────────────────────────────────────────────────────────
+  DETAIL_HINT_CREATE: {
+    id: 'DETAIL_HINT_CREATE',
+    defaultMessage: 'Fill in all sections then submit to create the record.',
+  },
+  DETAIL_HINT_EDIT: {
+    id: 'DETAIL_HINT_EDIT',
+    defaultMessage: 'Changes are saved across all sections on a single submit.',
+  },
 };
 
 export default messages;

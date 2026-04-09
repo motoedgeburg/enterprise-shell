@@ -17,6 +17,7 @@ const messages = {
     id: 'RECORDS_PAGINATION_TOTAL',
     defaultMessage: 'Total {total} records',
   },
+  RESULTS_FILTERS_LABEL: { id: 'RESULTS_FILTERS_LABEL', defaultMessage: 'Filters:' },
 };
 
 export default messages;
