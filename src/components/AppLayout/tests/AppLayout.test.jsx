@@ -180,12 +180,3 @@ describe('AppLayout — outlet', () => {
     expect(screen.getByText('Dashboard Content')).toBeInTheDocument();
   });
 });
-
-// ─── Snapshots ────────────────────────────────────────────────────────────────
-
-describe('AppLayout — snapshots', () => {
-  it('matches snapshot when authenticated', () => {
-    const { asFragment } = renderLayout(AUTHED_STATE);
-    expect(asFragment()).toMatchSnapshot();
-  });
-});

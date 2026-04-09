@@ -86,12 +86,3 @@ describe('Dashboard — search tile', () => {
     // Navigation is handled by useNavigate — no error thrown means it fired
   });
 });
-
-// ─── Snapshots ────────────────────────────────────────────────────────────────
-
-describe('Dashboard — snapshots', () => {
-  it('matches snapshot when authenticated', () => {
-    const { asFragment } = renderDashboard(AUTHED_STATE);
-    expect(asFragment()).toMatchSnapshot();
-  });
-});

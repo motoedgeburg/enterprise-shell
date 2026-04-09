@@ -66,8 +66,3 @@ global.ResizeObserver = class ResizeObserver {
   unobserve() {}
   disconnect() {}
 };
-
-// crypto.randomUUID used in axiosInstance 401 handler.
-Object.defineProperty(global, 'crypto', {
-  value: { randomUUID: () => 'test-uuid-1234' },
-});

@@ -162,6 +162,9 @@ src/
 ├── renderUtils.jsx               # Shared test helpers (buildStore, appMessages, fixtures)
 ├── setupTests.js                 # Vitest setup (polyfills, MSW lifecycle, jsdom stubs)
 │
+├── i18n/
+│   └── messages.js               # Aggregates all message descriptors into a single map
+│
 ├── api/
 │   ├── axiosInstance.js          # Centralized Axios instance with interceptors
 │   ├── lookupsService.js         # Reference data (departments, statuses, etc.)
@@ -259,10 +262,20 @@ src/
 │           │   └── tests/
 │           │       └── PreferencesSection.test.jsx
 │           ├── History/
-│           │   ├── HistorySection.jsx    # Emergency Contacts + Certifications tabs
-│           │   ├── messages.js
-│           │   └── tests/
-│           │       └── HistorySection.test.jsx
+│           │   ├── HistorySection.jsx         # Tab wrapper
+│           │   ├── messages.js                # Tab labels only
+│           │   ├── tests/
+│           │   │   └── HistorySection.test.jsx
+│           │   ├── EmergencyContacts/
+│           │   │   ├── EmergencyContactsTab.jsx  # Contacts table + add/edit modal
+│           │   │   ├── messages.js
+│           │   │   └── tests/
+│           │   │       └── EmergencyContactsTab.test.jsx
+│           │   └── Certifications/
+│           │       ├── CertificationsTab.jsx     # Certs table + add/edit modal
+│           │       ├── messages.js
+│           │       └── tests/
+│           │           └── CertificationsTab.test.jsx
 │           └── Summary/
 │               ├── SummarySection.jsx    # FormSpy live preview (read-only)
 │               ├── messages.js

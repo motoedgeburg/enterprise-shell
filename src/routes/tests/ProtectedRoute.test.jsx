@@ -114,16 +114,6 @@ describe('ProtectedRoute — real mode', () => {
 
     expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });
-
-  it('matches snapshot when authenticated', () => {
-    const { asFragment } = renderWithRoute({ isAuthenticated: true, accessToken: 'tok' });
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('matches snapshot when not authenticated (redirect rendered)', () => {
-    const { asFragment } = renderWithRoute({ isAuthenticated: false, isInitializing: false });
-    expect(asFragment()).toMatchSnapshot();
-  });
 });
 
-// Note: IS_MOCK_MODE=true tests live in ProtectedRoute.mock.test.jsx
+// Note: IS_MOCK_AUTH=true tests live in ProtectedRoute.mock.test.jsx

@@ -13,7 +13,7 @@ export default defineConfig({
       reporter: ['text', 'html', 'json'],
       reportsDirectory: './reports/coverage',
       include: ['src/**/*.{js,jsx}'],
-      exclude: ['src/mocks/**', 'src/index.jsx'],
+      exclude: ['src/mocks/**', 'src/index.jsx', 'src/setupTests.js', 'src/renderUtils.jsx'],
       thresholds: {
         branches: 60,
         functions: 60,

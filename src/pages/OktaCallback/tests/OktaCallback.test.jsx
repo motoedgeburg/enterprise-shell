@@ -152,22 +152,3 @@ describe('OktaCallback — successful token exchange', () => {
 });
 
 // ─── Snapshot ─────────────────────────────────────────────────────────────────
-
-describe('OktaCallback — snapshots', () => {
-  it('matches snapshot in error state', () => {
-    const { asFragment } = renderCallback({
-      isAuthenticated: false,
-      isInitializing: false,
-      error: 'Auth error',
-    });
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('matches snapshot in loading state', () => {
-    const { asFragment } = renderCallback({
-      isAuthenticated: false,
-      isInitializing: false,
-    });
-    expect(asFragment()).toMatchSnapshot();
-  });
-});

@@ -13,39 +13,12 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 
-import componentMessages from './components/AppLayout/messages.js';
-import dashboardMessages from './pages/Dashboard/messages.js';
-import loginMessages from './pages/LoginPage/messages.js';
-import callbackMessages from './pages/OktaCallback/messages.js';
-import recordDetailMessages from './pages/RecordDetail/messages.js';
-import summaryMessages from './pages/RecordDetail/sections/Summary/messages.js';
-import resultsMessages from './pages/Results/messages.js';
-import searchMessages from './pages/Search/messages.js';
+import appMessages from './i18n/messages.js';
 import authReducer from './store/slices/authSlice';
 import lookupsReducer from './store/slices/lookupsSlice';
 
-// ─── Message map ─────────────────────────────────────────────────────────────
-
-const buildMessageMap = (...descriptorObjects) => {
-  const map = {};
-  for (const descriptors of descriptorObjects) {
-    for (const descriptor of Object.values(descriptors)) {
-      map[descriptor.id] = descriptor.defaultMessage;
-    }
-  }
-  return map;
-};
-
-export const appMessages = buildMessageMap(
-  componentMessages,
-  dashboardMessages,
-  loginMessages,
-  callbackMessages,
-  recordDetailMessages,
-  resultsMessages,
-  searchMessages,
-  summaryMessages,
-);
+// Re-export so existing test imports keep working
+export { default as appMessages } from './i18n/messages.js';
 
 // ─── Store ────────────────────────────────────────────────────────────────────
 

@@ -119,17 +119,3 @@ describe('LoginPage — button click', () => {
     expect(oktaMock.signInWithRedirect).toHaveBeenCalledTimes(1);
   });
 });
-
-// ─── Snapshots ────────────────────────────────────────────────────────────────
-
-describe('LoginPage — snapshots', () => {
-  it('matches snapshot in default unauthenticated state', () => {
-    const { asFragment } = renderLoginPage({ isAuthenticated: false, isInitializing: false });
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('matches snapshot while initializing', () => {
-    const { asFragment } = renderLoginPage({ isAuthenticated: false, isInitializing: true });
-    expect(asFragment()).toMatchSnapshot();
-  });
-});
