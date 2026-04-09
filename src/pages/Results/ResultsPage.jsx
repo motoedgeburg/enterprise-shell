@@ -65,28 +65,28 @@ const ResultsPage = () => {
     () => [
       {
         title: intl.formatMessage(messages.RECORDS_COL_NAME),
-        dataIndex: 'name',
+        dataIndex: ['personalInfo', 'name'],
         key: 'name',
-        sorter: (a, b) => a.name.localeCompare(b.name),
+        sorter: (a, b) => a.personalInfo.name.localeCompare(b.personalInfo.name),
       },
       {
         title: intl.formatMessage(messages.RECORDS_COL_EMAIL),
-        dataIndex: 'email',
+        dataIndex: ['personalInfo', 'email'],
         key: 'email',
       },
       {
         title: intl.formatMessage(messages.RECORDS_COL_ADDRESS),
-        dataIndex: 'address',
+        dataIndex: ['personalInfo', 'address'],
         key: 'address',
       },
       {
         title: intl.formatMessage(messages.RECORDS_COL_DEPARTMENT),
-        dataIndex: 'department',
+        dataIndex: ['workInfo', 'department'],
         key: 'department',
       },
       {
         title: intl.formatMessage(messages.RECORDS_COL_STATUS),
-        dataIndex: 'status',
+        dataIndex: ['workInfo', 'status'],
         key: 'status',
         render: (status) => (
           <Tag color={status === 'active' ? 'green' : 'red'}>{status.toUpperCase()}</Tag>

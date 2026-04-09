@@ -44,15 +44,16 @@ describe('recordsService.getAll', () => {
     expect(result.content).toHaveLength(0);
   });
 
-  it('returns correct record fields', async () => {
+  it('returns records with nested structure', async () => {
     const result = await recordsService.getAll(0, 1);
     const first = result.content[0];
     expect(first).toMatchObject({
       id: expect.any(Number),
-      name: expect.any(String),
-      email: expect.any(String),
-      department: expect.any(String),
-      status: expect.stringMatching(/^(active|inactive)$/),
+      personalInfo: { name: expect.any(String), email: expect.any(String) },
+      workInfo: {
+        department: expect.any(String),
+        status: expect.stringMatching(/^(active|inactive)$/),
+      },
       createdAt: expect.any(String),
     });
   });
@@ -61,13 +62,13 @@ describe('recordsService.getAll', () => {
 // ─── getById ─────────────────────────────────────────────────────────────────
 
 describe('recordsService.getById', () => {
-  it('returns the record matching the given id', async () => {
+  it('returns the record matching the given id (flattened)', async () => {
     const record = await recordsService.getById(1);
     expect(record.id).toBe(1);
     expect(record.name).toBe('Alice Johnson');
   });
 
-  it('returns all expected fields', async () => {
+  it('returns all expected flat fields', async () => {
     const record = await recordsService.getById(2);
     expect(record).toMatchObject({
       id: 2,
@@ -93,7 +94,7 @@ describe('recordsService.create', () => {
     status: 'active',
   };
 
-  it('returns the created record with a server-assigned id', async () => {
+  it('returns the created record with a server-assigned id (flattened)', async () => {
     const created = await recordsService.create(newRecord);
     expect(created.id).toBeDefined();
     expect(typeof created.id).toBe('number');
@@ -105,9 +106,12 @@ describe('recordsService.create', () => {
     expect(() => new Date(created.createdAt)).not.toThrow();
   });
 
-  it('reflects the submitted fields', async () => {
+  it('reflects the submitted fields in the flattened response', async () => {
     const created = await recordsService.create(newRecord);
-    expect(created).toMatchObject(newRecord);
+    expect(created.name).toBe('Test User');
+    expect(created.email).toBe('test@company.com');
+    expect(created.department).toBe('Engineering');
+    expect(created.status).toBe('active');
   });
 
   it('increments the total count after creation', async () => {
@@ -132,21 +136,23 @@ describe('recordsService.create', () => {
 // ─── update ──────────────────────────────────────────────────────────────────
 
 describe('recordsService.update', () => {
-  it('updates a single field and returns the full record', async () => {
-    const updated = await recordsService.update(1, { name: 'Alice Updated' });
+  it('updates a field and returns the full flattened record', async () => {
+    const original = await recordsService.getById(1);
+    const updated = await recordsService.update(1, { ...original, name: 'Alice Updated' });
     expect(updated.name).toBe('Alice Updated');
     expect(updated.id).toBe(1);
   });
 
   it('leaves unmodified fields intact', async () => {
     const original = await recordsService.getById(1);
-    const updated = await recordsService.update(1, { name: 'New Name' });
+    const updated = await recordsService.update(1, { ...original, name: 'New Name' });
     expect(updated.email).toBe(original.email);
     expect(updated.department).toBe(original.department);
   });
 
   it('can update status', async () => {
-    const updated = await recordsService.update(3, { status: 'active' });
+    const original = await recordsService.getById(3);
+    const updated = await recordsService.update(3, { ...original, status: 'active' });
     expect(updated.status).toBe('active');
   });
 

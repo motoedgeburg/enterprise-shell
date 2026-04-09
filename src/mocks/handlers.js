@@ -101,9 +101,9 @@ export const handlers = [
   http.post(`${BASE}/records`, async ({ request }) => {
     const body = await request.json();
 
-    if (!body.name || !body.email) {
+    if (!body.personalInfo?.name || !body.personalInfo?.email) {
       return HttpResponse.json(
-        { message: 'name and email are required', status: 400 },
+        { message: 'personalInfo.name and personalInfo.email are required', status: 400 },
         { status: 400 },
       );
     }
