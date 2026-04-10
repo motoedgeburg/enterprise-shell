@@ -9,8 +9,16 @@ const { Text } = Typography;
  * consistent spacing and error display.  checkedLabel / uncheckedLabel
  * are optional inline captions rendered next to the toggle.
  */
-const SwitchField = ({ name, label, checkedLabel, uncheckedLabel, validate, ...props }) => (
-  <AntField name={name} label={label} validate={validate}>
+const SwitchField = ({
+  name,
+  label,
+  checkedLabel,
+  uncheckedLabel,
+  required,
+  validate,
+  ...props
+}) => (
+  <AntField name={name} label={label} required={required} validate={validate}>
     {({ value, onChange }) => (
       <Space>
         <Switch checked={Boolean(value)} onChange={onChange} {...props} />

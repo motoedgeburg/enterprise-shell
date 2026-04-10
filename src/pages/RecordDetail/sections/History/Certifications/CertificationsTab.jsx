@@ -165,12 +165,14 @@ const CertificationsTab = () => {
                 name="name"
                 label={intl.formatMessage(messages.DETAIL_CERTS_COL_NAME)}
                 placeholder="AWS Solutions Architect"
+                required
                 validate={required()}
               />
               <TextField
                 name="issuingBody"
                 label={intl.formatMessage(messages.DETAIL_CERTS_COL_ISSUER)}
                 placeholder="Amazon Web Services"
+                required
                 validate={required()}
               />
               <TextField
@@ -181,6 +183,7 @@ const CertificationsTab = () => {
               <DateField
                 name="issueDate"
                 label={intl.formatMessage(messages.DETAIL_CERTS_COL_ISSUE_DATE)}
+                required
                 validate={required()}
               />
               <DateField

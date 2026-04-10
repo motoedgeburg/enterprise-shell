@@ -9,13 +9,14 @@ import { Field } from 'react-final-form';
  * Prefer the typed wrappers (TextField, EmailField, SelectField) over using
  * this directly.  Export it as an escape hatch for one-off custom fields.
  */
-const AntField = ({ name, label, validate, children }) => (
+const AntField = ({ name, label, required, validate, children }) => (
   <Field name={name} validate={validate}>
     {({ input, meta }) => {
       const hasError = meta.touched && meta.error;
       return (
         <Form.Item
           label={label}
+          required={required}
           validateStatus={hasError ? 'error' : ''}
           help={hasError ? meta.error : undefined}
           style={{ marginBottom: 16 }}

@@ -307,7 +307,7 @@ src/
 
 ## Field Components
 
-All form fields are typed wrappers that bridge React Final Form's `<Field>` to Ant Design inputs. They handle value/onChange/onBlur, touched+error display, and forward a `validate` prop to Final Form.
+All form fields are typed wrappers that bridge React Final Form's `<Field>` to Ant Design inputs. They handle value/onChange/onBlur, touched+error display, and forward `validate` and `required` props to Final Form. When `required` is set, Ant Design renders a red asterisk (`*`) next to the field label.
 
 | Component | Ant Design input | Notes |
 |---|---|---|
@@ -354,6 +354,8 @@ The accordion has five sections, each self-contained with its own `messages.js`:
 | Preferences & Permissions | Remote eligibility, notifications, channels, access level, notes |
 | Contacts & Certifications | Emergency contacts tab + Professional certifications tab (full CRUD) |
 | Summary | Read-only live preview via `FormSpy` |
+
+All panels use `forceRender: true` so React Final Form registers every field's validators immediately — the submit button stays disabled until all required fields across all sections are satisfied, even when panels are collapsed.
 
 Section components enforce cross-field business rules via `useFormState` + `form.change()`. When a rule fires, the affected field is disabled and an inline `Alert` explains why.
 

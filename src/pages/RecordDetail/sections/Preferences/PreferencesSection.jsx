@@ -26,9 +26,9 @@ const PreferencesSection = () => {
   const isIntern = values.employmentType === 'intern';
   const notifsOff = !values.notificationsEnabled;
 
-  // Work → Preferences: inactive employees are locked to read-only access
+  // Work → Preferences: inactive employees are locked to restricted access
   useEffect(() => {
-    if (isInactive) form.change('accessLevel', 'read-only');
+    if (isInactive) form.change('accessLevel', 'restricted');
   }, [isInactive, form]);
 
   // Work → Preferences: interns cannot be remote eligible
@@ -92,6 +92,7 @@ const PreferencesSection = () => {
           options={accessLevels}
           optionType="button"
           buttonStyle="solid"
+          required
           validate={required()}
           disabled={isInactive}
         />

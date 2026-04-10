@@ -47,6 +47,7 @@ const WorkInfoSection = () => {
           name="jobTitle"
           label={intl.formatMessage(messages.DETAIL_FIELD_JOB_TITLE)}
           placeholder="Software Engineer"
+          required
           validate={required()}
         />
       </Col>
@@ -62,6 +63,7 @@ const WorkInfoSection = () => {
           name="department"
           label={intl.formatMessage(messages.DETAIL_FIELD_DEPARTMENT)}
           options={departments}
+          required
           validate={required()}
         />
       </Col>
@@ -70,6 +72,7 @@ const WorkInfoSection = () => {
           name="status"
           label={intl.formatMessage(messages.DETAIL_FIELD_STATUS)}
           options={statuses}
+          required
           validate={required()}
           disabled={isAdmin}
         />
@@ -88,6 +91,7 @@ const WorkInfoSection = () => {
           options={employmentTypes}
           optionType="button"
           buttonStyle="solid"
+          required
           validate={required()}
         />
       </Col>

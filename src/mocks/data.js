@@ -80,7 +80,7 @@ export const seedRecords = [
     preferences: {
       remoteEligible: true,
       notificationsEnabled: true,
-      notificationChannels: ['email', 'teams', 'sms'],
+      notificationChannels: ['email', 'push', 'sms'],
       accessLevel: 'admin',
       notes: 'Owns the roadmap for the B2B product line.',
     },
@@ -129,7 +129,7 @@ export const seedRecords = [
     workInfo: {
       jobTitle: 'UX Designer',
       manager: 'Tom Baker',
-      department: 'Design',
+      department: 'Product',
       status: 'inactive',
       startDate: '2021-09-15',
       employmentType: 'part-time',
@@ -138,7 +138,7 @@ export const seedRecords = [
       remoteEligible: false,
       notificationsEnabled: false,
       notificationChannels: ['email'],
-      accessLevel: 'read-only',
+      accessLevel: 'restricted',
       notes: 'On extended leave. Return date TBD.',
     },
     emergencyContacts: [],
@@ -266,7 +266,7 @@ export const seedRecords = [
       remoteEligible: false,
       notificationsEnabled: false,
       notificationChannels: [],
-      accessLevel: 'read-only',
+      accessLevel: 'restricted',
       notes: 'Contract ending Q2. Renewal under review.',
     },
     emergencyContacts: [],
@@ -296,7 +296,7 @@ export const seedRecords = [
     preferences: {
       remoteEligible: false,
       notificationsEnabled: true,
-      notificationChannels: ['email', 'teams'],
+      notificationChannels: ['email', 'push'],
       accessLevel: 'admin',
       notes: 'Key contact for vendor onboarding.',
     },
@@ -345,7 +345,7 @@ export const seedRecords = [
     workInfo: {
       jobTitle: 'HR Business Partner',
       manager: 'Jane Smith',
-      department: 'HR',
+      department: 'Human Resources',
       status: 'active',
       startDate: '2016-04-11',
       employmentType: 'full-time',
@@ -353,7 +353,7 @@ export const seedRecords = [
     preferences: {
       remoteEligible: true,
       notificationsEnabled: true,
-      notificationChannels: ['email', 'slack', 'teams'],
+      notificationChannels: ['email', 'slack', 'push'],
       accessLevel: 'admin',
       notes: 'Point of contact for performance review cycle.',
     },
@@ -369,7 +369,7 @@ export const seedRecords = [
       {
         id: 'ec-8-2',
         name: 'Marcus Davis',
-        relationship: 'Sibling',
+        relationship: 'Brother',
         phone: '(570) 555-0897',
         email: 'marcus.d@personal.com',
         isPrimary: false,

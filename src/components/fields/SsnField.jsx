@@ -13,8 +13,8 @@ export const formatSsn = (raw = '') => {
   return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
 };
 
-const SsnField = ({ name, label, validate, ...inputProps }) => (
-  <AntField name={name} label={label} validate={validate}>
+const SsnField = ({ name, label, required, validate, ...inputProps }) => (
+  <AntField name={name} label={label} required={required} validate={validate}>
     {({ value, onChange, onBlur }) => (
       <Input.Password
         value={value}

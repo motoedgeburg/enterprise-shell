@@ -75,17 +75,19 @@ vi.mock('../../../../../hooks/useLookups.js', () => ({
     departments: [
       { value: 'Engineering', label: 'Engineering' },
       { value: 'Product', label: 'Product' },
-      { value: 'Design', label: 'Design' },
+      { value: 'Legal', label: 'Legal' },
     ],
     statuses: [
       { value: 'active', label: 'Active' },
       { value: 'inactive', label: 'Inactive' },
+      { value: 'on-leave', label: 'On Leave' },
+      { value: 'terminated', label: 'Terminated' },
     ],
     employmentTypes: [
-      { value: 'full-time', label: 'Full-time' },
-      { value: 'part-time', label: 'Part-time' },
       { value: 'contract', label: 'Contract' },
+      { value: 'full-time', label: 'Full Time' },
       { value: 'intern', label: 'Intern' },
+      { value: 'part-time', label: 'Part Time' },
     ],
   }),
 }));
@@ -166,7 +168,7 @@ describe('WorkInfoSection — initial values', () => {
 
   it('pre-selects employment type radio', () => {
     renderSection({ employmentType: 'full-time' });
-    expect(screen.getByLabelText('Full-time')).toBeChecked();
+    expect(screen.getByLabelText('Full Time')).toBeChecked();
   });
 });
 
@@ -199,7 +201,7 @@ describe('WorkInfoSection — required validation', () => {
     const opts = Array.from(screen.getByTestId('select-department').options).map((o) => o.value);
     expect(opts).toContain('Engineering');
     expect(opts).toContain('Product');
-    expect(opts).toContain('Design');
+    expect(opts).toContain('Legal');
   });
 
   it('renders status options from lookups', () => {
@@ -211,8 +213,8 @@ describe('WorkInfoSection — required validation', () => {
 
   it('renders all employment type radio options', () => {
     renderSection();
-    expect(screen.getByLabelText('Full-time')).toBeInTheDocument();
-    expect(screen.getByLabelText('Part-time')).toBeInTheDocument();
+    expect(screen.getByLabelText('Full Time')).toBeInTheDocument();
+    expect(screen.getByLabelText('Part Time')).toBeInTheDocument();
     expect(screen.getByLabelText('Contract')).toBeInTheDocument();
     expect(screen.getByLabelText('Intern')).toBeInTheDocument();
   });

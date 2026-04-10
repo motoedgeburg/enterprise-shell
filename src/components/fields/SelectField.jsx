@@ -2,8 +2,8 @@ import { Select } from 'antd';
 
 import AntField from './AntField.jsx';
 
-const SelectField = ({ name, label, options, placeholder, validate, ...selectProps }) => (
-  <AntField name={name} label={label} validate={validate}>
+const SelectField = ({ name, label, options, placeholder, required, validate, ...selectProps }) => (
+  <AntField name={name} label={label} required={required} validate={validate}>
     {({ value, onChange, onBlur }) => (
       <Select
         value={value || undefined}

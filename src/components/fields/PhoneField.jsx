@@ -13,8 +13,15 @@ export const formatPhone = (raw = '') => {
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
-const PhoneField = ({ name, label, placeholder = '(215) 555-0100', validate, ...inputProps }) => (
-  <AntField name={name} label={label} validate={validate}>
+const PhoneField = ({
+  name,
+  label,
+  placeholder = '(215) 555-0100',
+  required,
+  validate,
+  ...inputProps
+}) => (
+  <AntField name={name} label={label} required={required} validate={validate}>
     {({ value, onChange, onBlur }) => (
       <Input
         value={value}

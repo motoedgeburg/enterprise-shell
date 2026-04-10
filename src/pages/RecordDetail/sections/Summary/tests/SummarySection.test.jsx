@@ -26,21 +26,22 @@ import SummarySection from '../SummarySection.jsx';
 vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
     employmentTypes: [
-      { value: 'full-time', label: 'Full-time' },
-      { value: 'part-time', label: 'Part-time' },
       { value: 'contract', label: 'Contract' },
+      { value: 'full-time', label: 'Full Time' },
       { value: 'intern', label: 'Intern' },
+      { value: 'part-time', label: 'Part Time' },
     ],
     notificationChannels: [
       { value: 'email', label: 'Email' },
+      { value: 'push', label: 'Push' },
       { value: 'slack', label: 'Slack' },
-      { value: 'sms', label: 'SMS' },
-      { value: 'teams', label: 'Teams' },
+      { value: 'sms', label: 'Sms' },
     ],
     accessLevels: [
-      { value: 'read-only', label: 'Read-only' },
       { value: 'standard', label: 'Standard' },
+      { value: 'elevated', label: 'Elevated' },
       { value: 'admin', label: 'Admin' },
+      { value: 'restricted', label: 'Restricted' },
     ],
   }),
 }));
@@ -231,7 +232,7 @@ describe('SummarySection — work values', () => {
 
   it('resolves employment type label from lookups', () => {
     renderSection({ employmentType: 'full-time' });
-    expect(screen.getByText('Full-time')).toBeInTheDocument();
+    expect(screen.getByText('Full Time')).toBeInTheDocument();
   });
 
   it('resolves contract employment type label', () => {
@@ -327,7 +328,7 @@ describe('SummarySection — full record', () => {
     expect(screen.getByText('alice@company.com')).toBeInTheDocument();
     expect(screen.getByText('(215) 555-0101')).toBeInTheDocument();
     expect(screen.getByText('ACTIVE')).toBeInTheDocument();
-    expect(screen.getByText('Full-time')).toBeInTheDocument();
+    expect(screen.getByText('Full Time')).toBeInTheDocument();
     expect(screen.getByText('Jane Smith')).toBeInTheDocument();
     expect(screen.getByText('Standard')).toBeInTheDocument();
     expect(screen.getAllByText('Email').length).toBeGreaterThan(0);

@@ -62,7 +62,7 @@ function renderPage(path) {
     status: 'succeeded',
     departments: [{ value: 'Engineering', label: 'Engineering' }],
     statuses: [{ value: 'active', label: 'Active' }],
-    employmentTypes: [{ value: 'full-time', label: 'Full-time' }],
+    employmentTypes: [{ value: 'full-time', label: 'Full Time' }],
     notificationChannels: [{ value: 'email', label: 'Email' }],
     accessLevels: [{ value: 'standard', label: 'Standard' }],
   });

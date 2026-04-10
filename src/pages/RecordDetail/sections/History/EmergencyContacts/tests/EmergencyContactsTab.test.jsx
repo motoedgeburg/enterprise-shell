@@ -49,14 +49,10 @@ vi.mock('../../../../../../components/fields/SelectField.jsx', () => ({
 vi.mock('../../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
     relationships: [
-      { value: 'Spouse', label: 'Spouse' },
-      { value: 'Partner', label: 'Partner' },
+      { value: 'Brother', label: 'Brother' },
+      { value: 'Mother', label: 'Mother' },
       { value: 'Parent', label: 'Parent' },
-      { value: 'Child', label: 'Child' },
-      { value: 'Sibling', label: 'Sibling' },
-      { value: 'Friend', label: 'Friend' },
-      { value: 'Colleague', label: 'Colleague' },
-      { value: 'Other', label: 'Other' },
+      { value: 'Spouse', label: 'Spouse' },
     ],
   }),
 }));
@@ -196,7 +192,7 @@ describe('EmergencyContactsTab — Add Contact modal', () => {
     );
     expect(opts).toContain('Spouse');
     expect(opts).toContain('Parent');
-    expect(opts).toContain('Other');
+    expect(opts).toContain('Brother');
   });
 });
 

@@ -7,8 +7,8 @@ import AntField from './AntField.jsx';
  * Renders a horizontal Radio.Group by default; pass optionType="button" for
  * button-style toggles.
  */
-const RadioGroupField = ({ name, label, options, validate, ...props }) => (
-  <AntField name={name} label={label} validate={validate}>
+const RadioGroupField = ({ name, label, options, required, validate, ...props }) => (
+  <AntField name={name} label={label} required={required} validate={validate}>
     {({ value, onChange }) => (
       <Radio.Group
         value={value}

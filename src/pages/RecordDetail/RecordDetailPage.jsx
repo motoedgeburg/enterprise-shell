@@ -116,26 +116,31 @@ const RecordDetailPage = () => {
     {
       key: 'personal',
       label: intl.formatMessage(messages.DETAIL_SECTION_PERSONAL),
+      forceRender: true,
       children: <PersonalInfoSection />,
     },
     {
       key: 'work',
       label: intl.formatMessage(messages.DETAIL_SECTION_WORK),
+      forceRender: true,
       children: <WorkInfoSection />,
     },
     {
       key: 'preferences',
       label: intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES),
+      forceRender: true,
       children: <PreferencesSection />,
     },
     {
       key: 'history',
       label: intl.formatMessage(messages.DETAIL_SECTION_HISTORY),
+      forceRender: true,
       children: <HistorySection />,
     },
     {
       key: 'summary',
       label: intl.formatMessage(messages.DETAIL_SECTION_SUMMARY),
+      forceRender: true,
       children: <SummarySection />,
     },
   ];

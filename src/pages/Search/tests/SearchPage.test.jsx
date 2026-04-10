@@ -39,11 +39,13 @@ function renderSearch(lookupsOverrides = {}) {
     departments: [
       { value: 'Engineering', label: 'Engineering' },
       { value: 'Product', label: 'Product' },
-      { value: 'Design', label: 'Design' },
+      { value: 'Legal', label: 'Legal' },
     ],
     statuses: [
       { value: 'active', label: 'Active' },
       { value: 'inactive', label: 'Inactive' },
+      { value: 'on-leave', label: 'On Leave' },
+      { value: 'terminated', label: 'Terminated' },
     ],
     employmentTypes: [],
     notificationChannels: [],

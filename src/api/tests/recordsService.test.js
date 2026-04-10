@@ -114,13 +114,13 @@ describe('recordsService.create', () => {
 
   it('throws (400) when name is missing', async () => {
     await expect(
-      recordsService.create({ email: 'x@y.com', department: 'HR', status: 'active' }),
+      recordsService.create({ email: 'x@y.com', department: 'Human Resources', status: 'active' }),
     ).rejects.toThrow();
   });
 
   it('throws (400) when email is missing', async () => {
     await expect(
-      recordsService.create({ name: 'No Email', department: 'HR', status: 'active' }),
+      recordsService.create({ name: 'No Email', department: 'Human Resources', status: 'active' }),
     ).rejects.toThrow();
   });
 });

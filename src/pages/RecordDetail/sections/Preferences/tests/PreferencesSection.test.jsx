@@ -6,7 +6,7 @@
  *   - Initial values pre-fill switch, checkbox, radio, and textarea fields
  *   - Required validation on accessLevel
  *   - Notes maxLength(1000) validation
- *   - Inactive constraint: Alert shown, accessLevel forced to 'read-only',
+ *   - Inactive constraint: Alert shown, accessLevel forced to 'restricted',
  *     notificationsEnabled and channels disabled
  *   - Intern constraint: Alert shown, remoteEligible forced to false and disabled
  *
@@ -116,14 +116,15 @@ vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
     notificationChannels: [
       { value: 'email', label: 'Email' },
+      { value: 'push', label: 'Push' },
       { value: 'slack', label: 'Slack' },
-      { value: 'sms', label: 'SMS' },
-      { value: 'teams', label: 'Teams' },
+      { value: 'sms', label: 'Sms' },
     ],
     accessLevels: [
-      { value: 'read-only', label: 'Read-only' },
       { value: 'standard', label: 'Standard' },
+      { value: 'elevated', label: 'Elevated' },
       { value: 'admin', label: 'Admin' },
+      { value: 'restricted', label: 'Restricted' },
     ],
   }),
 }));
@@ -217,9 +218,9 @@ describe('PreferencesSection — notification channel checkboxes', () => {
   it('renders all four channel options', () => {
     renderSection();
     expect(screen.getByRole('checkbox', { name: 'Email' })).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Push' })).toBeInTheDocument();
     expect(screen.getByRole('checkbox', { name: 'Slack' })).toBeInTheDocument();
-    expect(screen.getByRole('checkbox', { name: 'SMS' })).toBeInTheDocument();
-    expect(screen.getByRole('checkbox', { name: 'Teams' })).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Sms' })).toBeInTheDocument();
   });
 
   it('toggles a channel on click', async () => {
@@ -235,11 +236,12 @@ describe('PreferencesSection — notification channel checkboxes', () => {
 // ─── Access level radio ───────────────────────────────────────────────────────
 
 describe('PreferencesSection — access level options', () => {
-  it('renders all three access level options', () => {
+  it('renders all four access level options', () => {
     renderSection();
-    expect(screen.getByRole('radio', { name: 'Read-only' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Standard' })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Elevated' })).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Admin' })).toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Restricted' })).toBeInTheDocument();
   });
 });
 
@@ -285,9 +287,9 @@ describe('PreferencesSection — inactive constraint', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('forces accessLevel to read-only when status is inactive', async () => {
+  it('forces accessLevel to restricted when status is inactive', async () => {
     renderSection({ status: 'inactive', accessLevel: 'admin' });
-    await waitFor(() => expect(screen.getByRole('radio', { name: 'Read-only' })).toBeChecked());
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'Restricted' })).toBeChecked());
   });
 
   it('disables the notificationsEnabled switch when inactive', () => {

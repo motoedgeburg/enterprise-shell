@@ -25,6 +25,7 @@ const PersonalInfoSection = () => {
           name="name"
           label={intl.formatMessage(messages.DETAIL_FIELD_NAME)}
           placeholder="Jane Doe"
+          required
           validate={required()}
         />
       </Col>
@@ -33,6 +34,7 @@ const PersonalInfoSection = () => {
           name="email"
           label={intl.formatMessage(messages.DETAIL_FIELD_EMAIL)}
           placeholder="jane@company.com"
+          required
           validate={composeValidators(required(), email())}
         />
       </Col>

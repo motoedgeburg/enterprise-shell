@@ -173,6 +173,7 @@ const EmergencyContactsTab = () => {
                 name="name"
                 label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_NAME)}
                 placeholder="Jane Smith"
+                required
                 validate={required()}
               />
               <SelectField
@@ -180,6 +181,7 @@ const EmergencyContactsTab = () => {
                 label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_RELATIONSHIP)}
                 placeholder="Select relationship"
                 options={relationships}
+                required
                 validate={required()}
               />
               <PhoneField
