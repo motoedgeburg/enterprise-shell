@@ -8,7 +8,7 @@ A production-grade React 19 enterprise application shell with Okta SSO, Redux To
 
 | Concern | Library |
 |---|---|
-| UI framework | [Ant Design 5](https://ant.design) with ConfigProvider theming |
+| UI framework | [Ant Design 6](https://ant.design) with ConfigProvider theming |
 | Routing | [React Router v6](https://reactrouter.com) |
 | Global state | [Redux Toolkit](https://redux-toolkit.js.org) |
 | HTTP client | [Axios](https://axios-http.com) with centralized interceptors |

@@ -6,7 +6,7 @@
   "dependencies": {
     "@okta/okta-auth-js": "^8.0.0",
     "@reduxjs/toolkit": "^2.2.1",
-    "antd": "^5.15.3",
+    "antd": "^6.3.5",
     "axios": "^1.6.8",
     "final-form": "^5.0.0",
     "react": "^19.0.0",
