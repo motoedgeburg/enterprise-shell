@@ -5,7 +5,9 @@
 import {
   composeValidators,
   email,
+  max,
   maxLength,
+  min,
   minLength,
   pastDate,
   phone,
@@ -107,6 +109,40 @@ describe('pastDate', () => {
   it('returns undefined for empty value', () => expect(validate('')).toBeUndefined());
   it('returns undefined for a past date', () => expect(validate('1990-01-01')).toBeUndefined());
   it('returns error for a future date', () => expect(validate('2099-12-31')).toBe(ERR));
+});
+
+// ─── min ──────────────────────────────────────────────────────────────────────
+
+describe('min', () => {
+  const validate = min(0, ERR);
+
+  it('returns undefined for null (optional)', () => expect(validate(null)).toBeUndefined());
+  it('returns undefined for undefined', () => expect(validate(undefined)).toBeUndefined());
+  it('returns undefined for empty string', () => expect(validate('')).toBeUndefined());
+  it('returns undefined for zero', () => expect(validate(0)).toBeUndefined());
+  it('returns undefined for positive number', () => expect(validate(100)).toBeUndefined());
+  it('returns error for negative number', () => expect(validate(-1)).toBe(ERR));
+});
+
+describe('min with custom threshold', () => {
+  const validate = min(10, ERR);
+
+  it('returns undefined when value equals threshold', () => expect(validate(10)).toBeUndefined());
+  it('returns undefined when value exceeds threshold', () => expect(validate(15)).toBeUndefined());
+  it('returns error when value is below threshold', () => expect(validate(5)).toBe(ERR));
+});
+
+// ─── max ──────────────────────────────────────────────────────────────────────
+
+describe('max', () => {
+  const validate = max(100, ERR);
+
+  it('returns undefined for null (optional)', () => expect(validate(null)).toBeUndefined());
+  it('returns undefined for undefined', () => expect(validate(undefined)).toBeUndefined());
+  it('returns undefined for empty string', () => expect(validate('')).toBeUndefined());
+  it('returns undefined for value at threshold', () => expect(validate(100)).toBeUndefined());
+  it('returns undefined for value below threshold', () => expect(validate(50)).toBeUndefined());
+  it('returns error for value above threshold', () => expect(validate(101)).toBe(ERR));
 });
 
 // ─── url ──────────────────────────────────────────────────────────────────────

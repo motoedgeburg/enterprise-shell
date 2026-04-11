@@ -43,6 +43,12 @@ vi.mock('../../../../../hooks/useLookups.js', () => ({
       { value: 'admin', label: 'Admin' },
       { value: 'restricted', label: 'Restricted' },
     ],
+    payFrequencies: [
+      { value: 'annual', label: 'Annual' },
+      { value: 'bi-weekly', label: 'Bi Weekly' },
+      { value: 'monthly', label: 'Monthly' },
+      { value: 'weekly', label: 'Weekly' },
+    ],
   }),
 }));
 
@@ -204,7 +210,7 @@ describe('SummarySection — personal values', () => {
   it('displays formatted date of birth', () => {
     renderSection({ personalInfo: { dateOfBirth: '1990-03-15' } });
     // toLocaleDateString output varies by locale, just check something is rendered
-    expect(screen.queryAllByText('—').length).toBeLessThan(17);
+    expect(screen.queryAllByText('—').length).toBeLessThan(23);
   });
 });
 
@@ -256,7 +262,10 @@ describe('SummarySection — preferences values', () => {
   });
 
   it('displays No for remoteEligible false', () => {
-    renderSection({ preferences: { remoteEligible: false } });
+    renderSection({
+      preferences: { remoteEligible: false },
+      compensation: { overtimeEligible: true },
+    });
     expect(screen.getByText('No')).toBeInTheDocument();
   });
 

@@ -49,6 +49,16 @@ export const ssn = (msg) => (value) => {
   return /^\d{3}-\d{2}-\d{4}$/.test(value) ? undefined : msg;
 };
 
+export const min = (n, msg) => (value) => {
+  if (value === null || value === undefined || value === '') return undefined;
+  return Number(value) >= n ? undefined : msg;
+};
+
+export const max = (n, msg) => (value) => {
+  if (value === null || value === undefined || value === '') return undefined;
+  return Number(value) <= n ? undefined : msg;
+};
+
 export const url = (msg) => (value) => {
   if (!value) return undefined;
   try {

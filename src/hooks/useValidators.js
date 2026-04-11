@@ -4,7 +4,9 @@ import validatorMessages from '../utils/validatorMessages.js';
 import {
   composeValidators,
   email,
+  max,
   maxLength,
+  min,
   minLength,
   pastDate,
   phone,
@@ -42,6 +44,10 @@ export const useValidators = () => {
 
     maxLength: (n, msg) =>
       maxLength(n, msg ?? intl.formatMessage(validatorMessages.VALIDATOR_MAX_LENGTH, { max: n })),
+
+    min: (n, msg) => min(n, msg ?? intl.formatMessage(validatorMessages.VALIDATOR_MIN, { min: n })),
+
+    max: (n, msg) => max(n, msg ?? intl.formatMessage(validatorMessages.VALIDATOR_MAX, { max: n })),
 
     composeValidators,
   };

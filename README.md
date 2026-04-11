@@ -113,6 +113,14 @@ The app works with a nested record structure. The form field names map directly 
     "accessLevel": "standard",
     "notes": "Team lead for the infrastructure squad."
   },
+  "compensation": {
+    "baseSalary": 145000,
+    "payFrequency": "annual",
+    "bonusTarget": 15,
+    "stockOptions": 500,
+    "effectiveDate": "2023-01-01",
+    "overtimeEligible": false
+  },
   "history": {
     "emergencyContacts": [
       {
@@ -188,13 +196,14 @@ Tokens are stored **in Redux (JavaScript memory only)** — never in `localStora
 
 ## Record Detail Form
 
-The detail page uses an accordion layout with five sections, each self-contained with its own component and `messages.js`:
+The detail page uses an accordion layout with six sections, each self-contained with its own component and `messages.js`:
 
 | Section | Key Fields |
 |---|---|
 | Personal Information | Name, email, phone (auto-formatted), SSN (masked), address, DOB, bio |
 | Work Information | Job title, department, status, employment type, start date, manager |
 | Preferences & Permissions | Remote eligibility, notifications, channels, access level, notes |
+| Compensation | Base salary (currency), pay frequency, bonus target (%), stock options, effective date, overtime eligible |
 | Contacts & Certifications | Emergency contacts tab + Professional certifications tab (full CRUD via modals) |
 | Summary | Read-only live preview of all form values via `FormSpy` |
 
@@ -235,6 +244,8 @@ All form fields are typed wrappers bridging React Final Form `<Field>` to Ant De
 | `DateField` | `DatePicker` | Stores ISO string in form state |
 | `RadioGroupField` | `Radio.Group` | Supports `optionType="button"` |
 | `CheckboxGroupField` | `Checkbox.Group` | Stores `string[]` |
+| `NumberField` | `InputNumber` | Generic numeric input |
+| `CurrencyField` | `InputNumber` | `$` prefix, comma formatting, 2-decimal precision |
 | `SwitchField` | `Switch` | `checkedLabel` / `uncheckedLabel` captions |
 
 ---
@@ -252,7 +263,7 @@ const { required, email, composeValidators } = useValidators();
 />
 ```
 
-**Available validators:** `required`, `email`, `phone`, `ssn`, `url`, `minLength(n)`, `maxLength(n)`, `pastDate`, `composeValidators`.
+**Available validators:** `required`, `email`, `phone`, `ssn`, `url`, `minLength(n)`, `maxLength(n)`, `min(n)`, `max(n)`, `pastDate`, `composeValidators`.
 
 Submit and Search buttons are disabled while `hasValidationErrors` is true (React Final Form render prop).
 
@@ -260,7 +271,7 @@ Submit and Search buttons are disabled while `hasValidationErrors` is true (Reac
 
 ## Reference Data (Lookups)
 
-`GET /api/lookups` returns departments, statuses, employment types, notification channels, relationships, and access levels. The response is stored in the `lookups` Redux slice via `createAsyncThunk` with a condition guard that prevents duplicate fetches.
+`GET /api/lookups` returns departments, statuses, employment types, notification channels, relationships, access levels, and pay frequencies. The response is stored in the `lookups` Redux slice via `createAsyncThunk` with a condition guard that prevents duplicate fetches.
 
 The Dashboard dispatches the fetch on mount so lookups are warm for all downstream pages. Components consume them via the `useLookups()` hook.
 
@@ -335,6 +346,8 @@ log.error('fetch failed', err);  // always emitted
     │       ├── DateField.jsx
     │       ├── RadioGroupField.jsx
     │       ├── CheckboxGroupField.jsx
+    │       ├── NumberField.jsx
+    │       ├── CurrencyField.jsx
     │       ├── SwitchField.jsx
     │       ├── index.js              # Barrel export
     │       └── tests/
@@ -351,6 +364,7 @@ log.error('fetch failed', err);  // always emitted
     │           ├── PersonalInfo/
     │           ├── WorkInfo/
     │           ├── Preferences/
+    │           ├── Compensation/
     │           ├── History/
     │           │   ├── HistorySection.jsx
     │           │   ├── EmergencyContacts/

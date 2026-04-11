@@ -16,6 +16,14 @@ const validatorMessages = {
     id: 'VALIDATOR_MAX_LENGTH',
     defaultMessage: 'Cannot exceed {max} characters',
   },
+  VALIDATOR_MIN: {
+    id: 'VALIDATOR_MIN',
+    defaultMessage: 'Must be at least {min}',
+  },
+  VALIDATOR_MAX: {
+    id: 'VALIDATOR_MAX',
+    defaultMessage: 'Cannot exceed {max}',
+  },
 };
 
 export default validatorMessages;

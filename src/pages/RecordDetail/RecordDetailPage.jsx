@@ -25,6 +25,7 @@ import useUnsavedChangesBlocker from '../../hooks/useUnsavedChangesBlocker.js';
 import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
+import CompensationSection from './sections/Compensation/CompensationSection.jsx';
 import HistorySection from './sections/History/HistorySection.jsx';
 import PersonalInfoSection from './sections/PersonalInfo/PersonalInfoSection.jsx';
 import PreferencesSection from './sections/Preferences/PreferencesSection.jsx';
@@ -193,6 +194,17 @@ const RecordDetailPage = () => {
       ),
       forceRender: true,
       children: <PreferencesSection />,
+    },
+    {
+      key: 'compensation',
+      label: (
+        <SectionLabel
+          label={intl.formatMessage(messages.DETAIL_SECTION_COMPENSATION)}
+          prefix="compensation"
+        />
+      ),
+      forceRender: true,
+      children: <CompensationSection />,
     },
     {
       key: 'history',

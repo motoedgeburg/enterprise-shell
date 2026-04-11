@@ -35,6 +35,7 @@ const initialState = {
   employmentTypes: [],
   notificationChannels: [],
   accessLevels: [],
+  payFrequencies: [],
 };
 
 const lookupsSlice = createSlice({

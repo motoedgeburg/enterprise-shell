@@ -47,6 +47,10 @@ const messages = {
     id: 'DETAIL_SECTION_PREFERENCES',
     defaultMessage: 'Preferences & Permissions',
   },
+  DETAIL_SECTION_COMPENSATION: {
+    id: 'DETAIL_SECTION_COMPENSATION',
+    defaultMessage: 'Compensation',
+  },
   DETAIL_SECTION_HISTORY: {
     id: 'DETAIL_SECTION_HISTORY',
     defaultMessage: 'Contacts & Certifications',

@@ -1,7 +1,9 @@
 export { default as AntField } from './AntField.jsx';
 export { default as CheckboxGroupField } from './CheckboxGroupField.jsx';
+export { default as CurrencyField } from './CurrencyField.jsx';
 export { default as DateField } from './DateField.jsx';
 export { default as EmailField } from './EmailField.jsx';
+export { default as NumberField } from './NumberField.jsx';
 export { default as PhoneField } from './PhoneField.jsx';
 export { default as SsnField } from './SsnField.jsx';
 export { default as RadioGroupField } from './RadioGroupField.jsx';

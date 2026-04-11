@@ -3,6 +3,7 @@ import { FormSpy } from 'react-final-form';
 import { useIntl } from 'react-intl';
 
 import { useLookups } from '../../../../hooks/useLookups.js';
+import compensationMessages from '../Compensation/messages.js';
 import personalInfoMessages from '../PersonalInfo/messages.js';
 import preferencesMessages from '../Preferences/messages.js';
 import workInfoMessages from '../WorkInfo/messages.js';
@@ -16,9 +17,14 @@ const STATUS_COLOR = {
   terminated: 'red',
 };
 
+const formatCurrency = (value) => {
+  if (value === null || value === undefined) return '—';
+  return `$${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+
 const SummarySection = () => {
   const intl = useIntl();
-  const { employmentTypes, notificationChannels, accessLevels } = useLookups();
+  const { employmentTypes, notificationChannels, accessLevels, payFrequencies } = useLookups();
 
   return (
     <FormSpy subscription={{ values: true }}>
@@ -120,6 +126,46 @@ const SummarySection = () => {
             span={2}
           >
             {v.preferences?.notes || '—'}
+          </Descriptions.Item>
+
+          {/* Compensation */}
+          <Descriptions.Item
+            label={intl.formatMessage(compensationMessages.DETAIL_FIELD_BASE_SALARY)}
+          >
+            {formatCurrency(v.compensation?.baseSalary)}
+          </Descriptions.Item>
+          <Descriptions.Item
+            label={intl.formatMessage(compensationMessages.DETAIL_FIELD_PAY_FREQUENCY)}
+          >
+            {payFrequencies.find((o) => o.value === v.compensation?.payFrequency)?.label ?? '—'}
+          </Descriptions.Item>
+          <Descriptions.Item
+            label={intl.formatMessage(compensationMessages.DETAIL_FIELD_BONUS_TARGET)}
+          >
+            {v.compensation?.bonusTarget !== null && v.compensation?.bonusTarget !== undefined
+              ? `${v.compensation.bonusTarget}%`
+              : '—'}
+          </Descriptions.Item>
+          <Descriptions.Item
+            label={intl.formatMessage(compensationMessages.DETAIL_FIELD_STOCK_OPTIONS)}
+          >
+            {v.compensation?.stockOptions !== null && v.compensation?.stockOptions !== undefined
+              ? v.compensation.stockOptions.toLocaleString()
+              : '—'}
+          </Descriptions.Item>
+          <Descriptions.Item
+            label={intl.formatMessage(compensationMessages.DETAIL_FIELD_EFFECTIVE_DATE)}
+          >
+            {v.compensation?.effectiveDate ? intl.formatDate(v.compensation.effectiveDate) : '—'}
+          </Descriptions.Item>
+          <Descriptions.Item
+            label={intl.formatMessage(compensationMessages.DETAIL_FIELD_OVERTIME_ELIGIBLE)}
+          >
+            {intl.formatMessage(
+              v.compensation?.overtimeEligible
+                ? summaryMessages.DETAIL_SUMMARY_YES
+                : summaryMessages.DETAIL_SUMMARY_NO,
+            )}
           </Descriptions.Item>
         </Descriptions>
       )}

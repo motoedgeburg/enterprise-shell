@@ -58,6 +58,12 @@ const LOOKUPS = {
     { value: 'admin', label: 'Admin' },
     { value: 'restricted', label: 'Restricted' },
   ],
+  payFrequencies: [
+    { value: 'annual', label: 'Annual' },
+    { value: 'bi-weekly', label: 'Bi Weekly' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'weekly', label: 'Weekly' },
+  ],
 };
 
 export const handlers = [

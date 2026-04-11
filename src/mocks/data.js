@@ -27,6 +27,14 @@ export const seedRecords = [
       accessLevel: 'standard',
       notes: 'Team lead for the infrastructure squad. Eligible for senior staff promotion in Q3.',
     },
+    compensation: {
+      baseSalary: 145000,
+      payFrequency: 'annual',
+      bonusTarget: 15,
+      stockOptions: 500,
+      effectiveDate: '2023-01-01',
+      overtimeEligible: false,
+    },
     history: {
       emergencyContacts: [
         {
@@ -85,6 +93,14 @@ export const seedRecords = [
       notificationChannels: ['email', 'push', 'sms'],
       accessLevel: 'admin',
       notes: 'Owns the roadmap for the B2B product line.',
+    },
+    compensation: {
+      baseSalary: 130000,
+      payFrequency: 'annual',
+      bonusTarget: 20,
+      stockOptions: 300,
+      effectiveDate: '2023-04-01',
+      overtimeEligible: false,
     },
     history: {
       emergencyContacts: [
@@ -145,6 +161,14 @@ export const seedRecords = [
       accessLevel: 'restricted',
       notes: 'On extended leave. Return date TBD.',
     },
+    compensation: {
+      baseSalary: 45000,
+      payFrequency: 'annual',
+      bonusTarget: null,
+      stockOptions: 0,
+      effectiveDate: '2021-09-15',
+      overtimeEligible: false,
+    },
     history: { emergencyContacts: [], certifications: [] },
     createdAt: '2024-01-22T14:15:00Z',
   },
@@ -174,6 +198,14 @@ export const seedRecords = [
       notificationChannels: ['slack'],
       accessLevel: 'standard',
       notes: 'Mentoring two junior developers on the team.',
+    },
+    compensation: {
+      baseSalary: 110000,
+      payFrequency: 'annual',
+      bonusTarget: 10,
+      stockOptions: 200,
+      effectiveDate: '2024-01-01',
+      overtimeEligible: false,
     },
     history: {
       emergencyContacts: [
@@ -234,6 +266,14 @@ export const seedRecords = [
       accessLevel: 'standard',
       notes: 'Leading the Q2 product launch campaign.',
     },
+    compensation: {
+      baseSalary: 105000,
+      payFrequency: 'annual',
+      bonusTarget: 12,
+      stockOptions: 150,
+      effectiveDate: '2023-07-01',
+      overtimeEligible: false,
+    },
     history: {
       emergencyContacts: [
         {
@@ -276,6 +316,14 @@ export const seedRecords = [
       accessLevel: 'restricted',
       notes: 'Contract ending Q2. Renewal under review.',
     },
+    compensation: {
+      baseSalary: 3500,
+      payFrequency: 'bi-weekly',
+      bonusTarget: null,
+      stockOptions: 0,
+      effectiveDate: '2023-01-05',
+      overtimeEligible: true,
+    },
     history: { emergencyContacts: [], certifications: [] },
     createdAt: '2024-02-28T16:30:00Z',
   },
@@ -305,6 +353,14 @@ export const seedRecords = [
       notificationChannels: ['email', 'push'],
       accessLevel: 'admin',
       notes: 'Key contact for vendor onboarding.',
+    },
+    compensation: {
+      baseSalary: 120000,
+      payFrequency: 'annual',
+      bonusTarget: 15,
+      stockOptions: 400,
+      effectiveDate: '2022-08-01',
+      overtimeEligible: false,
     },
     history: {
       emergencyContacts: [
@@ -364,6 +420,14 @@ export const seedRecords = [
       notificationChannels: ['email', 'slack', 'push'],
       accessLevel: 'admin',
       notes: 'Point of contact for performance review cycle.',
+    },
+    compensation: {
+      baseSalary: 95000,
+      payFrequency: 'monthly',
+      bonusTarget: 8,
+      stockOptions: 100,
+      effectiveDate: '2023-01-01',
+      overtimeEligible: true,
     },
     history: {
       emergencyContacts: [
@@ -474,6 +538,7 @@ export const db = {
           personalInfo: { ...r.personalInfo, ...dto.personalInfo },
           workInfo: { ...r.workInfo, ...dto.workInfo },
           preferences: { ...r.preferences, ...dto.preferences },
+          compensation: { ...r.compensation, ...dto.compensation },
           history: {
             emergencyContacts: dto.history?.emergencyContacts ?? r.history?.emergencyContacts,
             certifications: dto.history?.certifications ?? r.history?.certifications,
