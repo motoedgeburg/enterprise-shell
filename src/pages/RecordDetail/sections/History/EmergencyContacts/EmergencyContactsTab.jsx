@@ -32,40 +32,40 @@ const EmergencyContactsTab = () => {
   const { required } = useValidators();
 
   const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
 
   const openAdd = () => {
-    setEditing(null);
+    setEditIndex(null);
     setOpen(true);
   };
 
-  const openEdit = (record) => {
-    setEditing(record);
+  const openEdit = (index) => {
+    setEditIndex(index);
     setOpen(true);
   };
 
-  const handleDelete = (id) =>
+  const handleDelete = (index) =>
     form.change(
       'history.emergencyContacts',
-      contacts.filter((c) => c.id !== id),
+      contacts.filter((_, i) => i !== index),
     );
 
-  const setPrimary = (id) =>
+  const setPrimary = (index) =>
     form.change(
       'history.emergencyContacts',
-      contacts.map((c) => ({ ...c, isPrimary: c.id === id })),
+      contacts.map((c, i) => ({ ...c, isPrimary: i === index })),
     );
 
   const handleSubmit = (vals) => {
-    if (editing) {
+    if (editIndex !== null) {
       form.change(
         'history.emergencyContacts',
-        contacts.map((c) => (c.id === editing.id ? { ...editing, ...vals } : c)),
+        contacts.map((c, i) => (i === editIndex ? { ...c, ...vals } : c)),
       );
     } else {
       form.change('history.emergencyContacts', [
         ...contacts,
-        { ...vals, id: `ec-${Date.now()}`, isPrimary: contacts.length === 0 },
+        { ...vals, id: null, isPrimary: contacts.length === 0 },
       ]);
     }
     setOpen(false);
@@ -106,20 +106,20 @@ const EmergencyContactsTab = () => {
       title: '',
       key: 'actions',
       width: 104,
-      render: (_, record) => (
+      render: (_, record, index) => (
         <Space size={4}>
           {!record.isPrimary && (
             <Button
               size="small"
               icon={<StarOutlined />}
               title={intl.formatMessage(messages.DETAIL_CONTACTS_SET_PRIMARY)}
-              onClick={() => setPrimary(record.id)}
+              onClick={() => setPrimary(index)}
             />
           )}
-          <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(record)} />
+          <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(index)} />
           <Popconfirm
             title={intl.formatMessage(messages.DETAIL_CONTACTS_DELETE_CONFIRM)}
-            onConfirm={() => handleDelete(record.id)}
+            onConfirm={() => handleDelete(index)}
             okText={intl.formatMessage(messages.DETAIL_DELETE_OK)}
             cancelText={intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
             okButtonProps={{ danger: true }}
@@ -142,7 +142,7 @@ const EmergencyContactsTab = () => {
       <Table
         dataSource={contacts}
         columns={columns}
-        rowKey="id"
+        rowKey={(record, index) => record.id ?? `new-${index}`}
         size="small"
         pagination={false}
         scroll={{ x: 600 }}
@@ -159,14 +159,19 @@ const EmergencyContactsTab = () => {
       <Modal
         open={open}
         title={intl.formatMessage(
-          editing ? messages.DETAIL_CONTACTS_EDIT_TITLE : messages.DETAIL_CONTACTS_ADD_TITLE,
+          editIndex !== null
+            ? messages.DETAIL_CONTACTS_EDIT_TITLE
+            : messages.DETAIL_CONTACTS_ADD_TITLE,
         )}
         onCancel={() => setOpen(false)}
         footer={null}
         destroyOnHidden
         width={480}
       >
-        <FinalForm onSubmit={handleSubmit} initialValues={editing ?? {}}>
+        <FinalForm
+          onSubmit={handleSubmit}
+          initialValues={editIndex !== null ? contacts[editIndex] : {}}
+        >
           {({ handleSubmit: submitForm }) => (
             <form onSubmit={submitForm} style={{ marginTop: 16 }}>
               <TextField
@@ -198,7 +203,7 @@ const EmergencyContactsTab = () => {
                   {intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
                 </Button>
                 <Button type="primary" htmlType="submit">
-                  {editing
+                  {editIndex !== null
                     ? intl.formatMessage(messages.DETAIL_SUBMIT)
                     : intl.formatMessage(messages.DETAIL_CONTACTS_ADD)}
                 </Button>

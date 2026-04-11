@@ -27,32 +27,32 @@ const CertificationsTab = () => {
   const { required } = useValidators();
 
   const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
 
   const openAdd = () => {
-    setEditing(null);
+    setEditIndex(null);
     setOpen(true);
   };
 
-  const openEdit = (record) => {
-    setEditing(record);
+  const openEdit = (index) => {
+    setEditIndex(index);
     setOpen(true);
   };
 
-  const handleDelete = (id) =>
+  const handleDelete = (index) =>
     form.change(
       'history.certifications',
-      certs.filter((c) => c.id !== id),
+      certs.filter((_, i) => i !== index),
     );
 
   const handleSubmit = (vals) => {
-    if (editing) {
+    if (editIndex !== null) {
       form.change(
         'history.certifications',
-        certs.map((c) => (c.id === editing.id ? { ...editing, ...vals } : c)),
+        certs.map((c, i) => (i === editIndex ? { ...c, ...vals } : c)),
       );
     } else {
-      form.change('history.certifications', [...certs, { ...vals, id: `cert-${Date.now()}` }]);
+      form.change('history.certifications', [...certs, { ...vals, id: null }]);
     }
     setOpen(false);
   };
@@ -106,12 +106,12 @@ const CertificationsTab = () => {
       title: '',
       key: 'actions',
       width: 72,
-      render: (_, record) => (
+      render: (_, _record, index) => (
         <Space size={4}>
-          <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(record)} />
+          <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(index)} />
           <Popconfirm
             title={intl.formatMessage(messages.DETAIL_CERTS_DELETE_CONFIRM)}
-            onConfirm={() => handleDelete(record.id)}
+            onConfirm={() => handleDelete(index)}
             okText={intl.formatMessage(messages.DETAIL_DELETE_OK)}
             cancelText={intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
             okButtonProps={{ danger: true }}
@@ -134,7 +134,7 @@ const CertificationsTab = () => {
       <Table
         dataSource={certs}
         columns={columns}
-        rowKey="id"
+        rowKey={(record, index) => record.id ?? `new-${index}`}
         size="small"
         pagination={false}
         scroll={{ x: 700 }}
@@ -151,14 +151,17 @@ const CertificationsTab = () => {
       <Modal
         open={open}
         title={intl.formatMessage(
-          editing ? messages.DETAIL_CERTS_EDIT_TITLE : messages.DETAIL_CERTS_ADD_TITLE,
+          editIndex !== null ? messages.DETAIL_CERTS_EDIT_TITLE : messages.DETAIL_CERTS_ADD_TITLE,
         )}
         onCancel={() => setOpen(false)}
         footer={null}
         destroyOnHidden
         width={480}
       >
-        <FinalForm onSubmit={handleSubmit} initialValues={editing ?? {}}>
+        <FinalForm
+          onSubmit={handleSubmit}
+          initialValues={editIndex !== null ? certs[editIndex] : {}}
+        >
           {({ handleSubmit: submitForm }) => (
             <form onSubmit={submitForm} style={{ marginTop: 16 }}>
               <TextField
@@ -196,7 +199,7 @@ const CertificationsTab = () => {
                   {intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
                 </Button>
                 <Button type="primary" htmlType="submit">
-                  {editing
+                  {editIndex !== null
                     ? intl.formatMessage(messages.DETAIL_SUBMIT)
                     : intl.formatMessage(messages.DETAIL_CERTS_ADD)}
                 </Button>

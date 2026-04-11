@@ -19,9 +19,17 @@ const Breadcrumbs = ({ items, onNavigate }) => (
       let title;
       if (isLink && onNavigate) {
         title = (
-          <a onClick={() => onNavigate(item.path)} role="link" style={{ cursor: 'pointer' }}>
+          <button
+            type="button"
+            onClick={() => onNavigate(item.path)}
+            style={{
+              all: 'unset',
+              cursor: 'pointer',
+              color: 'inherit',
+            }}
+          >
             {item.label}
-          </a>
+          </button>
         );
       } else if (isLink) {
         title = <Link to={item.path}>{item.label}</Link>;

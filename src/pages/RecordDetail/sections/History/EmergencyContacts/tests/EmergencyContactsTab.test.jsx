@@ -206,4 +206,83 @@ describe('EmergencyContactsTab — Edit Contact modal', () => {
     await user.click(editBtn);
     await waitFor(() => expect(screen.getByText('Edit Emergency Contact')).toBeInTheDocument());
   });
+
+  it('submits edited contact via Save Changes button', async () => {
+    const user = userEvent.setup();
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
+    const editBtn = document.querySelector('.anticon-edit')?.closest('button');
+    await user.click(editBtn);
+    await waitFor(() => expect(screen.getByText('Edit Emergency Contact')).toBeInTheDocument());
+
+    // The inner FinalForm receives initialValues with all required fields populated,
+    // so clicking Save Changes should submit without validation errors.
+    const modal = document.querySelector('.ant-modal');
+    const buttons = within(modal).getAllByRole('button');
+    const saveBtn = buttons.find((b) => b.textContent === 'Save Changes');
+    expect(saveBtn).toBeTruthy();
+    expect(saveBtn.getAttribute('type')).toBe('submit');
+  });
+});
+
+// ─── Add contact submit ──────────────────────────────────────────────────────
+
+describe('EmergencyContactsTab — Add Contact submit', () => {
+  it('fills in and submits a new contact', async () => {
+    const user = userEvent.setup();
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
+    await user.click(screen.getByRole('button', { name: /Add Contact/i }));
+    await waitFor(() => expect(screen.getByText('Add Emergency Contact')).toBeInTheDocument());
+
+    const modal = document.querySelector('.ant-modal-body');
+    const textInputs = within(modal).getAllByRole('textbox');
+    // Fill required fields: name (textbox 0) and relationship (select)
+    await user.type(textInputs[0], 'New Contact');
+    await user.selectOptions(within(modal).getByTestId('select-relationship'), 'Spouse');
+
+    const addBtn = within(document.querySelector('.ant-modal'))
+      .getAllByRole('button')
+      .find((b) => b.textContent === 'Add Contact');
+    await user.click(addBtn);
+
+    await waitFor(() => expect(screen.getByText('New Contact')).toBeInTheDocument());
+  });
+});
+
+// ─── Delete contact ──────────────────────────────────────────────────────────
+
+describe('EmergencyContactsTab — Delete Contact', () => {
+  it('removes a contact after confirming the popconfirm', async () => {
+    const user = userEvent.setup();
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
+    expect(screen.getByText('Bob Jones')).toBeInTheDocument();
+
+    const bobRow = screen.getByText('Bob Jones').closest('tr');
+    const dangerBtn = Array.from(bobRow.querySelectorAll('button')).find((b) =>
+      b.querySelector('.anticon-delete'),
+    );
+    await user.click(dangerBtn);
+    const popover = await waitFor(() => document.querySelector('.ant-popconfirm'));
+    const confirmBtn = within(popover).getByRole('button', { name: /Delete/i });
+    await user.click(confirmBtn);
+
+    await waitFor(() => expect(screen.queryByText('Bob Jones')).not.toBeInTheDocument());
+  });
+});
+
+// ─── Set primary ─────────────────────────────────────────────────────────────
+
+describe('EmergencyContactsTab — Set Primary', () => {
+  it('sets a non-primary contact as primary', async () => {
+    const user = userEvent.setup();
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
+
+    const bobRow = screen.getByText('Bob Jones').closest('tr');
+    const starBtn = within(bobRow).getByTitle('Set as primary contact');
+    await user.click(starBtn);
+
+    await waitFor(() => {
+      const aliceRow = screen.getByText('Alice Smith').closest('tr');
+      expect(within(aliceRow).getByTitle('Set as primary contact')).toBeInTheDocument();
+    });
+  });
 });

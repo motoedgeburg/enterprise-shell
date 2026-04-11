@@ -11,7 +11,6 @@ import { useValidators } from '../../hooks/useValidators.js';
 
 import messages from './messages.js';
 
-
 const SearchPage = () => {
   const intl = useIntl();
   const navigate = useNavigate();

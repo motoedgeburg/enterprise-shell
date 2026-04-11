@@ -9,7 +9,7 @@
  *   - Add Certification modal opens with correct title
  *   - Cancel button closes modal
  */
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from 'antd';
 import { Form as FinalForm } from 'react-final-form';
@@ -126,5 +126,64 @@ describe('CertificationsTab — Add Certification modal', () => {
     const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
     expect(cancelBtn).toBeInTheDocument();
     await user.click(cancelBtn);
+  });
+
+  it('renders the Add Certification submit button', async () => {
+    const user = userEvent.setup();
+    renderCerts({ history: { certifications: [] } });
+    await user.click(screen.getByRole('button', { name: /Add Certification/i }));
+    await waitFor(() =>
+      expect(document.querySelector('.ant-modal-title')).toHaveTextContent('Add Certification'),
+    );
+
+    const modal = document.querySelector('.ant-modal');
+    const addBtn = within(modal)
+      .getAllByRole('button')
+      .find((b) => b.textContent === 'Add Certification');
+    expect(addBtn).toBeTruthy();
+    expect(addBtn.getAttribute('type')).toBe('submit');
+  });
+});
+
+// ─── Edit modal ──────────────────────────────────────────────────────────────
+
+describe('CertificationsTab — Edit Certification modal', () => {
+  it('opens with "Edit Certification" title and Save Changes button', async () => {
+    const user = userEvent.setup();
+    renderCerts({ history: { certifications: CERTS } });
+
+    const editBtn = document.querySelector('.anticon-edit')?.closest('button');
+    await user.click(editBtn);
+    await waitFor(() =>
+      expect(document.querySelector('.ant-modal-title')).toHaveTextContent('Edit Certification'),
+    );
+
+    const modal = document.querySelector('.ant-modal');
+    const saveBtn = within(modal)
+      .getAllByRole('button')
+      .find((b) => b.textContent === 'Save Changes');
+    expect(saveBtn).toBeTruthy();
+    expect(saveBtn.getAttribute('type')).toBe('submit');
+  });
+});
+
+// ─── Delete certification ────────────────────────────────────────────────────
+
+describe('CertificationsTab — Delete Certification', () => {
+  it('removes a certification after confirming', async () => {
+    const user = userEvent.setup();
+    renderCerts({ history: { certifications: CERTS } });
+    expect(screen.getByText('Expired Cert')).toBeInTheDocument();
+
+    const expiredRow = screen.getByText('Expired Cert').closest('tr');
+    const dangerBtn = Array.from(expiredRow.querySelectorAll('button')).find((b) =>
+      b.querySelector('.anticon-delete'),
+    );
+    await user.click(dangerBtn);
+    const popover = await waitFor(() => document.querySelector('.ant-popconfirm'));
+    const confirmBtn = within(popover).getByRole('button', { name: /Delete/i });
+    await user.click(confirmBtn);
+
+    await waitFor(() => expect(screen.queryByText('Expired Cert')).not.toBeInTheDocument());
   });
 });
