@@ -79,27 +79,27 @@ describe('PersonalInfoSection — field labels', () => {
 
 describe('PersonalInfoSection — initial values', () => {
   it('pre-fills name field', () => {
-    renderSection({ name: 'Alice Johnson' });
+    renderSection({ personalInfo: { name: 'Alice Johnson' } });
     expect(screen.getByDisplayValue('Alice Johnson')).toBeInTheDocument();
   });
 
   it('pre-fills email field', () => {
-    renderSection({ email: 'alice@company.com' });
+    renderSection({ personalInfo: { email: 'alice@company.com' } });
     expect(screen.getByDisplayValue('alice@company.com')).toBeInTheDocument();
   });
 
   it('pre-fills phone field', () => {
-    renderSection({ phone: '(215) 555-0101' });
+    renderSection({ personalInfo: { phone: '(215) 555-0101' } });
     expect(screen.getByDisplayValue('(215) 555-0101')).toBeInTheDocument();
   });
 
   it('pre-fills address field', () => {
-    renderSection({ address: '123 Market St' });
+    renderSection({ personalInfo: { address: '123 Market St' } });
     expect(screen.getByDisplayValue('123 Market St')).toBeInTheDocument();
   });
 
   it('pre-fills bio field', () => {
-    renderSection({ bio: 'Senior engineer.' });
+    renderSection({ personalInfo: { bio: 'Senior engineer.' } });
     expect(screen.getByDisplayValue('Senior engineer.')).toBeInTheDocument();
   });
 });

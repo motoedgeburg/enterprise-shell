@@ -99,7 +99,7 @@ function renderContacts(initialValues = {}) {
 
 describe('EmergencyContactsTab — empty state', () => {
   it('shows empty message when no contacts', () => {
-    renderContacts({ emergencyContacts: [] });
+    renderContacts({ history: { emergencyContacts: [] } });
     expect(screen.getByText('No emergency contacts on file.')).toBeInTheDocument();
   });
 
@@ -113,37 +113,37 @@ describe('EmergencyContactsTab — empty state', () => {
 
 describe('EmergencyContactsTab — table', () => {
   it('renders contact names in the table', () => {
-    renderContacts({ emergencyContacts: CONTACTS });
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
     expect(screen.getByText('Alice Smith')).toBeInTheDocument();
     expect(screen.getByText('Bob Jones')).toBeInTheDocument();
   });
 
   it('renders relationship values', () => {
-    renderContacts({ emergencyContacts: CONTACTS });
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
     expect(screen.getByText('Spouse')).toBeInTheDocument();
     expect(screen.getByText('Parent')).toBeInTheDocument();
   });
 
   it('renders contact phone numbers', () => {
-    renderContacts({ emergencyContacts: CONTACTS });
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
     expect(screen.getByText('(215) 555-0101')).toBeInTheDocument();
     expect(screen.getByText('(215) 555-0202')).toBeInTheDocument();
   });
 
   it('renders contact emails', () => {
-    renderContacts({ emergencyContacts: CONTACTS });
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
     expect(screen.getByText('alice@example.com')).toBeInTheDocument();
     expect(screen.getByText('bob@example.com')).toBeInTheDocument();
   });
 
   it('hides the set-primary star button for the primary contact', () => {
-    renderContacts({ emergencyContacts: CONTACTS });
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
     const aliceRow = screen.getByText('Alice Smith').closest('tr');
     expect(within(aliceRow).queryByTitle('Set as primary contact')).not.toBeInTheDocument();
   });
 
   it('shows the set-primary star button for non-primary contacts', () => {
-    renderContacts({ emergencyContacts: CONTACTS });
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
     const bobRow = screen.getByText('Bob Jones').closest('tr');
     expect(within(bobRow).getByTitle('Set as primary contact')).toBeInTheDocument();
   });
@@ -201,7 +201,7 @@ describe('EmergencyContactsTab — Add Contact modal', () => {
 describe('EmergencyContactsTab — Edit Contact modal', () => {
   it('opens with "Edit Emergency Contact" title on Edit click', async () => {
     const user = userEvent.setup();
-    renderContacts({ emergencyContacts: CONTACTS });
+    renderContacts({ history: { emergencyContacts: CONTACTS } });
     const editBtn = document.querySelector('.anticon-edit')?.closest('button');
     await user.click(editBtn);
     await waitFor(() => expect(screen.getByText('Edit Emergency Contact')).toBeInTheDocument());

@@ -22,7 +22,7 @@ const PersonalInfoSection = () => {
     <Row gutter={[16, 0]}>
       <Col xs={24} sm={12}>
         <TextField
-          name="name"
+          name="personalInfo.name"
           label={intl.formatMessage(messages.DETAIL_FIELD_NAME)}
           placeholder="Jane Doe"
           required
@@ -31,7 +31,7 @@ const PersonalInfoSection = () => {
       </Col>
       <Col xs={24} sm={12}>
         <EmailField
-          name="email"
+          name="personalInfo.email"
           label={intl.formatMessage(messages.DETAIL_FIELD_EMAIL)}
           placeholder="jane@company.com"
           required
@@ -40,14 +40,14 @@ const PersonalInfoSection = () => {
       </Col>
       <Col xs={24} sm={12}>
         <PhoneField
-          name="phone"
+          name="personalInfo.phone"
           label={intl.formatMessage(messages.DETAIL_FIELD_PHONE)}
           validate={phone()}
         />
       </Col>
       <Col xs={24} sm={12}>
         <TextField
-          name="address"
+          name="personalInfo.address"
           label={intl.formatMessage(messages.DETAIL_FIELD_ADDRESS)}
           placeholder="123 Main St, Philadelphia, PA 19103"
           validate={minLength(5)}
@@ -55,21 +55,21 @@ const PersonalInfoSection = () => {
       </Col>
       <Col xs={24} sm={12}>
         <DateField
-          name="dateOfBirth"
+          name="personalInfo.dateOfBirth"
           label={intl.formatMessage(messages.DETAIL_FIELD_DOB)}
           validate={pastDate()}
         />
       </Col>
       <Col xs={24} sm={12}>
         <SsnField
-          name="ssn"
+          name="personalInfo.ssn"
           label={intl.formatMessage(messages.DETAIL_FIELD_SSN)}
           validate={ssn()}
         />
       </Col>
       <Col xs={24}>
         <TextAreaField
-          name="bio"
+          name="personalInfo.bio"
           label={intl.formatMessage(messages.DETAIL_FIELD_BIO)}
           placeholder="A short professional biography…"
           rows={3}

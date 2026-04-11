@@ -68,7 +68,7 @@ describe('CertificationsTab — rendering', () => {
   });
 
   it('shows empty message when no certifications', () => {
-    renderCerts({ certifications: [] });
+    renderCerts({ history: { certifications: [] } });
     expect(screen.getByText('No certifications on file.')).toBeInTheDocument();
   });
 });
@@ -77,29 +77,29 @@ describe('CertificationsTab — rendering', () => {
 
 describe('CertificationsTab — table', () => {
   it('renders certification names in the table', () => {
-    renderCerts({ certifications: CERTS });
+    renderCerts({ history: { certifications: CERTS } });
     expect(screen.getByText('AWS Solutions Architect')).toBeInTheDocument();
     expect(screen.getByText('Expired Cert')).toBeInTheDocument();
     expect(screen.getByText('No Expiry Cert')).toBeInTheDocument();
   });
 
   it('renders credential ID as secondary text', () => {
-    renderCerts({ certifications: CERTS });
+    renderCerts({ history: { certifications: CERTS } });
     expect(screen.getByText('ID: AWS-123')).toBeInTheDocument();
   });
 
   it('shows Active tag for cert with future expiry', () => {
-    renderCerts({ certifications: CERTS });
+    renderCerts({ history: { certifications: CERTS } });
     expect(screen.getByText('Active')).toBeInTheDocument();
   });
 
   it('shows Expired tag for cert with past expiry', () => {
-    renderCerts({ certifications: CERTS });
+    renderCerts({ history: { certifications: CERTS } });
     expect(screen.getByText('Expired')).toBeInTheDocument();
   });
 
   it('shows No Expiry tag for cert with no expiry date', () => {
-    renderCerts({ certifications: CERTS });
+    renderCerts({ history: { certifications: CERTS } });
     expect(screen.getByText('No Expiry')).toBeInTheDocument();
   });
 });

@@ -147,27 +147,27 @@ describe('WorkInfoSection — field labels', () => {
 
 describe('WorkInfoSection — initial values', () => {
   it('pre-fills jobTitle', () => {
-    renderSection({ jobTitle: 'Senior Engineer' });
+    renderSection({ workInfo: { jobTitle: 'Senior Engineer' } });
     expect(screen.getByDisplayValue('Senior Engineer')).toBeInTheDocument();
   });
 
   it('pre-fills manager', () => {
-    renderSection({ manager: 'Jane Smith' });
+    renderSection({ workInfo: { manager: 'Jane Smith' } });
     expect(screen.getByDisplayValue('Jane Smith')).toBeInTheDocument();
   });
 
   it('pre-selects department', () => {
-    renderSection({ department: 'Engineering' });
-    expect(screen.getByTestId('select-department').value).toBe('Engineering');
+    renderSection({ workInfo: { department: 'Engineering' } });
+    expect(screen.getByTestId('select-workInfo.department').value).toBe('Engineering');
   });
 
   it('pre-selects status', () => {
-    renderSection({ status: 'active' });
-    expect(screen.getByTestId('select-status').value).toBe('active');
+    renderSection({ workInfo: { status: 'active' } });
+    expect(screen.getByTestId('select-workInfo.status').value).toBe('active');
   });
 
   it('pre-selects employment type radio', () => {
-    renderSection({ employmentType: 'full-time' });
+    renderSection({ workInfo: { employmentType: 'full-time' } });
     expect(screen.getByLabelText('Full Time')).toBeChecked();
   });
 });
@@ -198,7 +198,9 @@ describe('WorkInfoSection — required validation', () => {
 
   it('renders department options from lookups', () => {
     renderSection();
-    const opts = Array.from(screen.getByTestId('select-department').options).map((o) => o.value);
+    const opts = Array.from(screen.getByTestId('select-workInfo.department').options).map(
+      (o) => o.value,
+    );
     expect(opts).toContain('Engineering');
     expect(opts).toContain('Product');
     expect(opts).toContain('Legal');
@@ -206,7 +208,9 @@ describe('WorkInfoSection — required validation', () => {
 
   it('renders status options from lookups', () => {
     renderSection();
-    const opts = Array.from(screen.getByTestId('select-status').options).map((o) => o.value);
+    const opts = Array.from(screen.getByTestId('select-workInfo.status').options).map(
+      (o) => o.value,
+    );
     expect(opts).toContain('active');
     expect(opts).toContain('inactive');
   });
@@ -224,14 +228,14 @@ describe('WorkInfoSection — required validation', () => {
 
 describe('WorkInfoSection — admin constraint', () => {
   it('shows the admin alert when accessLevel is admin', () => {
-    renderSection({ accessLevel: 'admin' });
+    renderSection({ preferences: { accessLevel: 'admin' } });
     expect(
       screen.getByText('Employees with Admin access must have Active status.'),
     ).toBeInTheDocument();
   });
 
   it('does not show the admin alert for standard access', () => {
-    renderSection({ accessLevel: 'standard' });
+    renderSection({ preferences: { accessLevel: 'standard' } });
     expect(
       screen.queryByText('Employees with Admin access must have Active status.'),
     ).not.toBeInTheDocument();
@@ -245,17 +249,20 @@ describe('WorkInfoSection — admin constraint', () => {
   });
 
   it('forces status to active when accessLevel is admin', async () => {
-    renderSection({ accessLevel: 'admin', status: 'inactive' });
-    await waitFor(() => expect(screen.getByTestId('select-status').value).toBe('active'));
+    renderSection({
+      preferences: { accessLevel: 'admin' },
+      workInfo: { status: 'inactive' },
+    });
+    await waitFor(() => expect(screen.getByTestId('select-workInfo.status').value).toBe('active'));
   });
 
   it('disables the status field when accessLevel is admin', () => {
-    renderSection({ accessLevel: 'admin' });
-    expect(screen.getByTestId('select-status')).toBeDisabled();
+    renderSection({ preferences: { accessLevel: 'admin' } });
+    expect(screen.getByTestId('select-workInfo.status')).toBeDisabled();
   });
 
   it('enables the status field for non-admin access level', () => {
-    renderSection({ accessLevel: 'standard' });
-    expect(screen.getByTestId('select-status')).not.toBeDisabled();
+    renderSection({ preferences: { accessLevel: 'standard' } });
+    expect(screen.getByTestId('select-workInfo.status')).not.toBeDisabled();
   });
 });

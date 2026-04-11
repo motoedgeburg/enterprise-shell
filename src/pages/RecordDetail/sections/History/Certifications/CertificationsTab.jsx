@@ -23,7 +23,7 @@ const CertificationsTab = () => {
   const intl = useIntl();
   const form = useForm();
   const { values } = useFormState({ subscription: { values: true } });
-  const certs = values.certifications ?? [];
+  const certs = values.history?.certifications ?? [];
   const { required } = useValidators();
 
   const [open, setOpen] = useState(false);
@@ -41,18 +41,18 @@ const CertificationsTab = () => {
 
   const handleDelete = (id) =>
     form.change(
-      'certifications',
+      'history.certifications',
       certs.filter((c) => c.id !== id),
     );
 
   const handleSubmit = (vals) => {
     if (editing) {
       form.change(
-        'certifications',
+        'history.certifications',
         certs.map((c) => (c.id === editing.id ? { ...editing, ...vals } : c)),
       );
     } else {
-      form.change('certifications', [...certs, { ...vals, id: `cert-${Date.now()}` }]);
+      form.change('history.certifications', [...certs, { ...vals, id: `cert-${Date.now()}` }]);
     }
     setOpen(false);
   };

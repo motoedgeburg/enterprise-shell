@@ -29,40 +29,42 @@ const SummarySection = () => {
             label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_NAME)}
             span={2}
           >
-            {v.name || '—'}
+            {v.personalInfo?.name || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_EMAIL)}>
-            {v.email || '—'}
+            {v.personalInfo?.email || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_PHONE)}>
-            {v.phone || '—'}
+            {v.personalInfo?.phone || '—'}
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_ADDRESS)}
             span={2}
           >
-            {v.address || '—'}
+            {v.personalInfo?.address || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_DOB)}>
-            {v.dateOfBirth ? intl.formatDate(v.dateOfBirth) : '—'}
+            {v.personalInfo?.dateOfBirth ? intl.formatDate(v.personalInfo.dateOfBirth) : '—'}
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage(personalInfoMessages.DETAIL_FIELD_BIO)}
             span={2}
           >
-            {v.bio || '—'}
+            {v.personalInfo?.bio || '—'}
           </Descriptions.Item>
 
           {/* Work */}
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_JOB_TITLE)}>
-            {v.jobTitle || '—'}
+            {v.workInfo?.jobTitle || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_DEPARTMENT)}>
-            {v.department || '—'}
+            {v.workInfo?.department || '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_STATUS)}>
-            {v.status ? (
-              <Tag color={STATUS_COLOR[v.status] ?? 'default'}>{v.status.toUpperCase()}</Tag>
+            {v.workInfo?.status ? (
+              <Tag color={STATUS_COLOR[v.workInfo.status] ?? 'default'}>
+                {v.workInfo.status.toUpperCase()}
+              </Tag>
             ) : (
               '—'
             )}
@@ -70,13 +72,13 @@ const SummarySection = () => {
           <Descriptions.Item
             label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_EMPLOYMENT_TYPE)}
           >
-            {employmentTypes.find((o) => o.value === v.employmentType)?.label ?? '—'}
+            {employmentTypes.find((o) => o.value === v.workInfo?.employmentType)?.label ?? '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_START_DATE)}>
-            {v.startDate ? intl.formatDate(v.startDate) : '—'}
+            {v.workInfo?.startDate ? intl.formatDate(v.workInfo.startDate) : '—'}
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_MANAGER)}>
-            {v.manager || '—'}
+            {v.workInfo?.manager || '—'}
           </Descriptions.Item>
 
           {/* Preferences */}
@@ -84,7 +86,7 @@ const SummarySection = () => {
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_REMOTE_ELIGIBLE)}
           >
             {intl.formatMessage(
-              v.remoteEligible
+              v.preferences?.remoteEligible
                 ? summaryMessages.DETAIL_SUMMARY_YES
                 : summaryMessages.DETAIL_SUMMARY_NO,
             )}
@@ -93,7 +95,7 @@ const SummarySection = () => {
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}
           >
             {intl.formatMessage(
-              v.notificationsEnabled
+              v.preferences?.notificationsEnabled
                 ? summaryMessages.DETAIL_SUMMARY_ON
                 : summaryMessages.DETAIL_SUMMARY_OFF,
             )}
@@ -102,8 +104,8 @@ const SummarySection = () => {
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTIFICATION_CHANNELS)}
             span={2}
           >
-            {v.notificationChannels?.length
-              ? v.notificationChannels.map((c) => (
+            {v.preferences?.notificationChannels?.length
+              ? v.preferences.notificationChannels.map((c) => (
                   <Tag key={c}>{notificationChannels.find((o) => o.value === c)?.label ?? c}</Tag>
                 ))
               : intl.formatMessage(summaryMessages.DETAIL_SUMMARY_NONE)}
@@ -111,13 +113,13 @@ const SummarySection = () => {
           <Descriptions.Item
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_ACCESS_LEVEL)}
           >
-            {accessLevels.find((o) => o.value === v.accessLevel)?.label ?? '—'}
+            {accessLevels.find((o) => o.value === v.preferences?.accessLevel)?.label ?? '—'}
           </Descriptions.Item>
           <Descriptions.Item
             label={intl.formatMessage(preferencesMessages.DETAIL_FIELD_NOTES)}
             span={2}
           >
-            {v.notes || '—'}
+            {v.preferences?.notes || '—'}
           </Descriptions.Item>
         </Descriptions>
       )}

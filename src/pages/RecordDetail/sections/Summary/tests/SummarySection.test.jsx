@@ -49,23 +49,29 @@ vi.mock('../../../../../hooks/useLookups.js', () => ({
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
 const FULL_RECORD = {
-  name: 'Alice Johnson',
-  email: 'alice@company.com',
-  phone: '(215) 555-0101',
-  address: '123 Market St, Philadelphia, PA 19103',
-  dateOfBirth: '1990-03-15',
-  bio: 'Senior engineer.',
-  jobTitle: 'Senior Software Engineer',
-  department: 'Engineering',
-  status: 'active',
-  employmentType: 'full-time',
-  startDate: '2019-06-01',
-  manager: 'Jane Smith',
-  remoteEligible: true,
-  notificationsEnabled: true,
-  notificationChannels: ['email', 'slack'],
-  accessLevel: 'standard',
-  notes: 'Team lead.',
+  personalInfo: {
+    name: 'Alice Johnson',
+    email: 'alice@company.com',
+    phone: '(215) 555-0101',
+    address: '123 Market St, Philadelphia, PA 19103',
+    dateOfBirth: '1990-03-15',
+    bio: 'Senior engineer.',
+  },
+  workInfo: {
+    jobTitle: 'Senior Software Engineer',
+    department: 'Engineering',
+    status: 'active',
+    employmentType: 'full-time',
+    startDate: '2019-06-01',
+    manager: 'Jane Smith',
+  },
+  preferences: {
+    remoteEligible: true,
+    notificationsEnabled: true,
+    notificationChannels: ['email', 'slack'],
+    accessLevel: 'standard',
+    notes: 'Team lead.',
+  },
 };
 
 function renderSection(initialValues = {}) {
@@ -171,32 +177,32 @@ describe('SummarySection — labels', () => {
 
 describe('SummarySection — personal values', () => {
   it('displays name', () => {
-    renderSection({ name: 'Alice Johnson' });
+    renderSection({ personalInfo: { name: 'Alice Johnson' } });
     expect(screen.getByText('Alice Johnson')).toBeInTheDocument();
   });
 
   it('displays email', () => {
-    renderSection({ email: 'alice@company.com' });
+    renderSection({ personalInfo: { email: 'alice@company.com' } });
     expect(screen.getByText('alice@company.com')).toBeInTheDocument();
   });
 
   it('displays phone', () => {
-    renderSection({ phone: '(215) 555-0101' });
+    renderSection({ personalInfo: { phone: '(215) 555-0101' } });
     expect(screen.getByText('(215) 555-0101')).toBeInTheDocument();
   });
 
   it('displays address', () => {
-    renderSection({ address: '123 Market St' });
+    renderSection({ personalInfo: { address: '123 Market St' } });
     expect(screen.getByText('123 Market St')).toBeInTheDocument();
   });
 
   it('displays bio', () => {
-    renderSection({ bio: 'Senior engineer.' });
+    renderSection({ personalInfo: { bio: 'Senior engineer.' } });
     expect(screen.getByText('Senior engineer.')).toBeInTheDocument();
   });
 
   it('displays formatted date of birth', () => {
-    renderSection({ dateOfBirth: '1990-03-15' });
+    renderSection({ personalInfo: { dateOfBirth: '1990-03-15' } });
     // toLocaleDateString output varies by locale, just check something is rendered
     expect(screen.queryAllByText('—').length).toBeLessThan(17);
   });
@@ -206,37 +212,37 @@ describe('SummarySection — personal values', () => {
 
 describe('SummarySection — work values', () => {
   it('displays job title', () => {
-    renderSection({ jobTitle: 'Senior Software Engineer' });
+    renderSection({ workInfo: { jobTitle: 'Senior Software Engineer' } });
     expect(screen.getByText('Senior Software Engineer')).toBeInTheDocument();
   });
 
   it('displays department', () => {
-    renderSection({ department: 'Engineering' });
+    renderSection({ workInfo: { department: 'Engineering' } });
     expect(screen.getByText('Engineering')).toBeInTheDocument();
   });
 
   it('displays manager', () => {
-    renderSection({ manager: 'Jane Smith' });
+    renderSection({ workInfo: { manager: 'Jane Smith' } });
     expect(screen.getByText('Jane Smith')).toBeInTheDocument();
   });
 
   it('displays status as ACTIVE tag', () => {
-    renderSection({ status: 'active' });
+    renderSection({ workInfo: { status: 'active' } });
     expect(screen.getByText('ACTIVE')).toBeInTheDocument();
   });
 
   it('displays status as INACTIVE tag', () => {
-    renderSection({ status: 'inactive' });
+    renderSection({ workInfo: { status: 'inactive' } });
     expect(screen.getByText('INACTIVE')).toBeInTheDocument();
   });
 
   it('resolves employment type label from lookups', () => {
-    renderSection({ employmentType: 'full-time' });
+    renderSection({ workInfo: { employmentType: 'full-time' } });
     expect(screen.getByText('Full Time')).toBeInTheDocument();
   });
 
   it('resolves contract employment type label', () => {
-    renderSection({ employmentType: 'contract' });
+    renderSection({ workInfo: { employmentType: 'contract' } });
     expect(screen.getByText('Contract')).toBeInTheDocument();
   });
 });
@@ -245,34 +251,34 @@ describe('SummarySection — work values', () => {
 
 describe('SummarySection — preferences values', () => {
   it('displays Yes for remoteEligible true', () => {
-    renderSection({ remoteEligible: true });
+    renderSection({ preferences: { remoteEligible: true } });
     expect(screen.getByText('Yes')).toBeInTheDocument();
   });
 
   it('displays No for remoteEligible false', () => {
-    renderSection({ remoteEligible: false });
+    renderSection({ preferences: { remoteEligible: false } });
     expect(screen.getByText('No')).toBeInTheDocument();
   });
 
   it('displays On for notificationsEnabled true', () => {
-    renderSection({ notificationsEnabled: true });
+    renderSection({ preferences: { notificationsEnabled: true } });
     expect(screen.getByText('On')).toBeInTheDocument();
   });
 
   it('displays Off for notificationsEnabled false', () => {
-    renderSection({ notificationsEnabled: false });
+    renderSection({ preferences: { notificationsEnabled: false } });
     expect(screen.getByText('Off')).toBeInTheDocument();
   });
 
   it('renders notification channels as tags', () => {
-    renderSection({ notificationChannels: ['email', 'slack'] });
+    renderSection({ preferences: { notificationChannels: ['email', 'slack'] } });
     // 'Email' appears twice: once as the field label, once as the channel tag
     expect(screen.getAllByText('Email').length).toBeGreaterThan(0);
     expect(screen.getByText('Slack')).toBeInTheDocument();
   });
 
   it('shows None when notification channels is empty', () => {
-    renderSection({ notificationChannels: [] });
+    renderSection({ preferences: { notificationChannels: [] } });
     expect(screen.getByText('None')).toBeInTheDocument();
   });
 
@@ -282,17 +288,17 @@ describe('SummarySection — preferences values', () => {
   });
 
   it('resolves access level label from lookups', () => {
-    renderSection({ accessLevel: 'standard' });
+    renderSection({ preferences: { accessLevel: 'standard' } });
     expect(screen.getByText('Standard')).toBeInTheDocument();
   });
 
   it('resolves admin access level label', () => {
-    renderSection({ accessLevel: 'admin' });
+    renderSection({ preferences: { accessLevel: 'admin' } });
     expect(screen.getByText('Admin')).toBeInTheDocument();
   });
 
   it('displays internal notes', () => {
-    renderSection({ notes: 'Team lead.' });
+    renderSection({ preferences: { notes: 'Team lead.' } });
     expect(screen.getByText('Team lead.')).toBeInTheDocument();
   });
 });
@@ -307,7 +313,7 @@ describe('SummarySection — fallback values', () => {
   });
 
   it('shows — for missing job title', () => {
-    renderSection({ name: 'Alice' }); // only name set, jobTitle empty
+    renderSection({ personalInfo: { name: 'Alice' } }); // only name set, jobTitle empty
     expect(screen.getAllByText('—').length).toBeGreaterThan(0);
   });
 

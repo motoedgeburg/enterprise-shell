@@ -53,20 +53,18 @@ describe('recordsService.search', () => {
 // ─── getById ─────────────────────────────────────────────────────────────────
 
 describe('recordsService.getById', () => {
-  it('returns the record matching the given uuid (flattened)', async () => {
+  it('returns the record matching the given uuid (nested)', async () => {
     const record = await recordsService.getById(ALICE_UUID);
     expect(record.uuid).toBe(ALICE_UUID);
-    expect(record.name).toBe('Alice Johnson');
+    expect(record.personalInfo.name).toBe('Alice Johnson');
   });
 
-  it('returns all expected flat fields', async () => {
+  it('returns all expected nested fields', async () => {
     const record = await recordsService.getById(BOB_UUID);
     expect(record).toMatchObject({
       uuid: BOB_UUID,
-      name: 'Bob Martinez',
-      email: 'bob.martinez@company.com',
-      department: 'Product',
-      status: 'active',
+      personalInfo: { name: 'Bob Martinez', email: 'bob.martinez@company.com' },
+      workInfo: { department: 'Product', status: 'active' },
     });
   });
 
@@ -79,13 +77,11 @@ describe('recordsService.getById', () => {
 
 describe('recordsService.create', () => {
   const newRecord = {
-    name: 'Test User',
-    email: 'test@company.com',
-    department: 'Engineering',
-    status: 'active',
+    personalInfo: { name: 'Test User', email: 'test@company.com' },
+    workInfo: { department: 'Engineering', status: 'active' },
   };
 
-  it('returns the created record with a server-assigned uuid (flattened)', async () => {
+  it('returns the created record with a server-assigned uuid (nested)', async () => {
     const created = await recordsService.create(newRecord);
     expect(created.uuid).toBeDefined();
     expect(typeof created.uuid).toBe('string');
@@ -98,12 +94,12 @@ describe('recordsService.create', () => {
     expect(() => new Date(created.createdAt)).not.toThrow();
   });
 
-  it('reflects the submitted fields in the flattened response', async () => {
+  it('reflects the submitted fields in the nested response', async () => {
     const created = await recordsService.create(newRecord);
-    expect(created.name).toBe('Test User');
-    expect(created.email).toBe('test@company.com');
-    expect(created.department).toBe('Engineering');
-    expect(created.status).toBe('active');
+    expect(created.personalInfo.name).toBe('Test User');
+    expect(created.personalInfo.email).toBe('test@company.com');
+    expect(created.workInfo.department).toBe('Engineering');
+    expect(created.workInfo.status).toBe('active');
   });
 
   it('increments the total count after creation', async () => {
@@ -114,13 +110,19 @@ describe('recordsService.create', () => {
 
   it('throws (400) when name is missing', async () => {
     await expect(
-      recordsService.create({ email: 'x@y.com', department: 'Human Resources', status: 'active' }),
+      recordsService.create({
+        personalInfo: { email: 'x@y.com' },
+        workInfo: { department: 'Human Resources', status: 'active' },
+      }),
     ).rejects.toThrow();
   });
 
   it('throws (400) when email is missing', async () => {
     await expect(
-      recordsService.create({ name: 'No Email', department: 'Human Resources', status: 'active' }),
+      recordsService.create({
+        personalInfo: { name: 'No Email' },
+        workInfo: { department: 'Human Resources', status: 'active' },
+      }),
     ).rejects.toThrow();
   });
 });
@@ -128,28 +130,39 @@ describe('recordsService.create', () => {
 // ─── update ──────────────────────────────────────────────────────────────────
 
 describe('recordsService.update', () => {
-  it('updates a field and returns the full flattened record', async () => {
+  it('updates a field and returns the full nested record', async () => {
     const original = await recordsService.getById(ALICE_UUID);
-    const updated = await recordsService.update(ALICE_UUID, { ...original, name: 'Alice Updated' });
-    expect(updated.name).toBe('Alice Updated');
+    const updated = await recordsService.update(ALICE_UUID, {
+      ...original,
+      personalInfo: { ...original.personalInfo, name: 'Alice Updated' },
+    });
+    expect(updated.personalInfo.name).toBe('Alice Updated');
     expect(updated.uuid).toBe(ALICE_UUID);
   });
 
   it('leaves unmodified fields intact', async () => {
     const original = await recordsService.getById(ALICE_UUID);
-    const updated = await recordsService.update(ALICE_UUID, { ...original, name: 'New Name' });
-    expect(updated.email).toBe(original.email);
-    expect(updated.department).toBe(original.department);
+    const updated = await recordsService.update(ALICE_UUID, {
+      ...original,
+      personalInfo: { ...original.personalInfo, name: 'New Name' },
+    });
+    expect(updated.personalInfo.email).toBe(original.personalInfo.email);
+    expect(updated.workInfo.department).toBe(original.workInfo.department);
   });
 
   it('can update status', async () => {
     const original = await recordsService.getById(CAROL_UUID);
-    const updated = await recordsService.update(CAROL_UUID, { ...original, status: 'active' });
-    expect(updated.status).toBe('active');
+    const updated = await recordsService.update(CAROL_UUID, {
+      ...original,
+      workInfo: { ...original.workInfo, status: 'active' },
+    });
+    expect(updated.workInfo.status).toBe('active');
   });
 
   it('throws (404) when updating a non-existent uuid', async () => {
-    await expect(recordsService.update('non-existent-uuid', { name: 'Ghost' })).rejects.toThrow();
+    await expect(
+      recordsService.update('non-existent-uuid', { personalInfo: { name: 'Ghost' } }),
+    ).rejects.toThrow();
   });
 });
 

@@ -22,11 +22,11 @@ const WorkInfoSection = () => {
   const form = useForm();
   const { values } = useFormState({ subscription: { values: true } });
 
-  const isAdmin = values.accessLevel === 'admin';
+  const isAdmin = values.preferences?.accessLevel === 'admin';
 
   // Preferences → Work: admin access level requires active status
   useEffect(() => {
-    if (isAdmin) form.change('status', 'active');
+    if (isAdmin) form.change('workInfo.status', 'active');
   }, [isAdmin, form]);
 
   return (
@@ -44,7 +44,7 @@ const WorkInfoSection = () => {
 
       <Col xs={24} sm={12}>
         <TextField
-          name="jobTitle"
+          name="workInfo.jobTitle"
           label={intl.formatMessage(messages.DETAIL_FIELD_JOB_TITLE)}
           placeholder="Software Engineer"
           required
@@ -53,14 +53,14 @@ const WorkInfoSection = () => {
       </Col>
       <Col xs={24} sm={12}>
         <TextField
-          name="manager"
+          name="workInfo.manager"
           label={intl.formatMessage(messages.DETAIL_FIELD_MANAGER)}
           placeholder="Manager name"
         />
       </Col>
       <Col xs={24} sm={12}>
         <SelectField
-          name="department"
+          name="workInfo.department"
           label={intl.formatMessage(messages.DETAIL_FIELD_DEPARTMENT)}
           options={departments}
           required
@@ -69,7 +69,7 @@ const WorkInfoSection = () => {
       </Col>
       <Col xs={24} sm={12}>
         <SelectField
-          name="status"
+          name="workInfo.status"
           label={intl.formatMessage(messages.DETAIL_FIELD_STATUS)}
           options={statuses}
           required
@@ -79,14 +79,14 @@ const WorkInfoSection = () => {
       </Col>
       <Col xs={24} sm={12}>
         <DateField
-          name="startDate"
+          name="workInfo.startDate"
           label={intl.formatMessage(messages.DETAIL_FIELD_START_DATE)}
           validate={pastDate()}
         />
       </Col>
       <Col xs={24}>
         <RadioGroupField
-          name="employmentType"
+          name="workInfo.employmentType"
           label={intl.formatMessage(messages.DETAIL_FIELD_EMPLOYMENT_TYPE)}
           options={employmentTypes}
           optionType="button"

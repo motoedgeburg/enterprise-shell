@@ -35,19 +35,6 @@ const log = createLogger('RecordDetail');
 
 const { Title, Text } = Typography;
 
-// Map each accordion section to the field names it contains.
-const SECTION_FIELDS = {
-  personal: ['name', 'email', 'phone', 'address', 'dateOfBirth', 'ssn', 'bio'],
-  work: ['jobTitle', 'manager', 'department', 'status', 'startDate', 'employmentType'],
-  preferences: [
-    'remoteEligible',
-    'notificationsEnabled',
-    'notificationChannels',
-    'accessLevel',
-    'notes',
-  ],
-};
-
 /** Blocks browser tab close / refresh and registers with the navigation guard context. */
 const UnsavedChangesGuard = ({ guardMessages }) => {
   const { dirty } = useFormState({ subscription: { dirty: true } });
@@ -56,11 +43,13 @@ const UnsavedChangesGuard = ({ guardMessages }) => {
   return null;
 };
 
-/** Renders a section label with an error count badge when fields have validation errors. */
-const SectionLabel = ({ label, fields }) => (
+/** Renders a section label with an error count badge derived from the field name prefix. */
+const SectionLabel = ({ label, prefix }) => (
   <FormSpy subscription={{ errors: true, submitFailed: true, touched: true }}>
     {({ errors = {}, submitFailed, touched = {} }) => {
-      const count = fields.filter((f) => errors[f] && (submitFailed || touched[f])).length;
+      const count = Object.keys(errors).filter(
+        (key) => key.startsWith(`${prefix}.`) && (submitFailed || touched[key]),
+      ).length;
       return (
         <span>
           {label}
@@ -180,7 +169,7 @@ const RecordDetailPage = () => {
       label: (
         <SectionLabel
           label={intl.formatMessage(messages.DETAIL_SECTION_PERSONAL)}
-          fields={SECTION_FIELDS.personal}
+          prefix="personalInfo"
         />
       ),
       forceRender: true,
@@ -189,10 +178,7 @@ const RecordDetailPage = () => {
     {
       key: 'work',
       label: (
-        <SectionLabel
-          label={intl.formatMessage(messages.DETAIL_SECTION_WORK)}
-          fields={SECTION_FIELDS.work}
-        />
+        <SectionLabel label={intl.formatMessage(messages.DETAIL_SECTION_WORK)} prefix="workInfo" />
       ),
       forceRender: true,
       children: <WorkInfoSection />,
@@ -202,7 +188,7 @@ const RecordDetailPage = () => {
       label: (
         <SectionLabel
           label={intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES)}
-          fields={SECTION_FIELDS.preferences}
+          prefix="preferences"
         />
       ),
       forceRender: true,
@@ -276,13 +262,13 @@ const RecordDetailPage = () => {
                 whiteSpace: 'nowrap',
               }}
             >
-              {isNew ? intl.formatMessage(messages.DETAIL_CREATE_TITLE) : record.name}
+              {isNew ? intl.formatMessage(messages.DETAIL_CREATE_TITLE) : record.personalInfo?.name}
             </Title>
             {!isNew && (
               <Popconfirm
                 title={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_TITLE)}
                 description={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_DESC, {
-                  name: record.name,
+                  name: record.personalInfo?.name,
                 })}
                 onConfirm={handleDelete}
                 okText={intl.formatMessage(messages.DETAIL_DELETE_OK)}

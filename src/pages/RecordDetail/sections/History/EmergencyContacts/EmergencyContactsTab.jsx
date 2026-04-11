@@ -27,7 +27,7 @@ const EmergencyContactsTab = () => {
   const intl = useIntl();
   const form = useForm();
   const { values } = useFormState({ subscription: { values: true } });
-  const contacts = values.emergencyContacts ?? [];
+  const contacts = values.history?.emergencyContacts ?? [];
   const { relationships } = useLookups();
   const { required } = useValidators();
 
@@ -46,24 +46,24 @@ const EmergencyContactsTab = () => {
 
   const handleDelete = (id) =>
     form.change(
-      'emergencyContacts',
+      'history.emergencyContacts',
       contacts.filter((c) => c.id !== id),
     );
 
   const setPrimary = (id) =>
     form.change(
-      'emergencyContacts',
+      'history.emergencyContacts',
       contacts.map((c) => ({ ...c, isPrimary: c.id === id })),
     );
 
   const handleSubmit = (vals) => {
     if (editing) {
       form.change(
-        'emergencyContacts',
+        'history.emergencyContacts',
         contacts.map((c) => (c.id === editing.id ? { ...editing, ...vals } : c)),
       );
     } else {
-      form.change('emergencyContacts', [
+      form.change('history.emergencyContacts', [
         ...contacts,
         { ...vals, id: `ec-${Date.now()}`, isPrimary: contacts.length === 0 },
       ]);

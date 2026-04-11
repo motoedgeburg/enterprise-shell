@@ -179,22 +179,22 @@ describe('PreferencesSection — field labels', () => {
 
 describe('PreferencesSection — initial values', () => {
   it('pre-checks the remoteEligible switch when true', () => {
-    renderSection({ remoteEligible: true });
-    expect(screen.getByTestId('switch-remoteEligible')).toBeChecked();
+    renderSection({ preferences: { remoteEligible: true } });
+    expect(screen.getByTestId('switch-preferences.remoteEligible')).toBeChecked();
   });
 
   it('pre-unchecks the remoteEligible switch when false', () => {
-    renderSection({ remoteEligible: false });
-    expect(screen.getByTestId('switch-remoteEligible')).not.toBeChecked();
+    renderSection({ preferences: { remoteEligible: false } });
+    expect(screen.getByTestId('switch-preferences.remoteEligible')).not.toBeChecked();
   });
 
   it('pre-checks notificationsEnabled switch', () => {
-    renderSection({ notificationsEnabled: true });
-    expect(screen.getByTestId('switch-notificationsEnabled')).toBeChecked();
+    renderSection({ preferences: { notificationsEnabled: true } });
+    expect(screen.getByTestId('switch-preferences.notificationsEnabled')).toBeChecked();
   });
 
   it('pre-checks notification channel checkboxes', () => {
-    renderSection({ notificationChannels: ['email', 'slack'] });
+    renderSection({ preferences: { notificationChannels: ['email', 'slack'] } });
     const emailCb = screen.getByRole('checkbox', { name: 'Email' });
     const slackCb = screen.getByRole('checkbox', { name: 'Slack' });
     expect(emailCb).toBeChecked();
@@ -202,12 +202,12 @@ describe('PreferencesSection — initial values', () => {
   });
 
   it('pre-selects access level radio', () => {
-    renderSection({ accessLevel: 'standard' });
+    renderSection({ preferences: { accessLevel: 'standard' } });
     expect(screen.getByRole('radio', { name: 'Standard' })).toBeChecked();
   });
 
   it('pre-fills notes textarea', () => {
-    renderSection({ notes: 'Team lead.' });
+    renderSection({ preferences: { notes: 'Team lead.' } });
     expect(screen.getByDisplayValue('Team lead.')).toBeInTheDocument();
   });
 });
@@ -226,7 +226,9 @@ describe('PreferencesSection — notification channel checkboxes', () => {
   it('toggles a channel on click', async () => {
     const user = userEvent.setup();
     // notificationsEnabled must be true; otherwise notifsOff=true disables the group
-    renderSection({ notificationChannels: [], notificationsEnabled: true });
+    renderSection({
+      preferences: { notificationChannels: [], notificationsEnabled: true },
+    });
     const emailCb = screen.getByRole('checkbox', { name: 'Email' });
     await user.click(emailCb);
     expect(emailCb).toBeChecked();
@@ -270,7 +272,7 @@ describe('PreferencesSection — notes validation', () => {
 
 describe('PreferencesSection — inactive constraint', () => {
   it('shows the inactive alert when status is inactive', () => {
-    renderSection({ status: 'inactive' });
+    renderSection({ workInfo: { status: 'inactive' } });
     expect(
       screen.getByText(
         'Inactive employees are locked to Read-only access with notifications disabled.',
@@ -279,7 +281,7 @@ describe('PreferencesSection — inactive constraint', () => {
   });
 
   it('does not show the inactive alert for active status', () => {
-    renderSection({ status: 'active' });
+    renderSection({ workInfo: { status: 'active' } });
     expect(
       screen.queryByText(
         'Inactive employees are locked to Read-only access with notifications disabled.',
@@ -288,23 +290,26 @@ describe('PreferencesSection — inactive constraint', () => {
   });
 
   it('forces accessLevel to restricted when status is inactive', async () => {
-    renderSection({ status: 'inactive', accessLevel: 'admin' });
+    renderSection({
+      workInfo: { status: 'inactive' },
+      preferences: { accessLevel: 'admin' },
+    });
     await waitFor(() => expect(screen.getByRole('radio', { name: 'Restricted' })).toBeChecked());
   });
 
   it('disables the notificationsEnabled switch when inactive', () => {
-    renderSection({ status: 'inactive' });
-    expect(screen.getByTestId('switch-notificationsEnabled')).toBeDisabled();
+    renderSection({ workInfo: { status: 'inactive' } });
+    expect(screen.getByTestId('switch-preferences.notificationsEnabled')).toBeDisabled();
   });
 
   it('disables the accessLevel radio group when inactive', () => {
-    renderSection({ status: 'inactive' });
-    expect(screen.getByTestId('radiogroup-accessLevel')).toBeDisabled();
+    renderSection({ workInfo: { status: 'inactive' } });
+    expect(screen.getByTestId('radiogroup-preferences.accessLevel')).toBeDisabled();
   });
 
   it('disables the notification channels when inactive', () => {
-    renderSection({ status: 'inactive' });
-    expect(screen.getByTestId('checkboxgroup-notificationChannels')).toBeDisabled();
+    renderSection({ workInfo: { status: 'inactive' } });
+    expect(screen.getByTestId('checkboxgroup-preferences.notificationChannels')).toBeDisabled();
   });
 });
 
@@ -312,26 +317,31 @@ describe('PreferencesSection — inactive constraint', () => {
 
 describe('PreferencesSection — intern constraint', () => {
   it('shows the intern alert when employmentType is intern', () => {
-    renderSection({ employmentType: 'intern' });
+    renderSection({ workInfo: { employmentType: 'intern' } });
     expect(
       screen.getByText('Remote work eligibility is not available for interns.'),
     ).toBeInTheDocument();
   });
 
   it('does not show the intern alert for non-intern employment types', () => {
-    renderSection({ employmentType: 'full-time' });
+    renderSection({ workInfo: { employmentType: 'full-time' } });
     expect(
       screen.queryByText('Remote work eligibility is not available for interns.'),
     ).not.toBeInTheDocument();
   });
 
   it('forces remoteEligible to false when employmentType is intern', async () => {
-    renderSection({ employmentType: 'intern', remoteEligible: true });
-    await waitFor(() => expect(screen.getByTestId('switch-remoteEligible')).not.toBeChecked());
+    renderSection({
+      workInfo: { employmentType: 'intern' },
+      preferences: { remoteEligible: true },
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('switch-preferences.remoteEligible')).not.toBeChecked(),
+    );
   });
 
   it('disables the remoteEligible switch when employmentType is intern', () => {
-    renderSection({ employmentType: 'intern' });
-    expect(screen.getByTestId('switch-remoteEligible')).toBeDisabled();
+    renderSection({ workInfo: { employmentType: 'intern' } });
+    expect(screen.getByTestId('switch-preferences.remoteEligible')).toBeDisabled();
   });
 });

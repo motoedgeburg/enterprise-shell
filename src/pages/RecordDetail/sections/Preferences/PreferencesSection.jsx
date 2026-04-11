@@ -22,18 +22,18 @@ const PreferencesSection = () => {
   const form = useForm();
   const { values } = useFormState({ subscription: { values: true } });
 
-  const isInactive = values.status === 'inactive';
-  const isIntern = values.employmentType === 'intern';
-  const notifsOff = !values.notificationsEnabled;
+  const isInactive = values.workInfo?.status === 'inactive';
+  const isIntern = values.workInfo?.employmentType === 'intern';
+  const notifsOff = !values.preferences?.notificationsEnabled;
 
   // Work → Preferences: inactive employees are locked to restricted access
   useEffect(() => {
-    if (isInactive) form.change('accessLevel', 'restricted');
+    if (isInactive) form.change('preferences.accessLevel', 'restricted');
   }, [isInactive, form]);
 
   // Work → Preferences: interns cannot be remote eligible
   useEffect(() => {
-    if (isIntern) form.change('remoteEligible', false);
+    if (isIntern) form.change('preferences.remoteEligible', false);
   }, [isIntern, form]);
 
   return (
@@ -60,7 +60,7 @@ const PreferencesSection = () => {
 
       <Col xs={24} sm={12}>
         <SwitchField
-          name="remoteEligible"
+          name="preferences.remoteEligible"
           label={intl.formatMessage(messages.DETAIL_FIELD_REMOTE_ELIGIBLE)}
           checkedLabel="Eligible"
           uncheckedLabel="Not eligible"
@@ -69,7 +69,7 @@ const PreferencesSection = () => {
       </Col>
       <Col xs={24} sm={12}>
         <SwitchField
-          name="notificationsEnabled"
+          name="preferences.notificationsEnabled"
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}
           checkedLabel="On"
           uncheckedLabel="Off"
@@ -78,7 +78,7 @@ const PreferencesSection = () => {
       </Col>
       <Col xs={24}>
         <CheckboxGroupField
-          name="notificationChannels"
+          name="preferences.notificationChannels"
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATION_CHANNELS)}
           options={notificationChannels}
           disabled={notifsOff || isInactive}
@@ -87,7 +87,7 @@ const PreferencesSection = () => {
       <Col xs={24}>
         <Divider style={{ margin: '8px 0 16px' }} />
         <RadioGroupField
-          name="accessLevel"
+          name="preferences.accessLevel"
           label={intl.formatMessage(messages.DETAIL_FIELD_ACCESS_LEVEL)}
           options={accessLevels}
           optionType="button"
@@ -99,7 +99,7 @@ const PreferencesSection = () => {
       </Col>
       <Col xs={24}>
         <TextAreaField
-          name="notes"
+          name="preferences.notes"
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTES)}
           placeholder="Internal notes visible to managers and HR only…"
           rows={4}
