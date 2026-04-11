@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/useAuth.js';
+import { NavigationGuardProvider, useGuardedNavigate } from '../../hooks/useNavigationGuard.jsx';
 
 import messages from './messages.js';
 
@@ -30,12 +31,12 @@ const getInitials = (name) =>
         .toUpperCase()
     : 'U';
 
-const AppLayout = () => {
+const AppLayoutInner = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const intl = useIntl();
+  const guardedNavigate = useGuardedNavigate();
 
   const navItems = useMemo(
     () => [
@@ -123,7 +124,7 @@ const AppLayout = () => {
             selectedKeys={[location.pathname]}
             items={navItems}
             style={{ background: SIDEBAR_BG, borderRight: 0, marginTop: 8 }}
-            onClick={({ key }) => navigate(key)}
+            onClick={({ key }) => guardedNavigate(key)}
           />
         </Sider>
 
@@ -191,6 +192,15 @@ const AppLayout = () => {
         </Layout>
       </Layout>
     </App>
+  );
+};
+
+const AppLayout = () => {
+  const navigate = useNavigate();
+  return (
+    <NavigationGuardProvider navigate={navigate}>
+      <AppLayoutInner />
+    </NavigationGuardProvider>
   );
 };
 

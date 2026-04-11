@@ -1,5 +1,5 @@
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
-import { Card, Button, Space, Typography, Form, Row, Col } from 'antd';
+import { Card, Button, Space, Form, Row, Col } from 'antd';
 import { Form as FinalForm } from 'react-final-form';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,6 @@ import { useValidators } from '../../hooks/useValidators.js';
 
 import messages from './messages.js';
 
-const { Title, Paragraph } = Typography;
 
 const SearchPage = () => {
   const intl = useIntl();
@@ -35,15 +34,6 @@ const SearchPage = () => {
           { label: intl.formatMessage(messages.SEARCH_BREADCRUMB) },
         ]}
       />
-      <div>
-        <Title level={4} style={{ marginBottom: 4 }}>
-          {intl.formatMessage(messages.SEARCH_PAGE_TITLE)}
-        </Title>
-        <Paragraph type="secondary" style={{ marginBottom: 0 }}>
-          {intl.formatMessage(messages.SEARCH_PAGE_SUBTITLE)}
-        </Paragraph>
-      </div>
-
       <Card>
         <FinalForm onSubmit={handleSearch}>
           {({ handleSubmit, form, hasValidationErrors }) => (

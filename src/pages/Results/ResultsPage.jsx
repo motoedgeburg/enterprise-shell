@@ -13,7 +13,7 @@ import './ResultsPage.css';
 
 const log = createLogger('Results');
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const STATUS_COLOR = {
   active: 'green',
@@ -97,21 +97,23 @@ const ResultsPage = () => {
 
   return (
     <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-      <Breadcrumbs
-        items={[
-          { label: intl.formatMessage(messages.RESULTS_BREADCRUMB_DASHBOARD), path: '/dashboard' },
-          { label: intl.formatMessage(messages.RESULTS_BREADCRUMB_SEARCH), path: '/search' },
-          { label: intl.formatMessage(messages.RESULTS_BREADCRUMB) },
-        ]}
-      />
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Breadcrumbs
+          items={[
+            {
+              label: intl.formatMessage(messages.RESULTS_BREADCRUMB_DASHBOARD),
+              path: '/dashboard',
+            },
+            { label: intl.formatMessage(messages.RESULTS_BREADCRUMB_SEARCH), path: '/search' },
+            { label: intl.formatMessage(messages.RESULTS_BREADCRUMB) },
+          ]}
+        />
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/search')}>
           {intl.formatMessage(messages.RESULTS_BACK_TO_SEARCH)}
         </Button>
-        <Title level={4} style={{ margin: 0, flex: 1 }}>
-          {intl.formatMessage(messages.RESULTS_PAGE_TITLE)}
-        </Title>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button
           type="primary"
           icon={<PlusOutlined />}

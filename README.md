@@ -377,7 +377,7 @@ Results table rows highlight with a light blue background (`#f0f5ff`) on hover, 
 
 ### Unsaved Changes Guard
 
-The Record Detail page tracks form dirty state via `FormSpy`. If the user clicks "Back to Results" with unsaved changes, a confirmation popover ("You have unsaved changes. Are you sure you want to leave?") appears with "Leave" and "Stay" options.
+The Record Detail page registers its form dirty state with a `NavigationGuardProvider` (wrapping `AppLayout`). Any navigation — sidebar menu links, breadcrumbs, or the Back button — is routed through `guardedNavigate`, which shows a confirmation modal ("You have unsaved changes. Are you sure you want to leave?") with "Leave" and "Stay" options when the form is dirty. Browser tab close/refresh is also blocked via `useUnsavedChangesBlocker`.
 
 ### Improved Empty State
 

@@ -58,9 +58,9 @@ function renderResults(search = '') {
 // ─── Page chrome ──────────────────────────────────────────────────────────────
 
 describe('ResultsPage — chrome', () => {
-  it('renders the page title', async () => {
+  it('renders the breadcrumb', async () => {
     renderResults();
-    await waitFor(() => expect(screen.getByText('Search Results')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Results')).toBeInTheDocument());
   });
 
   it('renders the Back to Search button', async () => {
@@ -108,7 +108,7 @@ describe('ResultsPage — active filter tags', () => {
 
   it('does not show filter section when no params', async () => {
     renderResults();
-    await waitFor(() => screen.getByText('Search Results'));
+    await waitFor(() => screen.getByText('Results'));
     expect(screen.queryByText('Filters:')).not.toBeInTheDocument();
   });
 });

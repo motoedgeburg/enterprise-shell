@@ -70,14 +70,9 @@ function renderSearch(lookupsOverrides = {}) {
 // ─── Rendering ────────────────────────────────────────────────────────────────
 
 describe('SearchPage — rendering', () => {
-  it('renders the page title', () => {
+  it('renders the breadcrumb', () => {
     renderSearch();
-    expect(screen.getByText('Search Records')).toBeInTheDocument();
-  });
-
-  it('renders the subtitle', () => {
-    renderSearch();
-    expect(screen.getByText(/Enter one or more criteria/i)).toBeInTheDocument();
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
   });
 
   it('renders the Name field', () => {

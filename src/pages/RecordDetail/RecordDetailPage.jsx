@@ -13,13 +13,15 @@ import {
   Typography,
 } from 'antd';
 import { FORM_ERROR } from 'final-form';
-import { useCallback, useEffect, useState } from 'react';
-import { Form as FinalForm, FormSpy } from 'react-final-form';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Form as FinalForm, FormSpy, useFormState } from 'react-final-form';
 import { useIntl } from 'react-intl';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
+import { useGuardedNavigate, useSetNavigationGuard } from '../../hooks/useNavigationGuard.jsx';
+import useUnsavedChangesBlocker from '../../hooks/useUnsavedChangesBlocker.js';
 import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
@@ -44,6 +46,14 @@ const SECTION_FIELDS = {
     'accessLevel',
     'notes',
   ],
+};
+
+/** Blocks browser tab close / refresh and registers with the navigation guard context. */
+const UnsavedChangesGuard = ({ guardMessages }) => {
+  const { dirty } = useFormState({ subscription: { dirty: true } });
+  useUnsavedChangesBlocker(dirty);
+  useSetNavigationGuard(dirty, guardMessages);
+  return null;
 };
 
 /** Renders a section label with an error count badge when fields have validation errors. */
@@ -75,7 +85,18 @@ const RecordDetailPage = () => {
   const [record, setRecord] = useState(isNew ? {} : null);
   const [loading, setLoading] = useState(!isNew);
 
+  const guardedNavigate = useGuardedNavigate();
   const backPath = `/results${location.state?.search ? `?${location.state.search}` : ''}`;
+
+  const guardMessages = useMemo(
+    () => ({
+      title: intl.formatMessage(messages.DETAIL_UNSAVED_TITLE),
+      content: intl.formatMessage(messages.DETAIL_UNSAVED_DESC),
+      okText: intl.formatMessage(messages.DETAIL_UNSAVED_OK),
+      cancelText: intl.formatMessage(messages.DETAIL_UNSAVED_CANCEL),
+    }),
+    [intl],
+  );
 
   // ─── Load (edit mode only) ───────────────────────────────────────────────────
 
@@ -207,48 +228,43 @@ const RecordDetailPage = () => {
     <FinalForm onSubmit={handleSubmit} initialValues={record}>
       {({ handleSubmit: submit, submitting, submitError, hasValidationErrors }) => (
         <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-          <Breadcrumbs
-            items={[
-              {
-                label: intl.formatMessage(messages.DETAIL_BREADCRUMB_DASHBOARD),
-                path: '/dashboard',
-              },
-              { label: intl.formatMessage(messages.DETAIL_BREADCRUMB_SEARCH), path: '/search' },
-              { label: intl.formatMessage(messages.DETAIL_BREADCRUMB_RESULTS), path: backPath },
-              {
-                label: isNew
-                  ? intl.formatMessage(messages.DETAIL_CREATE_TITLE)
-                  : intl.formatMessage(messages.DETAIL_BREADCRUMB_RECORD),
-              },
-            ]}
-          />
+          <UnsavedChangesGuard guardMessages={guardMessages} />
+          {/* Breadcrumbs + Back */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Breadcrumbs
+              items={[
+                {
+                  label: intl.formatMessage(messages.DETAIL_BREADCRUMB_DASHBOARD),
+                  path: '/dashboard',
+                },
+                {
+                  label: intl.formatMessage(messages.DETAIL_BREADCRUMB_SEARCH),
+                  path: '/search',
+                },
+                {
+                  label: intl.formatMessage(messages.DETAIL_BREADCRUMB_RESULTS),
+                  path: backPath,
+                },
+                {
+                  label: isNew
+                    ? intl.formatMessage(messages.DETAIL_CREATE_TITLE)
+                    : intl.formatMessage(messages.DETAIL_BREADCRUMB_RECORD),
+                },
+              ]}
+              onNavigate={guardedNavigate}
+            />
+            <Button icon={<ArrowLeftOutlined />} onClick={() => guardedNavigate(backPath)}>
+              {intl.formatMessage(messages.DETAIL_BACK)}
+            </Button>
+          </div>
           {/* Page header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <FormSpy subscription={{ dirty: true }}>
-              {({ dirty }) => {
-                const backButton = (
-                  <Button
-                    icon={<ArrowLeftOutlined />}
-                    onClick={dirty ? undefined : () => navigate(backPath)}
-                  >
-                    {intl.formatMessage(messages.DETAIL_BACK)}
-                  </Button>
-                );
-                return dirty ? (
-                  <Popconfirm
-                    title={intl.formatMessage(messages.DETAIL_UNSAVED_TITLE)}
-                    description={intl.formatMessage(messages.DETAIL_UNSAVED_DESC)}
-                    onConfirm={() => navigate(backPath)}
-                    okText={intl.formatMessage(messages.DETAIL_UNSAVED_OK)}
-                    cancelText={intl.formatMessage(messages.DETAIL_UNSAVED_CANCEL)}
-                  >
-                    {backButton}
-                  </Popconfirm>
-                ) : (
-                  backButton
-                );
-              }}
-            </FormSpy>
             <Title
               level={4}
               style={{
