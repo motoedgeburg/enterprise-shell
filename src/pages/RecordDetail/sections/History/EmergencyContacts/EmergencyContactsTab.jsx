@@ -29,7 +29,7 @@ const EmergencyContactsTab = () => {
   const { values } = useFormState({ subscription: { values: true } });
   const contacts = values.history?.emergencyContacts ?? [];
   const { relationships } = useLookups();
-  const { required } = useValidators();
+  const { required, phone } = useValidators();
 
   const [open, setOpen] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -177,14 +177,14 @@ const EmergencyContactsTab = () => {
               <TextField
                 name="name"
                 label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_NAME)}
-                placeholder="Jane Smith"
+                placeholder={intl.formatMessage(messages.DETAIL_CONTACTS_PLACEHOLDER_NAME)}
                 required
                 validate={required()}
               />
               <SelectField
                 name="relationship"
                 label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_RELATIONSHIP)}
-                placeholder="Select relationship"
+                placeholder={intl.formatMessage(messages.DETAIL_CONTACTS_PLACEHOLDER_RELATIONSHIP)}
                 options={relationships}
                 required
                 validate={required()}
@@ -192,11 +192,12 @@ const EmergencyContactsTab = () => {
               <PhoneField
                 name="phone"
                 label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_PHONE)}
+                validate={phone()}
               />
               <EmailField
                 name="email"
                 label={intl.formatMessage(messages.DETAIL_CONTACTS_COL_EMAIL)}
-                placeholder="jane@example.com"
+                placeholder={intl.formatMessage(messages.DETAIL_CONTACTS_PLACEHOLDER_EMAIL)}
               />
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
                 <Button onClick={() => setOpen(false)}>

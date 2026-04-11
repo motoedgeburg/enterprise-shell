@@ -62,8 +62,8 @@ const PreferencesSection = () => {
         <SwitchField
           name="preferences.remoteEligible"
           label={intl.formatMessage(messages.DETAIL_FIELD_REMOTE_ELIGIBLE)}
-          checkedLabel="Eligible"
-          uncheckedLabel="Not eligible"
+          checkedLabel={intl.formatMessage(messages.DETAIL_SWITCH_ELIGIBLE)}
+          uncheckedLabel={intl.formatMessage(messages.DETAIL_SWITCH_NOT_ELIGIBLE)}
           disabled={isIntern}
         />
       </Col>
@@ -71,8 +71,8 @@ const PreferencesSection = () => {
         <SwitchField
           name="preferences.notificationsEnabled"
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTIFICATIONS_ENABLED)}
-          checkedLabel="On"
-          uncheckedLabel="Off"
+          checkedLabel={intl.formatMessage(messages.DETAIL_SWITCH_ON)}
+          uncheckedLabel={intl.formatMessage(messages.DETAIL_SWITCH_OFF)}
           disabled={isInactive}
         />
       </Col>
@@ -101,7 +101,7 @@ const PreferencesSection = () => {
         <TextAreaField
           name="preferences.notes"
           label={intl.formatMessage(messages.DETAIL_FIELD_NOTES)}
-          placeholder="Internal notes visible to managers and HR only…"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_NOTES)}
           rows={4}
           validate={maxLength(1000)}
         />

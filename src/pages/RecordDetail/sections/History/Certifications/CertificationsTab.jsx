@@ -167,21 +167,21 @@ const CertificationsTab = () => {
               <TextField
                 name="name"
                 label={intl.formatMessage(messages.DETAIL_CERTS_COL_NAME)}
-                placeholder="AWS Solutions Architect"
+                placeholder={intl.formatMessage(messages.DETAIL_CERTS_PLACEHOLDER_NAME)}
                 required
                 validate={required()}
               />
               <TextField
                 name="issuingBody"
                 label={intl.formatMessage(messages.DETAIL_CERTS_COL_ISSUER)}
-                placeholder="Amazon Web Services"
+                placeholder={intl.formatMessage(messages.DETAIL_CERTS_PLACEHOLDER_ISSUER)}
                 required
                 validate={required()}
               />
               <TextField
                 name="credentialId"
                 label={intl.formatMessage(messages.DETAIL_CERTS_CREDENTIAL_ID)}
-                placeholder="Optional"
+                placeholder={intl.formatMessage(messages.DETAIL_CERTS_PLACEHOLDER_CREDENTIAL_ID)}
               />
               <DateField
                 name="issueDate"
@@ -192,7 +192,7 @@ const CertificationsTab = () => {
               <DateField
                 name="expiryDate"
                 label={intl.formatMessage(messages.DETAIL_CERTS_COL_EXPIRY)}
-                placeholder="Leave blank if no expiry"
+                placeholder={intl.formatMessage(messages.DETAIL_CERTS_PLACEHOLDER_EXPIRY)}
               />
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
                 <Button onClick={() => setOpen(false)}>

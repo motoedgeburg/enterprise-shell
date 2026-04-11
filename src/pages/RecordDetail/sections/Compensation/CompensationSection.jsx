@@ -38,7 +38,7 @@ const CompensationSection = () => {
         <CurrencyField
           name="compensation.baseSalary"
           label={intl.formatMessage(messages.DETAIL_FIELD_BASE_SALARY)}
-          placeholder="75,000.00"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_BASE_SALARY)}
           required
           validate={composeValidators(required(), min(0))}
           disabled={isInactive}
@@ -58,7 +58,7 @@ const CompensationSection = () => {
         <NumberField
           name="compensation.bonusTarget"
           label={intl.formatMessage(messages.DETAIL_FIELD_BONUS_TARGET)}
-          placeholder="10"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_BONUS_TARGET)}
           min={0}
           max={100}
           precision={1}
@@ -71,7 +71,7 @@ const CompensationSection = () => {
         <NumberField
           name="compensation.stockOptions"
           label={intl.formatMessage(messages.DETAIL_FIELD_STOCK_OPTIONS)}
-          placeholder="0"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_STOCK_OPTIONS)}
           min={0}
           precision={0}
           validate={min(0)}
@@ -91,8 +91,8 @@ const CompensationSection = () => {
         <SwitchField
           name="compensation.overtimeEligible"
           label={intl.formatMessage(messages.DETAIL_FIELD_OVERTIME_ELIGIBLE)}
-          checkedLabel="Yes"
-          uncheckedLabel="No"
+          checkedLabel={intl.formatMessage(messages.DETAIL_SWITCH_YES)}
+          uncheckedLabel={intl.formatMessage(messages.DETAIL_SWITCH_NO)}
           disabled={isInactive}
         />
       </Col>

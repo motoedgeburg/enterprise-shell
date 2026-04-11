@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { IntlProvider } from 'react-intl';
 
+import { appMessages } from '../../../renderUtils.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 
 const ThrowingChild = () => {
@@ -8,6 +10,14 @@ const ThrowingChild = () => {
 };
 
 const GoodChild = () => <p>All good</p>;
+
+function renderBoundary(children) {
+  return render(
+    <IntlProvider locale="en" messages={appMessages} defaultLocale="en">
+      <ErrorBoundary>{children}</ErrorBoundary>
+    </IntlProvider>,
+  );
+}
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {
@@ -19,30 +29,18 @@ describe('ErrorBoundary', () => {
   });
 
   it('renders children when there is no error', () => {
-    render(
-      <ErrorBoundary>
-        <GoodChild />
-      </ErrorBoundary>,
-    );
+    renderBoundary(<GoodChild />);
     expect(screen.getByText('All good')).toBeInTheDocument();
   });
 
   it('renders error UI when a child throws', () => {
-    render(
-      <ErrorBoundary>
-        <ThrowingChild />
-      </ErrorBoundary>,
-    );
+    renderBoundary(<ThrowingChild />);
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(screen.getByText('An unexpected error occurred. Please try again.')).toBeInTheDocument();
   });
 
   it('logs the error to console.error', () => {
-    render(
-      <ErrorBoundary>
-        <ThrowingChild />
-      </ErrorBoundary>,
-    );
+    renderBoundary(<ThrowingChild />);
     expect(console.error).toHaveBeenCalledWith(
       '[ErrorBoundary]',
       'Uncaught error in component tree',
@@ -59,11 +57,7 @@ describe('ErrorBoundary', () => {
       return <p>Recovered</p>;
     };
 
-    render(
-      <ErrorBoundary>
-        <MaybeThrow />
-      </ErrorBoundary>,
-    );
+    renderBoundary(<MaybeThrow />);
 
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
 
@@ -74,11 +68,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('has a link to dashboard', () => {
-    render(
-      <ErrorBoundary>
-        <ThrowingChild />
-      </ErrorBoundary>,
-    );
+    renderBoundary(<ThrowingChild />);
     const link = screen.getByRole('link', { name: 'Go to Dashboard' });
     expect(link).toHaveAttribute('href', '/dashboard');
   });

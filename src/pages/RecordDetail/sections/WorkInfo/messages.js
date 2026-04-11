@@ -20,6 +20,16 @@ const workInfoMessages = {
   DETAIL_STATUS_ACTIVE: { id: 'DETAIL_STATUS_ACTIVE', defaultMessage: 'Active' },
   DETAIL_STATUS_INACTIVE: { id: 'DETAIL_STATUS_INACTIVE', defaultMessage: 'Inactive' },
 
+  // ─── Placeholders ──────────────────────────────────────────────────────────
+  DETAIL_PLACEHOLDER_JOB_TITLE: {
+    id: 'DETAIL_PLACEHOLDER_JOB_TITLE',
+    defaultMessage: 'Software Engineer',
+  },
+  DETAIL_PLACEHOLDER_MANAGER: {
+    id: 'DETAIL_PLACEHOLDER_MANAGER',
+    defaultMessage: 'Manager name',
+  },
+
   // ─── Cross-section constraint ──────────────────────────────────────────────
   DETAIL_CONSTRAINT_ADMIN: {
     id: 'DETAIL_CONSTRAINT_ADMIN',

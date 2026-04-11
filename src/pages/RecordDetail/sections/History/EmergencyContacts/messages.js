@@ -33,6 +33,20 @@ const emergencyContactsMessages = {
     id: 'DETAIL_CONTACTS_EMPTY',
     defaultMessage: 'No emergency contacts on file.',
   },
+
+  // ─── Placeholders ─────────────────────────────────────────────���───────────
+  DETAIL_CONTACTS_PLACEHOLDER_NAME: {
+    id: 'DETAIL_CONTACTS_PLACEHOLDER_NAME',
+    defaultMessage: 'Jane Smith',
+  },
+  DETAIL_CONTACTS_PLACEHOLDER_RELATIONSHIP: {
+    id: 'DETAIL_CONTACTS_PLACEHOLDER_RELATIONSHIP',
+    defaultMessage: 'Select relationship',
+  },
+  DETAIL_CONTACTS_PLACEHOLDER_EMAIL: {
+    id: 'DETAIL_CONTACTS_PLACEHOLDER_EMAIL',
+    defaultMessage: 'jane@example.com',
+  },
 };
 
 export default emergencyContactsMessages;

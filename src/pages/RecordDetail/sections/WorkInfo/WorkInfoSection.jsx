@@ -46,7 +46,7 @@ const WorkInfoSection = () => {
         <TextField
           name="workInfo.jobTitle"
           label={intl.formatMessage(messages.DETAIL_FIELD_JOB_TITLE)}
-          placeholder="Software Engineer"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_JOB_TITLE)}
           required
           validate={required()}
         />
@@ -55,7 +55,7 @@ const WorkInfoSection = () => {
         <TextField
           name="workInfo.manager"
           label={intl.formatMessage(messages.DETAIL_FIELD_MANAGER)}
-          placeholder="Manager name"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_MANAGER)}
         />
       </Col>
       <Col xs={24} sm={12}>

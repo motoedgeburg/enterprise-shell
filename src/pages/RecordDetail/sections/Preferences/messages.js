@@ -26,7 +26,19 @@ const preferencesMessages = {
   DETAIL_ACCESS_STANDARD: { id: 'DETAIL_ACCESS_STANDARD', defaultMessage: 'Standard' },
   DETAIL_ACCESS_ADMIN: { id: 'DETAIL_ACCESS_ADMIN', defaultMessage: 'Admin' },
 
-  // ─── Cross-section constraints ─────────────────────────────────────────────
+  // ─── Switch labels ─────────────────────────────────────────────────────────
+  DETAIL_SWITCH_ELIGIBLE: { id: 'DETAIL_SWITCH_ELIGIBLE', defaultMessage: 'Eligible' },
+  DETAIL_SWITCH_NOT_ELIGIBLE: { id: 'DETAIL_SWITCH_NOT_ELIGIBLE', defaultMessage: 'Not eligible' },
+  DETAIL_SWITCH_ON: { id: 'DETAIL_SWITCH_ON', defaultMessage: 'On' },
+  DETAIL_SWITCH_OFF: { id: 'DETAIL_SWITCH_OFF', defaultMessage: 'Off' },
+
+  // ─── Placeholders ──��─────────────────────────────────���─────────────────────
+  DETAIL_PLACEHOLDER_NOTES: {
+    id: 'DETAIL_PLACEHOLDER_NOTES',
+    defaultMessage: 'Internal notes visible to managers and HR only\u2026',
+  },
+
+  // ─── Cross-section constraints ─��───────────────────────────────────────────
   DETAIL_CONSTRAINT_INACTIVE: {
     id: 'DETAIL_CONSTRAINT_INACTIVE',
     defaultMessage:

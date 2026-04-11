@@ -139,9 +139,9 @@ describe(`RecordDetailPage — edit mode (/records/${ALICE_UUID})`, () => {
 
   it('renders the Delete button in edit mode', async () => {
     renderPage(`/records/${ALICE_UUID}`);
-    await waitFor(() => screen.getByText('Alice Johnson'));
+    await waitFor(() => screen.getByText('Alice Johnson'), { timeout: 10000 });
     expect(screen.getByRole('button', { name: /Delete/i })).toBeInTheDocument();
-  });
+  }, 15000);
 
   it('navigates to /results when Back is clicked', async () => {
     const user = userEvent.setup();

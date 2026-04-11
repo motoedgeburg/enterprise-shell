@@ -1,7 +1,10 @@
 import { Button, Result } from 'antd';
 import { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { createLogger } from '../../utils/logger.js';
+
+import messages from './messages.js';
 
 const log = createLogger('ErrorBoundary');
 
@@ -39,14 +42,14 @@ class ErrorBoundary extends Component {
         >
           <Result
             status="error"
-            title="Something went wrong"
-            subTitle="An unexpected error occurred. Please try again."
+            title={<FormattedMessage {...messages.ERROR_BOUNDARY_TITLE} />}
+            subTitle={<FormattedMessage {...messages.ERROR_BOUNDARY_SUBTITLE} />}
             extra={[
               <Button key="retry" type="primary" onClick={this.handleReset}>
-                Try Again
+                <FormattedMessage {...messages.ERROR_BOUNDARY_RETRY} />
               </Button>,
               <Button key="home" href="/dashboard">
-                Go to Dashboard
+                <FormattedMessage {...messages.ERROR_BOUNDARY_HOME} />
               </Button>,
             ]}
           />

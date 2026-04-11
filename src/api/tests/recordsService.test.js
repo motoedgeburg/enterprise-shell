@@ -27,7 +27,7 @@ describe('recordsService.search', () => {
       uuid: expect.any(String),
       name: expect.any(String),
       department: expect.any(String),
-      status: expect.stringMatching(/^(active|inactive)$/),
+      status: expect.stringMatching(/^(active|inactive|on-leave|terminated)$/),
     });
     expect(result[0].id).toBeUndefined();
     expect(result[0].personalInfo).toBeUndefined();

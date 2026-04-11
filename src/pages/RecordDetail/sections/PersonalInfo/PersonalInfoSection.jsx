@@ -24,7 +24,7 @@ const PersonalInfoSection = () => {
         <TextField
           name="personalInfo.name"
           label={intl.formatMessage(messages.DETAIL_FIELD_NAME)}
-          placeholder="Jane Doe"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_NAME)}
           required
           validate={required()}
         />
@@ -33,7 +33,7 @@ const PersonalInfoSection = () => {
         <EmailField
           name="personalInfo.email"
           label={intl.formatMessage(messages.DETAIL_FIELD_EMAIL)}
-          placeholder="jane@company.com"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_EMAIL)}
           required
           validate={composeValidators(required(), email())}
         />
@@ -49,7 +49,7 @@ const PersonalInfoSection = () => {
         <TextField
           name="personalInfo.address"
           label={intl.formatMessage(messages.DETAIL_FIELD_ADDRESS)}
-          placeholder="123 Main St, Philadelphia, PA 19103"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_ADDRESS)}
           validate={minLength(5)}
         />
       </Col>
@@ -71,7 +71,7 @@ const PersonalInfoSection = () => {
         <TextAreaField
           name="personalInfo.bio"
           label={intl.formatMessage(messages.DETAIL_FIELD_BIO)}
-          placeholder="A short professional biography…"
+          placeholder={intl.formatMessage(messages.DETAIL_PLACEHOLDER_BIO)}
           rows={3}
           validate={maxLength(500)}
         />

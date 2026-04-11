@@ -23,6 +23,23 @@ const messages = {
     id: 'DETAIL_FIELD_OVERTIME_ELIGIBLE',
     defaultMessage: 'Overtime Eligible',
   },
+  DETAIL_SWITCH_YES: { id: 'DETAIL_SWITCH_YES', defaultMessage: 'Yes' },
+  DETAIL_SWITCH_NO: { id: 'DETAIL_SWITCH_NO', defaultMessage: 'No' },
+
+  // ─── Placeholders ─────────────────────────────────────────────────────────
+  DETAIL_PLACEHOLDER_BASE_SALARY: {
+    id: 'DETAIL_PLACEHOLDER_BASE_SALARY',
+    defaultMessage: '75,000.00',
+  },
+  DETAIL_PLACEHOLDER_BONUS_TARGET: {
+    id: 'DETAIL_PLACEHOLDER_BONUS_TARGET',
+    defaultMessage: '10',
+  },
+  DETAIL_PLACEHOLDER_STOCK_OPTIONS: {
+    id: 'DETAIL_PLACEHOLDER_STOCK_OPTIONS',
+    defaultMessage: '0',
+  },
+
   DETAIL_CONSTRAINT_INACTIVE: {
     id: 'DETAIL_COMP_CONSTRAINT_INACTIVE',
     defaultMessage: 'Compensation fields are locked because the employee status is inactive.',
