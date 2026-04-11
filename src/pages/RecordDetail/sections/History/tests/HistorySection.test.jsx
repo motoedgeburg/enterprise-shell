@@ -5,6 +5,7 @@
  * Component-specific tests live in:
  *   - EmergencyContacts/tests/EmergencyContactsTab.test.jsx
  *   - Certifications/tests/CertificationsTab.test.jsx
+ *   - EmploymentTimeline/tests/EmploymentTimeline.test.jsx
  */
 import { render, screen } from '@testing-library/react';
 import { App } from 'antd';
@@ -43,6 +44,11 @@ describe('HistorySection — tabs', () => {
   it('renders Professional Certifications tab label', () => {
     renderSection();
     expect(screen.getByRole('tab', { name: /Professional Certifications/i })).toBeInTheDocument();
+  });
+
+  it('renders Employment Timeline tab label', () => {
+    renderSection();
+    expect(screen.getByRole('tab', { name: /Employment Timeline/i })).toBeInTheDocument();
   });
 
   it('shows the Emergency Contacts tab content by default', () => {

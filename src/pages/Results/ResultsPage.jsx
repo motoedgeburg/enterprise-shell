@@ -9,7 +9,6 @@ import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
-import './ResultsPage.css';
 
 const log = createLogger('Results');
 
@@ -161,7 +160,6 @@ const ResultsPage = () => {
             </Empty>
           ),
         }}
-        rowClassName={() => 'clickable-row'}
         onRow={(record) => ({
           onClick: () =>
             navigate(`/records/${record.uuid}`, {
@@ -175,6 +173,15 @@ const ResultsPage = () => {
               });
             }
           },
+          onMouseEnter: (e) =>
+            e.currentTarget.querySelectorAll('td').forEach((td) => {
+              td.style.backgroundColor = '#f0f5ff';
+              td.style.transition = 'background-color 0.15s';
+            }),
+          onMouseLeave: (e) =>
+            e.currentTarget.querySelectorAll('td').forEach((td) => {
+              td.style.backgroundColor = '';
+            }),
           tabIndex: 0,
           role: 'link',
           style: { cursor: 'pointer' },

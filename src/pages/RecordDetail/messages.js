@@ -53,7 +53,7 @@ const messages = {
   },
   DETAIL_SECTION_HISTORY: {
     id: 'DETAIL_SECTION_HISTORY',
-    defaultMessage: 'Contacts & Certifications',
+    defaultMessage: 'History',
   },
   DETAIL_SECTION_SUMMARY: { id: 'DETAIL_SECTION_SUMMARY', defaultMessage: 'Summary' },
 

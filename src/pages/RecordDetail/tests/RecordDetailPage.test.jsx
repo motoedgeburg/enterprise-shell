@@ -112,7 +112,7 @@ describe('RecordDetailPage — create mode (/records/new)', () => {
     expect(screen.getByText('Personal Information')).toBeInTheDocument();
     expect(screen.getByText('Work Information')).toBeInTheDocument();
     expect(screen.getByText('Preferences & Permissions')).toBeInTheDocument();
-    expect(screen.getByText('Contacts & Certifications')).toBeInTheDocument();
+    expect(screen.getByText('History')).toBeInTheDocument();
     expect(screen.getByText('Summary')).toBeInTheDocument();
   });
 });

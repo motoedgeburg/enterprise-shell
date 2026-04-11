@@ -204,7 +204,7 @@ The detail page uses an accordion layout with six sections, each self-contained 
 | Work Information | Job title, department, status, employment type, start date, manager |
 | Preferences & Permissions | Remote eligibility, notifications, channels, access level, notes |
 | Compensation | Base salary (currency), pay frequency, bonus target (%), stock options, effective date, overtime eligible |
-| Contacts & Certifications | Emergency contacts tab + Professional certifications tab (full CRUD via modals) |
+| History | Emergency contacts tab + Professional certifications tab (full CRUD via modals) + Employment Timeline (read-only chronological view using Ant Design `Timeline`) |
 | Summary | Read-only live preview of all form values via `FormSpy` |
 
 ### Form Architecture
@@ -368,7 +368,8 @@ log.error('fetch failed', err);  // always emitted
     │           ├── History/
     │           │   ├── HistorySection.jsx
     │           │   ├── EmergencyContacts/
-    │           │   └── Certifications/
+    │           │   ├── Certifications/
+    │           │   └── EmploymentTimeline/
     │           └── Summary/
     │
     ├── hooks/
