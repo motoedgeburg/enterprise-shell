@@ -8,8 +8,10 @@ import AntField from './AntField.jsx';
  */
 const CheckboxGroupField = ({ name, label, options, required, validate, ...props }) => (
   <AntField name={name} label={label} required={required} validate={validate}>
-    {({ value, onChange }) => (
-      <Checkbox.Group value={value ?? []} onChange={onChange} options={options} {...props} />
+    {({ value, onChange, onBlur }) => (
+      <div onBlur={onBlur}>
+        <Checkbox.Group value={value ?? []} onChange={onChange} options={options} {...props} />
+      </div>
     )}
   </AntField>
 );

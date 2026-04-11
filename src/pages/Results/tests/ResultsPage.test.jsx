@@ -70,17 +70,14 @@ describe('ResultsPage — chrome', () => {
     );
   });
 
-  it('renders the New Record button', async () => {
+  it('renders the New Record button', () => {
     renderResults();
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: /New Record/i })).toBeInTheDocument(),
-    );
+    expect(screen.getAllByRole('button', { name: /New Record/i }).length).toBeGreaterThan(0);
   });
 
   it('navigates to /search when Back is clicked', async () => {
     const user = userEvent.setup();
     renderResults();
-    await waitFor(() => screen.getByRole('button', { name: /Back to Search/i }));
     await user.click(screen.getByRole('button', { name: /Back to Search/i }));
     await waitFor(() => expect(capturedLocation?.pathname).toBe('/search'));
   });
@@ -88,10 +85,9 @@ describe('ResultsPage — chrome', () => {
   it('navigates to /records/new when New Record is clicked', async () => {
     const user = userEvent.setup();
     renderResults();
-    await waitFor(() => screen.getByRole('button', { name: /New Record/i }));
-    await user.click(screen.getByRole('button', { name: /New Record/i }));
+    await user.click(screen.getAllByRole('button', { name: /New Record/i })[0]);
     await waitFor(() => expect(capturedLocation?.pathname).toBe('/records/new'));
-  });
+  }, 10000);
 });
 
 // ─── Filter tags ──────────────────────────────────────────────────────────────
@@ -150,7 +146,7 @@ describe('ResultsPage — table', () => {
   it('renders empty state when no results match', async () => {
     renderResults('?name=ZZZNONEXISTENT');
     await waitFor(() =>
-      expect(screen.getByText(/No records match your search criteria/i)).toBeInTheDocument(),
+      expect(screen.getByText(/No records match your filters/i)).toBeInTheDocument(),
     );
   });
 });

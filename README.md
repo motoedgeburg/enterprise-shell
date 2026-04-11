@@ -194,6 +194,8 @@ src/
 │   │   ├── AuthInitializer.jsx   # Bootstraps Okta auth state on startup (real mode only)
 │   │   └── tests/
 │   │       └── AuthInitializer.test.jsx
+│   ├── Breadcrumbs/
+│   │   └── Breadcrumbs.jsx       # Shared breadcrumb bar (clickable ancestors)
 │   ├── ErrorBoundary/
 │   │   ├── ErrorBoundary.jsx     # Top-level error boundary with recovery UI
 │   │   └── tests/
@@ -238,6 +240,7 @@ src/
 │   │       └── SearchPage.test.jsx
 │   ├── Results/
 │   │   ├── ResultsPage.jsx       # Paginated table; New Record → /records/new
+│   │   ├── ResultsPage.css       # Row hover highlight styles
 │   │   ├── messages.js
 │   │   └── tests/
 │   │       └── ResultsPage.test.jsx
@@ -340,6 +343,45 @@ const { required, email, composeValidators } = useValidators();
 Available validators: `required`, `email`, `phone`, `ssn`, `url`, `minLength(n)`, `maxLength(n)`, `pastDate`, `composeValidators`.
 
 Submit/Search buttons are disabled while `hasValidationErrors` is true (React Final Form render prop).
+
+---
+
+## UX Features
+
+### Breadcrumb Navigation
+
+The Search, Results, and Record Detail pages display a breadcrumb trail (Dashboard → Search → Results → Record Detail). Earlier items are clickable links; the current page is plain text. The Dashboard is the top-level page and has no breadcrumb. Implemented via the shared `Breadcrumbs` component in `src/components/Breadcrumbs/`.
+
+### Status Tag Colors
+
+Status values in the Results table and Summary section use color-coded Ant Design `<Tag>` components:
+
+| Status | Color |
+|---|---|
+| `active` | Green |
+| `inactive` | Default (gray) |
+| `on-leave` | Orange |
+| `terminated` | Red |
+
+### Error Count Badges on Accordion Headers
+
+The Personal Information, Work Information, and Preferences section headers display a red badge with the count of fields that have validation errors. Badges appear when a field has been touched or after a submit attempt, powered by React Final Form's `<FormSpy>` subscribing to `errors`, `touched`, and `submitFailed`.
+
+### Skeleton Loading State
+
+The Record Detail page shows a skeleton placeholder (breadcrumb line, button + title row, three card outlines) while fetching data, providing a content-shaped loading indicator instead of a generic spinner.
+
+### Table Row Hover Highlight
+
+Results table rows highlight with a light blue background (`#f0f5ff`) on hover, reinforcing that rows are clickable. Styled via `src/pages/Results/ResultsPage.css`.
+
+### Unsaved Changes Guard
+
+The Record Detail page tracks form dirty state via `FormSpy`. If the user clicks "Back to Results" with unsaved changes, a confirmation popover ("You have unsaved changes. Are you sure you want to leave?") appears with "Leave" and "Stay" options.
+
+### Improved Empty State
+
+When no records match the current filters, the Results page shows an explanatory message with two CTA buttons — "Refine Search" (returns to the search form) and "New Record" (navigates to the create form).
 
 ---
 

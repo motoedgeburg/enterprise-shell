@@ -62,6 +62,27 @@ const messages = {
     id: 'DETAIL_HINT_EDIT',
     defaultMessage: 'Changes are saved across all sections on a single submit.',
   },
+
+  // ─── Unsaved changes ──────────────────────────────────────────────────────
+  DETAIL_UNSAVED_TITLE: {
+    id: 'DETAIL_UNSAVED_TITLE',
+    defaultMessage: 'Unsaved changes',
+  },
+  DETAIL_UNSAVED_DESC: {
+    id: 'DETAIL_UNSAVED_DESC',
+    defaultMessage: 'You have unsaved changes. Are you sure you want to leave?',
+  },
+  DETAIL_UNSAVED_OK: { id: 'DETAIL_UNSAVED_OK', defaultMessage: 'Leave' },
+  DETAIL_UNSAVED_CANCEL: { id: 'DETAIL_UNSAVED_CANCEL', defaultMessage: 'Stay' },
+
+  // ─── Breadcrumbs ─────────────────────────────────────────────────────────
+  DETAIL_BREADCRUMB_DASHBOARD: {
+    id: 'DETAIL_BREADCRUMB_DASHBOARD',
+    defaultMessage: 'Dashboard',
+  },
+  DETAIL_BREADCRUMB_SEARCH: { id: 'DETAIL_BREADCRUMB_SEARCH', defaultMessage: 'Search' },
+  DETAIL_BREADCRUMB_RESULTS: { id: 'DETAIL_BREADCRUMB_RESULTS', defaultMessage: 'Results' },
+  DETAIL_BREADCRUMB_RECORD: { id: 'DETAIL_BREADCRUMB_RECORD', defaultMessage: 'Record' },
 };
 
 export default messages;

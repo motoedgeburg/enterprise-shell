@@ -4,6 +4,7 @@ import { Form as FinalForm } from 'react-final-form';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import { SelectField, TextField } from '../../components/fields/index.js';
 import { useLookups } from '../../hooks/useLookups.js';
 import { useValidators } from '../../hooks/useValidators.js';
@@ -27,7 +28,13 @@ const SearchPage = () => {
   };
 
   return (
-    <Space direction="vertical" size="large" style={{ width: '100%' }}>
+    <Space orientation="vertical" size="large" style={{ width: '100%' }}>
+      <Breadcrumbs
+        items={[
+          { label: intl.formatMessage(messages.SEARCH_BREADCRUMB_DASHBOARD), path: '/dashboard' },
+          { label: intl.formatMessage(messages.SEARCH_BREADCRUMB) },
+        ]}
+      />
       <div>
         <Title level={4} style={{ marginBottom: 4 }}>
           {intl.formatMessage(messages.SEARCH_PAGE_TITLE)}
@@ -58,15 +65,7 @@ const SearchPage = () => {
                     validate={email()}
                   />
                 </Col>
-                <Col xs={24} sm={12}>
-                  <TextField
-                    name="address"
-                    label={intl.formatMessage(messages.SEARCH_FIELD_ADDRESS)}
-                    placeholder={intl.formatMessage(messages.SEARCH_FIELD_ADDRESS_PLACEHOLDER)}
-                    validate={minLength(2)}
-                  />
-                </Col>
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={8}>
                   <SelectField
                     name="department"
                     label={intl.formatMessage(messages.SEARCH_FIELD_DEPARTMENT)}
@@ -75,13 +74,21 @@ const SearchPage = () => {
                     allowClear
                   />
                 </Col>
-                <Col xs={24} sm={12}>
+                <Col xs={24} sm={8}>
                   <SelectField
                     name="status"
                     label={intl.formatMessage(messages.SEARCH_FIELD_STATUS)}
                     placeholder={intl.formatMessage(messages.SEARCH_FIELD_STATUS_PLACEHOLDER)}
                     options={statuses}
                     allowClear
+                  />
+                </Col>
+                <Col xs={24} sm={8}>
+                  <TextField
+                    name="address"
+                    label={intl.formatMessage(messages.SEARCH_FIELD_ADDRESS)}
+                    placeholder={intl.formatMessage(messages.SEARCH_FIELD_ADDRESS_PLACEHOLDER)}
+                    validate={minLength(2)}
                   />
                 </Col>
               </Row>

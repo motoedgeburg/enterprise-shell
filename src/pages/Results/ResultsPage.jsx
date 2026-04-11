@@ -5,13 +5,22 @@ import { useIntl } from 'react-intl';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
+import './ResultsPage.css';
 
 const log = createLogger('Results');
 
 const { Title, Text } = Typography;
+
+const STATUS_COLOR = {
+  active: 'green',
+  inactive: 'default',
+  'on-leave': 'orange',
+  terminated: 'red',
+};
 
 const ResultsPage = () => {
   const { message } = App.useApp();
@@ -79,7 +88,7 @@ const ResultsPage = () => {
         dataIndex: 'status',
         key: 'status',
         render: (status) => (
-          <Tag color={status === 'active' ? 'green' : 'red'}>{status.toUpperCase()}</Tag>
+          <Tag color={STATUS_COLOR[status] ?? 'default'}>{status.toUpperCase()}</Tag>
         ),
       },
     ],
@@ -87,7 +96,14 @@ const ResultsPage = () => {
   );
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+    <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
+      <Breadcrumbs
+        items={[
+          { label: intl.formatMessage(messages.RESULTS_BREADCRUMB_DASHBOARD), path: '/dashboard' },
+          { label: intl.formatMessage(messages.RESULTS_BREADCRUMB_SEARCH), path: '/search' },
+          { label: intl.formatMessage(messages.RESULTS_BREADCRUMB) },
+        ]}
+      />
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/search')}>
@@ -124,8 +140,26 @@ const ResultsPage = () => {
         rowKey="uuid"
         loading={loading}
         locale={{
-          emptyText: <Empty description={intl.formatMessage(messages.RESULTS_EMPTY)} />,
+          emptyText: (
+            <Empty description={intl.formatMessage(messages.RESULTS_EMPTY)}>
+              <Space>
+                <Button onClick={() => navigate('/search')}>
+                  {intl.formatMessage(messages.RESULTS_EMPTY_REFINE)}
+                </Button>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() =>
+                    navigate('/records/new', { state: { search: searchParams.toString() } })
+                  }
+                >
+                  {intl.formatMessage(messages.RESULTS_NEW_RECORD)}
+                </Button>
+              </Space>
+            </Empty>
+          ),
         }}
+        rowClassName={() => 'clickable-row'}
         onRow={(record) => ({
           onClick: () =>
             navigate(`/records/${record.uuid}`, {

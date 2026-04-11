@@ -2,22 +2,24 @@ import { ArrowLeftOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/ico
 import {
   Alert,
   App,
+  Badge,
   Button,
   Card,
   Collapse,
   Form,
   Popconfirm,
+  Skeleton,
   Space,
-  Spin,
   Typography,
 } from 'antd';
 import { FORM_ERROR } from 'final-form';
 import { useCallback, useEffect, useState } from 'react';
-import { Form as FinalForm } from 'react-final-form';
+import { Form as FinalForm, FormSpy } from 'react-final-form';
 import { useIntl } from 'react-intl';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
 import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
@@ -30,6 +32,36 @@ import WorkInfoSection from './sections/WorkInfo/WorkInfoSection.jsx';
 const log = createLogger('RecordDetail');
 
 const { Title, Text } = Typography;
+
+// Map each accordion section to the field names it contains.
+const SECTION_FIELDS = {
+  personal: ['name', 'email', 'phone', 'address', 'dateOfBirth', 'ssn', 'bio'],
+  work: ['jobTitle', 'manager', 'department', 'status', 'startDate', 'employmentType'],
+  preferences: [
+    'remoteEligible',
+    'notificationsEnabled',
+    'notificationChannels',
+    'accessLevel',
+    'notes',
+  ],
+};
+
+/** Renders a section label with an error count badge when fields have validation errors. */
+const SectionLabel = ({ label, fields }) => (
+  <FormSpy subscription={{ errors: true, submitFailed: true, touched: true }}>
+    {({ errors = {}, submitFailed, touched = {} }) => {
+      const count = fields.filter((f) => errors[f] && (submitFailed || touched[f])).length;
+      return (
+        <span>
+          {label}
+          {count > 0 && (
+            <Badge count={count} size="small" style={{ marginLeft: 8, boxShadow: 'none' }} />
+          )}
+        </span>
+      );
+    }}
+  </FormSpy>
+);
 
 const RecordDetailPage = () => {
   const { id } = useParams();
@@ -102,9 +134,18 @@ const RecordDetailPage = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
-        <Spin size="large" />
-      </div>
+      <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
+        <Skeleton.Input active size="small" style={{ width: 260 }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <Skeleton.Button active size="medium" />
+          <Skeleton.Input active style={{ width: 200 }} />
+        </div>
+        {[1, 2, 3].map((i) => (
+          <Card key={i} size="small">
+            <Skeleton active paragraph={{ rows: 3 }} />
+          </Card>
+        ))}
+      </Space>
     );
   }
 
@@ -115,19 +156,34 @@ const RecordDetailPage = () => {
   const collapseItems = [
     {
       key: 'personal',
-      label: intl.formatMessage(messages.DETAIL_SECTION_PERSONAL),
+      label: (
+        <SectionLabel
+          label={intl.formatMessage(messages.DETAIL_SECTION_PERSONAL)}
+          fields={SECTION_FIELDS.personal}
+        />
+      ),
       forceRender: true,
       children: <PersonalInfoSection />,
     },
     {
       key: 'work',
-      label: intl.formatMessage(messages.DETAIL_SECTION_WORK),
+      label: (
+        <SectionLabel
+          label={intl.formatMessage(messages.DETAIL_SECTION_WORK)}
+          fields={SECTION_FIELDS.work}
+        />
+      ),
       forceRender: true,
       children: <WorkInfoSection />,
     },
     {
       key: 'preferences',
-      label: intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES),
+      label: (
+        <SectionLabel
+          label={intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES)}
+          fields={SECTION_FIELDS.preferences}
+        />
+      ),
       forceRender: true,
       children: <PreferencesSection />,
     },
@@ -150,12 +206,49 @@ const RecordDetailPage = () => {
   return (
     <FinalForm onSubmit={handleSubmit} initialValues={record}>
       {({ handleSubmit: submit, submitting, submitError, hasValidationErrors }) => (
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
+          <Breadcrumbs
+            items={[
+              {
+                label: intl.formatMessage(messages.DETAIL_BREADCRUMB_DASHBOARD),
+                path: '/dashboard',
+              },
+              { label: intl.formatMessage(messages.DETAIL_BREADCRUMB_SEARCH), path: '/search' },
+              { label: intl.formatMessage(messages.DETAIL_BREADCRUMB_RESULTS), path: backPath },
+              {
+                label: isNew
+                  ? intl.formatMessage(messages.DETAIL_CREATE_TITLE)
+                  : intl.formatMessage(messages.DETAIL_BREADCRUMB_RECORD),
+              },
+            ]}
+          />
           {/* Page header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(backPath)}>
-              {intl.formatMessage(messages.DETAIL_BACK)}
-            </Button>
+            <FormSpy subscription={{ dirty: true }}>
+              {({ dirty }) => {
+                const backButton = (
+                  <Button
+                    icon={<ArrowLeftOutlined />}
+                    onClick={dirty ? undefined : () => navigate(backPath)}
+                  >
+                    {intl.formatMessage(messages.DETAIL_BACK)}
+                  </Button>
+                );
+                return dirty ? (
+                  <Popconfirm
+                    title={intl.formatMessage(messages.DETAIL_UNSAVED_TITLE)}
+                    description={intl.formatMessage(messages.DETAIL_UNSAVED_DESC)}
+                    onConfirm={() => navigate(backPath)}
+                    okText={intl.formatMessage(messages.DETAIL_UNSAVED_OK)}
+                    cancelText={intl.formatMessage(messages.DETAIL_UNSAVED_CANCEL)}
+                  >
+                    {backButton}
+                  </Popconfirm>
+                ) : (
+                  backButton
+                );
+              }}
+            </FormSpy>
             <Title
               level={4}
               style={{

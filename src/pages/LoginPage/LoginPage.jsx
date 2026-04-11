@@ -52,7 +52,7 @@ const LoginPage = () => {
         style={{ width: 400, textAlign: 'center', borderRadius: 12 }}
         styles={{ body: { padding: '40px 32px' } }}
       >
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Space orientation="vertical" size="large" style={{ width: '100%' }}>
           <LockOutlined style={{ fontSize: 48, color: '#1677ff' }} />
 
           <div>

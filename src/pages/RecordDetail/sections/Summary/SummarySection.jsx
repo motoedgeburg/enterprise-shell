@@ -9,6 +9,13 @@ import workInfoMessages from '../WorkInfo/messages.js';
 
 import summaryMessages from './messages.js';
 
+const STATUS_COLOR = {
+  active: 'green',
+  inactive: 'default',
+  'on-leave': 'orange',
+  terminated: 'red',
+};
+
 const SummarySection = () => {
   const intl = useIntl();
   const { employmentTypes, notificationChannels, accessLevels } = useLookups();
@@ -55,7 +62,7 @@ const SummarySection = () => {
           </Descriptions.Item>
           <Descriptions.Item label={intl.formatMessage(workInfoMessages.DETAIL_FIELD_STATUS)}>
             {v.status ? (
-              <Tag color={v.status === 'active' ? 'green' : 'red'}>{v.status.toUpperCase()}</Tag>
+              <Tag color={STATUS_COLOR[v.status] ?? 'default'}>{v.status.toUpperCase()}</Tag>
             ) : (
               '—'
             )}

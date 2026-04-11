@@ -19,8 +19,8 @@ const SwitchField = ({
   ...props
 }) => (
   <AntField name={name} label={label} required={required} validate={validate}>
-    {({ value, onChange }) => (
-      <Space>
+    {({ value, onChange, onBlur }) => (
+      <Space onBlur={onBlur}>
         <Switch checked={Boolean(value)} onChange={onChange} {...props} />
         {(checkedLabel || uncheckedLabel) && (
           <Text type="secondary">{value ? checkedLabel : uncheckedLabel}</Text>

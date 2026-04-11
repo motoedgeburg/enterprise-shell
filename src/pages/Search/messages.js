@@ -35,6 +35,8 @@ const messages = {
 
   SEARCH_SUBMIT: { id: 'SEARCH_SUBMIT', defaultMessage: 'Search' },
   SEARCH_RESET: { id: 'SEARCH_RESET', defaultMessage: 'Reset' },
+  SEARCH_BREADCRUMB_DASHBOARD: { id: 'SEARCH_BREADCRUMB_DASHBOARD', defaultMessage: 'Dashboard' },
+  SEARCH_BREADCRUMB: { id: 'SEARCH_BREADCRUMB', defaultMessage: 'Search' },
 };
 
 export default messages;

@@ -89,7 +89,7 @@ function renderPage(path) {
 describe('RecordDetailPage — create mode (/records/new)', () => {
   it('renders "New Record" as the page title', () => {
     renderPage('/records/new');
-    expect(screen.getByText('New Record')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'New Record' })).toBeInTheDocument();
   });
 
   it('renders "Create Record" as the submit button label', () => {
@@ -125,8 +125,8 @@ const ALICE_UUID = 'b3a1c5d0-7f2e-4a8b-9c6d-1e0f3a5b7d9e';
 describe(`RecordDetailPage — edit mode (/records/${ALICE_UUID})`, () => {
   it('shows a loading spinner initially then renders the record name', async () => {
     renderPage(`/records/${ALICE_UUID}`);
-    // Spinner shown while loading
-    expect(document.querySelector('.ant-spin')).toBeInTheDocument();
+    // Skeleton shown while loading
+    expect(document.querySelector('.ant-skeleton')).toBeInTheDocument();
     // After MSW responds, record name appears
     await waitFor(() => expect(screen.getByText('Alice Johnson')).toBeInTheDocument());
   });

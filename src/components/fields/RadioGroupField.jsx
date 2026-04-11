@@ -9,13 +9,15 @@ import AntField from './AntField.jsx';
  */
 const RadioGroupField = ({ name, label, options, required, validate, ...props }) => (
   <AntField name={name} label={label} required={required} validate={validate}>
-    {({ value, onChange }) => (
-      <Radio.Group
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        options={options}
-        {...props}
-      />
+    {({ value, onChange, onBlur }) => (
+      <div onBlur={onBlur}>
+        <Radio.Group
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          options={options}
+          {...props}
+        />
+      </div>
     )}
   </AntField>
 );

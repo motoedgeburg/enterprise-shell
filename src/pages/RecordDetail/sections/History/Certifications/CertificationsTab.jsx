@@ -65,7 +65,7 @@ const CertificationsTab = () => {
       render: (name, record) => {
         const { label } = certStatus(record.expiryDate);
         return (
-          <Space direction="vertical" size={2}>
+          <Space orientation="vertical" size={2}>
             <Text style={{ opacity: label === 'Expired' ? 0.45 : 1 }}>{name}</Text>
             {record.credentialId && (
               <Text type="secondary" style={{ fontSize: 11 }}>
