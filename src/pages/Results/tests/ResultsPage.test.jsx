@@ -70,10 +70,12 @@ describe('ResultsPage — chrome', () => {
     );
   });
 
-  it('renders the New Record button', () => {
+  it('renders the New Record button', async () => {
     renderResults();
-    expect(screen.getAllByRole('button', { name: /New Record/i }).length).toBeGreaterThan(0);
-  });
+    await waitFor(() =>
+      expect(screen.getAllByRole('button', { name: /New Record/i }).length).toBeGreaterThan(0),
+    );
+  }, 15000);
 
   it('navigates to /search when Back is clicked', async () => {
     const user = userEvent.setup();

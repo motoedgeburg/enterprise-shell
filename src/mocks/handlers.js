@@ -19,9 +19,13 @@ const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api';
 
 const LOOKUPS = {
   departments: [
+    { value: 'Customer Support', label: 'Customer Support' },
+    { value: 'Design', label: 'Design' },
     { value: 'Engineering', label: 'Engineering' },
+    { value: 'Executive', label: 'Executive' },
     { value: 'Finance', label: 'Finance' },
     { value: 'Human Resources', label: 'Human Resources' },
+    { value: 'IT', label: 'IT' },
     { value: 'Legal', label: 'Legal' },
     { value: 'Marketing', label: 'Marketing' },
     { value: 'Operations', label: 'Operations' },
@@ -29,22 +33,28 @@ const LOOKUPS = {
     { value: 'Sales', label: 'Sales' },
   ],
   relationships: [
-    { value: 'Brother', label: 'Brother' },
-    { value: 'Mother', label: 'Mother' },
+    { value: 'Child', label: 'Child' },
+    { value: 'Friend', label: 'Friend' },
+    { value: 'Other', label: 'Other' },
     { value: 'Parent', label: 'Parent' },
+    { value: 'Partner', label: 'Partner' },
+    { value: 'Sibling', label: 'Sibling' },
     { value: 'Spouse', label: 'Spouse' },
   ],
   statuses: [
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' },
     { value: 'on-leave', label: 'On Leave' },
+    { value: 'suspended', label: 'Suspended' },
     { value: 'terminated', label: 'Terminated' },
   ],
   employmentTypes: [
     { value: 'contract', label: 'Contract' },
+    { value: 'freelance', label: 'Freelance' },
     { value: 'full-time', label: 'Full Time' },
     { value: 'intern', label: 'Intern' },
     { value: 'part-time', label: 'Part Time' },
+    { value: 'temporary', label: 'Temporary' },
   ],
   notificationChannels: [
     { value: 'email', label: 'Email' },
@@ -53,10 +63,11 @@ const LOOKUPS = {
     { value: 'sms', label: 'Sms' },
   ],
   accessLevels: [
-    { value: 'standard', label: 'Standard' },
-    { value: 'elevated', label: 'Elevated' },
     { value: 'admin', label: 'Admin' },
+    { value: 'elevated', label: 'Elevated' },
+    { value: 'read-only', label: 'Read Only' },
     { value: 'restricted', label: 'Restricted' },
+    { value: 'standard', label: 'Standard' },
   ],
   payFrequencies: [
     { value: 'annual', label: 'Annual' },

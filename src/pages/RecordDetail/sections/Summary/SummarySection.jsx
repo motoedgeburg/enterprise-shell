@@ -14,6 +14,7 @@ const STATUS_COLOR = {
   active: 'green',
   inactive: 'default',
   'on-leave': 'orange',
+  suspended: 'volcano',
   terminated: 'red',
 };
 

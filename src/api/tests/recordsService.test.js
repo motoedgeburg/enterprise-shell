@@ -22,12 +22,12 @@ beforeEach(() => {
 describe('recordsService.search', () => {
   it('returns all records as flat summaries when no filters', async () => {
     const result = await recordsService.search();
-    expect(result).toHaveLength(8);
+    expect(result).toHaveLength(9);
     expect(result[0]).toMatchObject({
       uuid: expect.any(String),
       name: expect.any(String),
       department: expect.any(String),
-      status: expect.stringMatching(/^(active|inactive|on-leave|terminated)$/),
+      status: expect.stringMatching(/^(active|inactive|on-leave|suspended|terminated)$/),
     });
     expect(result[0].id).toBeUndefined();
     expect(result[0].personalInfo).toBeUndefined();
@@ -105,7 +105,7 @@ describe('recordsService.create', () => {
   it('increments the total count after creation', async () => {
     await recordsService.create(newRecord);
     const list = await recordsService.search();
-    expect(list).toHaveLength(9);
+    expect(list).toHaveLength(10);
   });
 
   it('throws (400) when name is missing', async () => {
@@ -176,7 +176,7 @@ describe('recordsService.remove', () => {
   it('reduces the total count after deletion', async () => {
     await recordsService.remove(ALICE_UUID);
     const list = await recordsService.search();
-    expect(list).toHaveLength(7);
+    expect(list).toHaveLength(8);
   });
 
   it('makes the deleted record unretrievable', async () => {

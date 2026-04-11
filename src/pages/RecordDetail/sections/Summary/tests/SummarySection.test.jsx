@@ -27,9 +27,11 @@ vi.mock('../../../../../hooks/useLookups.js', () => ({
   useLookups: () => ({
     employmentTypes: [
       { value: 'contract', label: 'Contract' },
+      { value: 'freelance', label: 'Freelance' },
       { value: 'full-time', label: 'Full Time' },
       { value: 'intern', label: 'Intern' },
       { value: 'part-time', label: 'Part Time' },
+      { value: 'temporary', label: 'Temporary' },
     ],
     notificationChannels: [
       { value: 'email', label: 'Email' },
@@ -38,10 +40,11 @@ vi.mock('../../../../../hooks/useLookups.js', () => ({
       { value: 'sms', label: 'Sms' },
     ],
     accessLevels: [
-      { value: 'standard', label: 'Standard' },
-      { value: 'elevated', label: 'Elevated' },
       { value: 'admin', label: 'Admin' },
+      { value: 'elevated', label: 'Elevated' },
+      { value: 'read-only', label: 'Read Only' },
       { value: 'restricted', label: 'Restricted' },
+      { value: 'standard', label: 'Standard' },
     ],
     payFrequencies: [
       { value: 'annual', label: 'Annual' },

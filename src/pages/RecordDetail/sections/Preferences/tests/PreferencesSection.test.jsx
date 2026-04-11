@@ -121,10 +121,11 @@ vi.mock('../../../../../hooks/useLookups.js', () => ({
       { value: 'sms', label: 'Sms' },
     ],
     accessLevels: [
-      { value: 'standard', label: 'Standard' },
-      { value: 'elevated', label: 'Elevated' },
       { value: 'admin', label: 'Admin' },
+      { value: 'elevated', label: 'Elevated' },
+      { value: 'read-only', label: 'Read Only' },
       { value: 'restricted', label: 'Restricted' },
+      { value: 'standard', label: 'Standard' },
     ],
   }),
 }));

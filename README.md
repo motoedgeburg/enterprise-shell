@@ -221,7 +221,7 @@ The detail page uses an accordion layout with six sections, each self-contained 
 | Feature | Description |
 |---|---|
 | **Breadcrumb navigation** | Dashboard > Search > Results > Record Detail. Each ancestor is a clickable link. |
-| **Status tag colors** | `active` = green, `inactive` = gray, `on-leave` = orange, `terminated` = red |
+| **Status tag colors** | `active` = green, `inactive` = gray, `on-leave` = orange, `suspended` = volcano, `terminated` = red |
 | **Skeleton loading** | Record Detail shows shaped placeholders while fetching, not a generic spinner |
 | **Table row hover** | Results rows highlight on hover (`#f0f5ff`) to indicate clickability |
 | **Unsaved changes guard** | Sidebar links, breadcrumbs, Back button, and browser close/refresh all show a confirmation modal when the form is dirty |
@@ -390,7 +390,7 @@ log.error('fetch failed', err);  // always emitted
     │   └── messages.js               # Aggregates all message descriptors
     │
     └── mocks/
-        ├── data.js                   # In-memory DB (8 seed records + CRUD helpers)
+        ├── data.js                   # In-memory DB (9 seed records + CRUD helpers)
         ├── handlers.js               # MSW request handlers
         ├── browser.js                # MSW Service Worker setup (dev)
         └── server.js                 # MSW Node server (Vitest)
