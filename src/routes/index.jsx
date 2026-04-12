@@ -15,7 +15,9 @@ const ResultsPage = lazy(() => import('../pages/Results/ResultsPage.jsx'));
 const RecordDetailPage = lazy(() => import('../pages/RecordDetail/RecordDetailPage.jsx'));
 
 const PageLoader = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
+  <div
+    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}
+  >
     <Spin size="large" />
   </div>
 );

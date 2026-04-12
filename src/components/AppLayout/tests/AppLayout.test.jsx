@@ -62,9 +62,9 @@ function renderLayout(authOverrides = {}, initialPath = '/dashboard') {
 // ─── Sidebar content ──────────────────────────────────────────────────────────
 
 describe('AppLayout — sidebar', () => {
-  it('renders the app title in the sidebar', () => {
+  it('renders the app logo in the header', () => {
     renderLayout(AUTHED_STATE);
-    expect(screen.getByText('Enterprise App')).toBeInTheDocument();
+    expect(screen.getByAltText('Enterprise App')).toBeInTheDocument();
   });
 
   it('renders the Dashboard navigation item', () => {
@@ -98,26 +98,26 @@ describe('AppLayout — sidebar', () => {
 // ─── Collapse / expand toggle ─────────────────────────────────────────────────
 
 describe('AppLayout — sidebar toggle', () => {
-  it('renders the collapse button with accessible label', () => {
+  it('renders the expand button with accessible label (sidebar starts collapsed)', () => {
     renderLayout(AUTHED_STATE);
-    expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
-  });
-
-  it('changes aria-label to "Expand sidebar" after collapsing', async () => {
-    const user = userEvent.setup();
-    renderLayout(AUTHED_STATE);
-
-    await user.click(screen.getByRole('button', { name: 'Collapse sidebar' }));
     expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
   });
 
-  it('shows "Collapse sidebar" label again after re-expanding', async () => {
+  it('changes aria-label to "Collapse sidebar" after expanding', async () => {
     const user = userEvent.setup();
     renderLayout(AUTHED_STATE);
 
-    await user.click(screen.getByRole('button', { name: 'Collapse sidebar' }));
     await user.click(screen.getByRole('button', { name: 'Expand sidebar' }));
     expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
+  });
+
+  it('shows "Expand sidebar" label again after re-collapsing', async () => {
+    const user = userEvent.setup();
+    renderLayout(AUTHED_STATE);
+
+    await user.click(screen.getByRole('button', { name: 'Expand sidebar' }));
+    await user.click(screen.getByRole('button', { name: 'Collapse sidebar' }));
+    expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
   });
 });
 

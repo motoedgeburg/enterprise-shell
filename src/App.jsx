@@ -13,7 +13,7 @@ const App = () => {
       theme={{
         algorithm: theme.defaultAlgorithm,
         token: {
-          colorPrimary: '#1d4ed8',
+          colorPrimary: '#008cff',
           colorBgLayout: '#f1f5f9',
           colorBgContainer: '#ffffff',
           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -29,7 +29,7 @@ const App = () => {
           Menu: {
             darkItemBg: '#0f172a',
             darkPopupBg: '#0f172a',
-            darkItemSelectedBg: '#1d4ed8',
+            darkItemSelectedBg: '#008cff',
             darkItemHoverBg: '#1e293b',
           },
         },

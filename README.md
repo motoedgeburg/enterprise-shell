@@ -70,7 +70,7 @@ The dev server starts at `http://localhost:5173` by default (Vite).
 
 ```
 Login (Okta SSO or mock auth)
-  └─▶ Dashboard              — welcome card + Search CTA
+  └─▶ Dashboard              — single Search Records button
         └─▶ Search            — filter form (name, email, dept, status, address)
               └─▶ Results     — paginated table; New Record button or click a row
                     ├─▶ Record Detail (/records/:uuid)  — view / edit / delete
@@ -196,7 +196,7 @@ Tokens are stored **in Redux (JavaScript memory only)** — never in `localStora
 
 ## Record Detail Form
 
-The detail page uses an accordion layout with six sections, each self-contained with its own component and `messages.js`:
+The detail page uses an accordion layout (wrapped in a Card container) with six icon-labeled sections, each self-contained with its own component and `messages.js`:
 
 | Section | Key Fields |
 |---|---|
@@ -220,11 +220,17 @@ The detail page uses an accordion layout with six sections, each self-contained 
 
 | Feature | Description |
 |---|---|
-| **Breadcrumb navigation** | Dashboard > Search > Results > Record Detail. Each ancestor is a clickable link. |
+| **Full-width header** | Logo + user menu span the full width; sidebar with nav sits below |
+| **Sidebar collapsed by default** | Icons-only sidebar; expandable via toggle in the header |
+| **App logo** | SVG logo (`src/assets/logo.svg`) displayed in the header |
+| **Breadcrumb navigation** | Dashboard > Search > Results > Record Detail. Current page in bold. Each ancestor is a clickable link. |
+| **Section icons** | Accordion headers have contextual icons (User, ID card, Settings, Dollar, History, File) |
 | **Status tag colors** | `active` = green, `inactive` = gray, `on-leave` = orange, `suspended` = volcano, `terminated` = red |
 | **Skeleton loading** | Record Detail shows shaped placeholders while fetching, not a generic spinner |
+| **Centered spinners** | All loading spinners (login, callback, lazy routes) center vertically on the viewport |
 | **Table row hover** | Results rows highlight on hover (`#f0f5ff`) to indicate clickability |
 | **Unsaved changes guard** | Sidebar links, breadcrumbs, Back button, and browser close/refresh all show a confirmation modal when the form is dirty |
+| **Footer action bar** | Delete (left) and Save (right) in the same footer card, separated to prevent accidental clicks |
 | **Empty state CTAs** | When no records match, the Results page offers "Refine Search" and "New Record" buttons |
 
 ---
@@ -330,8 +336,11 @@ log.error('fetch failed', err);  // always emitted
     │   ├── ProtectedRoute.jsx        # Auth guard — redirects to /login
     │   └── tests/
     │
+    ├── assets/
+    │   └── logo.svg                  # App logo (SVG)
+    │
     ├── components/
-    │   ├── AppLayout/                # Sidebar + header shell
+    │   ├── AppLayout/                # Full-width header + collapsible sidebar shell
     │   ├── AuthInitializer/          # Bootstraps Okta auth on startup
     │   ├── Breadcrumbs/              # Shared breadcrumb bar
     │   ├── ErrorBoundary/            # Top-level error boundary

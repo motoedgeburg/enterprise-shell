@@ -1,4 +1,14 @@
-import { ArrowLeftOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
+import {
+  ArrowLeftOutlined,
+  DeleteOutlined,
+  DollarOutlined,
+  FileTextOutlined,
+  HistoryOutlined,
+  IdcardOutlined,
+  SaveOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import {
   Alert,
   App,
@@ -44,15 +54,18 @@ const UnsavedChangesGuard = ({ guardMessages }) => {
   return null;
 };
 
-/** Renders a section label with an error count badge derived from the field name prefix. */
-const SectionLabel = ({ label, prefix }) => (
+/** Renders a section label with an icon and an error count badge derived from the field name prefix. */
+const SectionLabel = ({ icon, label, prefix }) => (
   <FormSpy subscription={{ errors: true, submitFailed: true, touched: true }}>
     {({ errors = {}, submitFailed, touched = {} }) => {
-      const count = Object.keys(errors).filter(
-        (key) => key.startsWith(`${prefix}.`) && (submitFailed || touched[key]),
-      ).length;
+      const count = prefix
+        ? Object.keys(errors).filter(
+            (key) => key.startsWith(`${prefix}.`) && (submitFailed || touched[key]),
+          ).length
+        : 0;
       return (
         <span>
+          {icon && <span style={{ marginRight: 8 }}>{icon}</span>}
           {label}
           {count > 0 && (
             <Badge count={count} size="small" style={{ marginLeft: 8, boxShadow: 'none' }} />
@@ -169,6 +182,7 @@ const RecordDetailPage = () => {
       key: 'personal',
       label: (
         <SectionLabel
+          icon={<UserOutlined />}
           label={intl.formatMessage(messages.DETAIL_SECTION_PERSONAL)}
           prefix="personalInfo"
         />
@@ -179,7 +193,11 @@ const RecordDetailPage = () => {
     {
       key: 'work',
       label: (
-        <SectionLabel label={intl.formatMessage(messages.DETAIL_SECTION_WORK)} prefix="workInfo" />
+        <SectionLabel
+          icon={<IdcardOutlined />}
+          label={intl.formatMessage(messages.DETAIL_SECTION_WORK)}
+          prefix="workInfo"
+        />
       ),
       forceRender: true,
       children: <WorkInfoSection />,
@@ -188,6 +206,7 @@ const RecordDetailPage = () => {
       key: 'preferences',
       label: (
         <SectionLabel
+          icon={<SettingOutlined />}
           label={intl.formatMessage(messages.DETAIL_SECTION_PREFERENCES)}
           prefix="preferences"
         />
@@ -199,6 +218,7 @@ const RecordDetailPage = () => {
       key: 'compensation',
       label: (
         <SectionLabel
+          icon={<DollarOutlined />}
           label={intl.formatMessage(messages.DETAIL_SECTION_COMPENSATION)}
           prefix="compensation"
         />
@@ -208,13 +228,23 @@ const RecordDetailPage = () => {
     },
     {
       key: 'history',
-      label: intl.formatMessage(messages.DETAIL_SECTION_HISTORY),
+      label: (
+        <SectionLabel
+          icon={<HistoryOutlined />}
+          label={intl.formatMessage(messages.DETAIL_SECTION_HISTORY)}
+        />
+      ),
       forceRender: true,
       children: <HistorySection />,
     },
     {
       key: 'summary',
-      label: intl.formatMessage(messages.DETAIL_SECTION_SUMMARY),
+      label: (
+        <SectionLabel
+          icon={<FileTextOutlined />}
+          label={intl.formatMessage(messages.DETAIL_SECTION_SUMMARY)}
+        />
+      ),
       forceRender: true,
       children: <SummarySection />,
     },
@@ -261,66 +291,75 @@ const RecordDetailPage = () => {
               {intl.formatMessage(messages.DETAIL_BACK)}
             </Button>
           </div>
-          {/* Page header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            <Title
-              level={4}
-              style={{
-                margin: 0,
-                flex: 1,
-                minWidth: 0,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {isNew ? intl.formatMessage(messages.DETAIL_CREATE_TITLE) : record.personalInfo?.name}
+          {/* Page title (create mode only) */}
+          {isNew && (
+            <Title level={4} style={{ margin: 0 }}>
+              {intl.formatMessage(messages.DETAIL_CREATE_TITLE)}
             </Title>
-            {!isNew && (
-              <Popconfirm
-                title={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_TITLE)}
-                description={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_DESC, {
-                  name: record.personalInfo?.name,
-                })}
-                onConfirm={handleDelete}
-                okText={intl.formatMessage(messages.DETAIL_DELETE_OK)}
-                okButtonProps={{ danger: true }}
-                cancelText={intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
-              >
-                <Button danger icon={<DeleteOutlined />}>
-                  {intl.formatMessage(messages.DETAIL_DELETE_OK)}
-                </Button>
-              </Popconfirm>
-            )}
-          </div>
+          )}
 
           {/* Form error banner */}
           {submitError && <Alert type="error" message={submitError} showIcon closable />}
 
           {/* Accordion */}
-          <Form layout="vertical" component="div">
-            <Collapse
-              items={collapseItems}
-              defaultActiveKey={['personal']}
-              style={{ background: 'transparent' }}
-            />
-          </Form>
+          <Card styles={{ body: { padding: 0 } }}>
+            <Form layout="vertical" component="div">
+              <Collapse
+                items={collapseItems}
+                defaultActiveKey={['personal']}
+                bordered={true}
+                style={{ background: 'transparent' }}
+              />
+            </Form>
+          </Card>
 
           {/* Submit footer */}
           <Card size="small">
-            <Button
-              type="primary"
-              icon={<SaveOutlined />}
-              loading={submitting}
-              disabled={hasValidationErrors}
-              onClick={() => void submit()}
-              size="large"
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
             >
-              {intl.formatMessage(isNew ? messages.DETAIL_CREATE_SUBMIT : messages.DETAIL_SUBMIT)}
-            </Button>
-            <Text type="secondary" style={{ marginLeft: 16 }}>
-              {intl.formatMessage(isNew ? messages.DETAIL_HINT_CREATE : messages.DETAIL_HINT_EDIT)}
-            </Text>
+              {!isNew ? (
+                <Popconfirm
+                  title={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_TITLE)}
+                  description={intl.formatMessage(messages.DETAIL_DELETE_CONFIRM_DESC, {
+                    name: record.personalInfo?.name,
+                  })}
+                  onConfirm={handleDelete}
+                  okText={intl.formatMessage(messages.DETAIL_DELETE_OK)}
+                  okButtonProps={{ danger: true }}
+                  cancelText={intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
+                >
+                  <Button danger icon={<DeleteOutlined />} size="large">
+                    {intl.formatMessage(messages.DETAIL_DELETE_OK)}
+                  </Button>
+                </Popconfirm>
+              ) : (
+                <span />
+              )}
+              <Space>
+                <Text type="secondary">
+                  {intl.formatMessage(
+                    isNew ? messages.DETAIL_HINT_CREATE : messages.DETAIL_HINT_EDIT,
+                  )}
+                </Text>
+                <Button
+                  type="primary"
+                  icon={<SaveOutlined />}
+                  loading={submitting}
+                  disabled={hasValidationErrors}
+                  onClick={() => void submit()}
+                  size="large"
+                >
+                  {intl.formatMessage(
+                    isNew ? messages.DETAIL_CREATE_SUBMIT : messages.DETAIL_SUBMIT,
+                  )}
+                </Button>
+              </Space>
+            </div>
           </Card>
         </Space>
       )}

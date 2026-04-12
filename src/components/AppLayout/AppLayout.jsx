@@ -1,5 +1,5 @@
 import {
-  DashboardOutlined,
+  HomeOutlined,
   SearchOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
@@ -10,6 +10,7 @@ import { useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
+import logoUrl from '../../assets/logo.svg';
 import { useAuth } from '../../hooks/useAuth.js';
 import { NavigationGuardProvider, useGuardedNavigate } from '../../hooks/useNavigationGuard.jsx';
 
@@ -19,7 +20,6 @@ const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
 
 const SIDEBAR_BG = '#0f172a';
-const SIDEBAR_DARK = '#1e293b';
 
 const getInitials = (name) =>
   name
@@ -32,7 +32,7 @@ const getInitials = (name) =>
     : 'U';
 
 const AppLayoutInner = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const location = useLocation();
   const { user, logout } = useAuth();
   const intl = useIntl();
@@ -42,7 +42,7 @@ const AppLayoutInner = () => {
     () => [
       {
         key: '/dashboard',
-        icon: <DashboardOutlined />,
+        icon: <HomeOutlined />,
         label: intl.formatMessage(messages.NAV_DASHBOARD),
       },
       {
@@ -73,74 +73,19 @@ const AppLayoutInner = () => {
   return (
     <App>
       <Layout style={{ minHeight: '100vh' }}>
-        {/* ── Sidebar ──────────────────────────────────────────────────────── */}
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          trigger={null}
-          width={220}
-          style={{ background: SIDEBAR_BG }}
+        {/* ── Header (full-width, above everything) ───────────────────────── */}
+        <Header
+          style={{
+            background: '#ffffff',
+            padding: '0 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            zIndex: 10,
+          }}
         >
-          {/* Brand */}
-          <div
-            style={{
-              height: 64,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: collapsed ? 'center' : 'flex-start',
-              padding: collapsed ? 0 : '0 20px',
-              borderBottom: `1px solid ${SIDEBAR_DARK}`,
-              gap: 10,
-            }}
-          >
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                background: '#1d4ed8',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                fontWeight: 700,
-                fontSize: 16,
-                color: '#fff',
-              }}
-            >
-              E
-            </div>
-            {!collapsed && (
-              <Text strong style={{ color: '#f8fafc', fontSize: 15, letterSpacing: '-0.01em' }}>
-                {intl.formatMessage(messages.APP_TITLE)}
-              </Text>
-            )}
-          </div>
-
-          {/* Nav */}
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={[location.pathname]}
-            items={navItems}
-            style={{ background: SIDEBAR_BG, borderRight: 0, marginTop: 8 }}
-            onClick={({ key }) => guardedNavigate(key)}
-          />
-        </Sider>
-
-        <Layout>
-          {/* ── Header ───────────────────────────────────────────────────────── */}
-          <Header
-            style={{
-              background: '#ffffff',
-              padding: '0 24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-              zIndex: 10,
-            }}
-          >
+          <Space size={16} align="center">
             <button
               onClick={() => setCollapsed((c) => !c)}
               style={{
@@ -162,30 +107,54 @@ const AppLayoutInner = () => {
             >
               {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             </button>
+            <img
+              src={logoUrl}
+              alt="Enterprise App"
+              style={{ height: 56, verticalAlign: 'middle' }}
+            />
+          </Space>
 
-            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
-              <Space style={{ cursor: 'pointer' }}>
-                <Avatar
-                  style={{ backgroundColor: '#1d4ed8', fontWeight: 600, fontSize: 13 }}
-                  aria-label={displayName}
-                >
-                  {initials}
-                </Avatar>
-                <Text
-                  style={{
-                    maxWidth: 180,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    color: '#374151',
-                  }}
-                >
-                  {displayName}
-                </Text>
-              </Space>
-            </Dropdown>
-          </Header>
+          <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
+            <Space style={{ cursor: 'pointer' }}>
+              <Avatar
+                style={{ backgroundColor: '#008cff', fontWeight: 600, fontSize: 13 }}
+                aria-label={displayName}
+              >
+                {initials}
+              </Avatar>
+              <Text
+                style={{
+                  maxWidth: 180,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  color: '#374151',
+                }}
+              >
+                {displayName}
+              </Text>
+            </Space>
+          </Dropdown>
+        </Header>
 
-          {/* ── Content ──────────────────────────────────────────────────────── */}
+        {/* ── Sidebar + Content ───────────────────────────────────────────── */}
+        <Layout>
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            trigger={null}
+            width={220}
+            style={{ background: SIDEBAR_BG }}
+          >
+            <Menu
+              theme="dark"
+              mode="inline"
+              selectedKeys={[location.pathname]}
+              items={navItems}
+              style={{ background: SIDEBAR_BG, borderRight: 0, marginTop: 8 }}
+              onClick={({ key }) => guardedNavigate(key)}
+            />
+          </Sider>
+
           <Content style={{ margin: 24, minHeight: 280, overflow: 'auto' }}>
             <Outlet />
           </Content>

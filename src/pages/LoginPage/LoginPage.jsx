@@ -28,7 +28,14 @@ const LoginPage = () => {
 
   if (isInitializing) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20vh' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+        }}
+      >
         <Spin size="large" />
       </div>
     );

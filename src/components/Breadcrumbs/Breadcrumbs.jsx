@@ -34,7 +34,7 @@ const Breadcrumbs = ({ items, onNavigate }) => (
       } else if (isLink) {
         title = <Link to={item.path}>{item.label}</Link>;
       } else {
-        title = item.label;
+        title = <span style={{ fontWeight: 600 }}>{item.label}</span>;
       }
       return { title };
     })}
