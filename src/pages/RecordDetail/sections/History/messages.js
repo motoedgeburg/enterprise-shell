@@ -4,9 +4,9 @@ const historyMessages = {
     id: 'DETAIL_TAB_CERTIFICATIONS',
     defaultMessage: 'Professional Certifications',
   },
-  DETAIL_TAB_TIMELINE: {
-    id: 'DETAIL_TAB_TIMELINE',
-    defaultMessage: 'Employment Timeline',
+  DETAIL_TAB_AUDIT: {
+    id: 'DETAIL_TAB_AUDIT',
+    defaultMessage: 'Audit Trail',
   },
 };
 

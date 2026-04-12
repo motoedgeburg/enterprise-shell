@@ -65,6 +65,15 @@ export const seedRecords = [
         },
       ],
     },
+    auditLog: [
+      { type: 'create', note: '', savedBy: 'system@company.com', savedAt: '2024-01-15T10:30:00Z' },
+      {
+        type: 'edit',
+        note: 'Updated compensation after annual review.',
+        savedBy: 'jane.smith@company.com',
+        savedAt: '2025-01-10T14:22:00Z',
+      },
+    ],
     createdAt: '2024-01-15T10:30:00Z',
   },
   {
@@ -132,6 +141,9 @@ export const seedRecords = [
         },
       ],
     },
+    auditLog: [
+      { type: 'create', note: '', savedBy: 'system@company.com', savedAt: '2024-02-03T08:00:00Z' },
+    ],
     createdAt: '2024-02-03T08:00:00Z',
   },
   {
@@ -170,6 +182,15 @@ export const seedRecords = [
       overtimeEligible: false,
     },
     history: { emergencyContacts: [], certifications: [] },
+    auditLog: [
+      { type: 'create', note: '', savedBy: 'system@company.com', savedAt: '2024-01-22T14:15:00Z' },
+      {
+        type: 'edit',
+        note: 'Moved to Design department, changed to temporary.',
+        savedBy: 'tom.baker@company.com',
+        savedAt: '2025-03-05T09:10:00Z',
+      },
+    ],
     createdAt: '2024-01-22T14:15:00Z',
   },
   {
@@ -237,6 +258,14 @@ export const seedRecords = [
         },
       ],
     },
+    auditLog: [
+      {
+        type: 'create',
+        note: '',
+        savedBy: 'alice.johnson@company.com',
+        savedAt: '2024-03-10T09:45:00Z',
+      },
+    ],
     createdAt: '2024-03-10T09:45:00Z',
   },
   {
@@ -295,6 +324,9 @@ export const seedRecords = [
       ],
       certifications: [],
     },
+    auditLog: [
+      { type: 'create', note: '', savedBy: 'system@company.com', savedAt: '2024-03-18T11:00:00Z' },
+    ],
     createdAt: '2024-03-18T11:00:00Z',
   },
   {
@@ -333,6 +365,20 @@ export const seedRecords = [
       overtimeEligible: true,
     },
     history: { emergencyContacts: [], certifications: [] },
+    auditLog: [
+      {
+        type: 'create',
+        note: '',
+        savedBy: 'sam.rivera@company.com',
+        savedAt: '2024-02-28T16:30:00Z',
+      },
+      {
+        type: 'edit',
+        note: 'Account suspended pending HR review.',
+        savedBy: 'henry.davis@company.com',
+        savedAt: '2025-02-14T11:45:00Z',
+      },
+    ],
     createdAt: '2024-02-28T16:30:00Z',
   },
   {
@@ -400,6 +446,9 @@ export const seedRecords = [
         },
       ],
     },
+    auditLog: [
+      { type: 'create', note: '', savedBy: 'system@company.com', savedAt: '2024-04-01T08:30:00Z' },
+    ],
     createdAt: '2024-04-01T08:30:00Z',
   },
   {
@@ -475,6 +524,14 @@ export const seedRecords = [
         },
       ],
     },
+    auditLog: [
+      {
+        type: 'create',
+        note: '',
+        savedBy: 'jane.smith@company.com',
+        savedAt: '2024-04-05T13:00:00Z',
+      },
+    ],
     createdAt: '2024-04-05T13:00:00Z',
   },
   {
@@ -542,6 +599,15 @@ export const seedRecords = [
         },
       ],
     },
+    auditLog: [
+      { type: 'create', note: '', savedBy: 'ceo@company.com', savedAt: '2024-01-05T07:30:00Z' },
+      {
+        type: 'edit',
+        note: 'Status changed to terminated after restructuring.',
+        savedBy: 'henry.davis@company.com',
+        savedAt: '2025-06-01T16:00:00Z',
+      },
+    ],
     createdAt: '2024-01-05T07:30:00Z',
   },
 ];
@@ -594,20 +660,37 @@ export const db = {
   getById: (uuid) => toPublic(records.find((r) => r.uuid === uuid)) ?? null,
 
   create: (dto) => {
+    const now = new Date().toISOString();
+    // Backend stamps savedBy and savedAt on each new audit entry
+    const auditLog = (dto.auditLog ?? []).map((entry) => ({
+      ...entry,
+      savedBy: 'john.doe@company.com',
+      savedAt: now,
+    }));
+    const { auditLog: _submitted, ...rest } = dto; // eslint-disable-line no-unused-vars
     const newRecord = {
-      ...dto,
+      ...rest,
       id: nextId++,
       uuid: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
+      auditLog,
+      createdAt: now,
     };
     records = [...records, newRecord];
     return toPublic(newRecord);
   },
 
   update: (uuid, dto) => {
+    const now = new Date().toISOString();
     let updated = null;
     records = records.map((r) => {
       if (r.uuid === uuid) {
+        // Backend appends new audit entries to existing history, stamping savedBy and savedAt
+        const newEntries = (dto.auditLog ?? []).map((entry) => ({
+          ...entry,
+          savedBy: 'john.doe@company.com',
+          savedAt: now,
+        }));
+        const auditLog = [...(r.auditLog ?? []), ...newEntries];
         updated = {
           ...r,
           personalInfo: { ...r.personalInfo, ...dto.personalInfo },
@@ -618,6 +701,7 @@ export const db = {
             emergencyContacts: dto.history?.emergencyContacts ?? r.history?.emergencyContacts,
             certifications: dto.history?.certifications ?? r.history?.certifications,
           },
+          auditLog,
         };
         return updated;
       }

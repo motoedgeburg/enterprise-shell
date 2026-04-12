@@ -143,13 +143,28 @@ The app works with a nested record structure. The form field names map directly 
       }
     ]
   },
+  "auditLog": [
+    {
+      "type": "create",
+      "note": "",
+      "savedBy": "system@company.com",
+      "savedAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "type": "edit",
+      "note": "Updated compensation after annual review.",
+      "savedBy": "jane.smith@company.com",
+      "savedAt": "2025-01-10T14:22:00Z"
+    }
+  ],
   "createdAt": "2024-01-15T10:30:00Z"
 }
 ```
 
 - **New sub-records** (emergency contacts, certifications) are sent with `id: null` — the backend assigns the ID.
 - **Existing sub-records** include their database `id` so the backend can update in place.
-- The search endpoint returns a flat summary: `{ uuid, name, address, department, status }`.
+- **`auditLog`** is append-only. The frontend sends only the new entry (without `savedBy` or `savedAt`); the backend stamps both from the auth token and server clock, then appends to the stored array.
+- The search endpoint returns a flat summary: `{ uuid, name, address, department, status }` — `auditLog` is only returned on the detail endpoint.
 
 ---
 
@@ -204,7 +219,7 @@ The detail page uses an accordion layout (wrapped in a Card container) with six 
 | Work Information | Job title, department, status, employment type, start date, manager |
 | Preferences & Permissions | Remote eligibility, notifications, channels, access level, notes |
 | Compensation | Base salary (currency), pay frequency, bonus target (%), stock options, effective date, overtime eligible |
-| History | Emergency contacts tab + Professional certifications tab (full CRUD via modals) + Employment Timeline (read-only chronological view using Ant Design `Timeline`) |
+| History | Audit Trail (default tab, append-only create/edit log with date+time, user email, and notes — scrollable container with entry count badge) + Emergency contacts tab + Professional certifications tab (full CRUD via modals) |
 | Summary | Read-only live preview of all form values via `FormSpy` |
 
 ### Form Architecture
@@ -231,6 +246,8 @@ The detail page uses an accordion layout (wrapped in a Card container) with six 
 | **Table row hover** | Results rows highlight on hover (`#f0f5ff`) to indicate clickability |
 | **Unsaved changes guard** | Sidebar links, breadcrumbs, Back button, and browser close/refresh all show a confirmation modal when the form is dirty |
 | **Footer action bar** | Delete (left) and Save (right) in the same footer card, separated to prevent accidental clicks |
+| **Save confirmation modal** | Edit saves show a modal with an optional note (max 250 chars); create mode auto-generates a silent audit entry |
+| **Audit Trail** | Dedicated tab showing append-only create/edit history with date+time, user email, and optional notes (quote-styled with comment icon). Scrollable 250px container with entry count badge on tab |
 | **Empty state CTAs** | When no records match, the Results page offers "Refine Search" and "New Record" buttons |
 
 ---
@@ -362,7 +379,7 @@ log.error('fetch failed', err);  // always emitted
     │       └── tests/
     │
     ├── pages/
-    │   ├── Dashboard/                # Welcome + Search CTA
+    │   ├── Dashboard/                # Single Search Records button
     │   ├── LoginPage/                # SSO entry point
     │   ├── OktaCallback/             # Token exchange + redirect
     │   ├── Search/                   # Filter form → /results
@@ -378,7 +395,7 @@ log.error('fetch failed', err);  // always emitted
     │           │   ├── HistorySection.jsx
     │           │   ├── EmergencyContacts/
     │           │   ├── Certifications/
-    │           │   └── EmploymentTimeline/
+    │           │   └── AuditTrail/
     │           └── Summary/
     │
     ├── hooks/

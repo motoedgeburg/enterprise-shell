@@ -17,6 +17,8 @@ import {
   Card,
   Collapse,
   Form,
+  Input,
+  Modal,
   Popconfirm,
   Skeleton,
   Space,
@@ -87,6 +89,9 @@ const RecordDetailPage = () => {
 
   const [record, setRecord] = useState(isNew ? {} : null);
   const [loading, setLoading] = useState(!isNew);
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [saveNote, setSaveNote] = useState('');
+  const [pendingValues, setPendingValues] = useState(null);
 
   const guardedNavigate = useGuardedNavigate();
   const backPath = `/results${location.state?.search ? `?${location.state.search}` : ''}`;
@@ -122,16 +127,21 @@ const RecordDetailPage = () => {
 
   // ─── Handlers ───────────────────────────────────────────────────────────────
 
-  const handleSubmit = async (values) => {
+  /** Actually persist the record (called directly for create, after modal for edit). */
+  const persistRecord = async (values, auditEntry) => {
+    // Send only the new audit entry — backend appends to history and stamps savedBy/savedAt
+    const { auditLog: _omit, ...rest } = values; // eslint-disable-line no-unused-vars
+    const payload = { ...rest, auditLog: [auditEntry] };
+
     try {
       if (isNew) {
-        const created = await recordsService.create(values);
+        const created = await recordsService.create(payload);
         void message.success(intl.formatMessage(messages.DETAIL_CREATE_SUCCESS));
         navigate(`/records/${created.uuid}`, { replace: true, state: location.state });
       } else {
-        await recordsService.update(id, values);
+        const updated = await recordsService.update(id, payload);
         void message.success(intl.formatMessage(messages.DETAIL_SUCCESS));
-        setRecord(values);
+        setRecord(updated);
       }
     } catch (err) {
       log.error(isNew ? 'Failed to create record' : 'Failed to save record', err);
@@ -141,6 +151,25 @@ const RecordDetailPage = () => {
         ),
       };
     }
+  };
+
+  /** Form onSubmit: create goes straight through, edit opens the modal. */
+  const handleSubmit = async (values) => {
+    if (isNew) {
+      return persistRecord(values, { type: 'create', note: '' });
+    }
+    // Edit mode — stash values and open modal
+    setPendingValues(values);
+    setSaveNote('');
+    setSaveModalOpen(true);
+  };
+
+  /** Called when the user confirms the save modal. */
+  const handleConfirmSave = async () => {
+    setSaveModalOpen(false);
+    if (!pendingValues) return;
+    await persistRecord(pendingValues, { type: 'edit', note: saveNote });
+    setPendingValues(null);
   };
 
   const handleDelete = async () => {
@@ -361,6 +390,35 @@ const RecordDetailPage = () => {
               </Space>
             </div>
           </Card>
+
+          {/* Save confirmation modal (edit mode only) */}
+          <Modal
+            title={
+              <span>
+                <SaveOutlined style={{ marginRight: 8 }} />
+                {intl.formatMessage(messages.DETAIL_SAVE_MODAL_TITLE)}
+              </span>
+            }
+            open={saveModalOpen}
+            onOk={handleConfirmSave}
+            onCancel={() => {
+              setSaveModalOpen(false);
+              setPendingValues(null);
+            }}
+            okText={intl.formatMessage(messages.DETAIL_SAVE_MODAL_CONFIRM)}
+            cancelText={intl.formatMessage(messages.DETAIL_SAVE_MODAL_CANCEL)}
+            okButtonProps={{ icon: <SaveOutlined /> }}
+          >
+            <Input.TextArea
+              rows={4}
+              maxLength={250}
+              showCount
+              value={saveNote}
+              onChange={(e) => setSaveNote(e.target.value)}
+              placeholder={intl.formatMessage(messages.DETAIL_SAVE_MODAL_NOTE_PLACEHOLDER)}
+              style={{ marginTop: 16 }}
+            />
+          </Modal>
         </Space>
       )}
     </FinalForm>

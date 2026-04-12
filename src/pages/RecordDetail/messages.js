@@ -79,6 +79,28 @@ const messages = {
   DETAIL_UNSAVED_OK: { id: 'DETAIL_UNSAVED_OK', defaultMessage: 'Leave' },
   DETAIL_UNSAVED_CANCEL: { id: 'DETAIL_UNSAVED_CANCEL', defaultMessage: 'Stay' },
 
+  // ─── Save confirmation modal ──────────────────────────────────────────────
+  DETAIL_SAVE_MODAL_TITLE: {
+    id: 'DETAIL_SAVE_MODAL_TITLE',
+    defaultMessage: 'Confirm Save',
+  },
+  DETAIL_SAVE_MODAL_NOTE_LABEL: {
+    id: 'DETAIL_SAVE_MODAL_NOTE_LABEL',
+    defaultMessage: 'Notes (optional)',
+  },
+  DETAIL_SAVE_MODAL_NOTE_PLACEHOLDER: {
+    id: 'DETAIL_SAVE_MODAL_NOTE_PLACEHOLDER',
+    defaultMessage: 'Add a note about this change...',
+  },
+  DETAIL_SAVE_MODAL_CONFIRM: {
+    id: 'DETAIL_SAVE_MODAL_CONFIRM',
+    defaultMessage: 'Confirm Save',
+  },
+  DETAIL_SAVE_MODAL_CANCEL: {
+    id: 'DETAIL_SAVE_MODAL_CANCEL',
+    defaultMessage: 'Cancel',
+  },
+
   // ─── Breadcrumbs ─────────────────────────────────────────────────────────
   DETAIL_BREADCRUMB_DASHBOARD: {
     id: 'DETAIL_BREADCRUMB_DASHBOARD',

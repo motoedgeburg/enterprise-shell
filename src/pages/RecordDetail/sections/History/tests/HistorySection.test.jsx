@@ -5,7 +5,7 @@
  * Component-specific tests live in:
  *   - EmergencyContacts/tests/EmergencyContactsTab.test.jsx
  *   - Certifications/tests/CertificationsTab.test.jsx
- *   - EmploymentTimeline/tests/EmploymentTimeline.test.jsx
+ *   - AuditTrail/tests/AuditTrail.test.jsx
  */
 import { render, screen } from '@testing-library/react';
 import { App } from 'antd';
@@ -36,6 +36,11 @@ function renderSection(initialValues = {}) {
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
 
 describe('HistorySection — tabs', () => {
+  it('renders Audit Trail tab label', () => {
+    renderSection();
+    expect(screen.getByRole('tab', { name: /Audit Trail/i })).toBeInTheDocument();
+  });
+
   it('renders Emergency Contacts tab label', () => {
     renderSection();
     expect(screen.getByRole('tab', { name: /Emergency Contacts/i })).toBeInTheDocument();
@@ -46,13 +51,8 @@ describe('HistorySection — tabs', () => {
     expect(screen.getByRole('tab', { name: /Professional Certifications/i })).toBeInTheDocument();
   });
 
-  it('renders Employment Timeline tab label', () => {
+  it('shows the Audit Trail tab content by default', () => {
     renderSection();
-    expect(screen.getByRole('tab', { name: /Employment Timeline/i })).toBeInTheDocument();
-  });
-
-  it('shows the Emergency Contacts tab content by default', () => {
-    renderSection();
-    expect(screen.getByRole('button', { name: /Add Contact/i })).toBeInTheDocument();
+    expect(screen.getByText(/No audit history to display/i)).toBeInTheDocument();
   });
 });

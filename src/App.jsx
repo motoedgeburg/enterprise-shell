@@ -1,11 +1,30 @@
 import { ConfigProvider, theme } from 'antd';
+import { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import AuthInitializer from './components/AuthInitializer/AuthInitializer.jsx';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary.jsx';
 import AppRoutes from './routes/index.jsx';
+import { useAppDispatch } from './store';
+import { setCredentials } from './store/slices/authSlice';
 
 const IS_MOCK_AUTH = import.meta.env.VITE_MOCK_AUTH === 'true';
+
+/** Seeds a fake user into the Redux store so the full UI works without Okta. */
+const MockAuthProvider = ({ children }) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(
+      setCredentials({
+        accessToken: 'mock-token',
+        user: { name: 'John Doe', email: 'john.doe@company.com' },
+      }),
+    );
+  }, [dispatch]);
+
+  return children;
+};
 
 const App = () => {
   return (
@@ -38,7 +57,9 @@ const App = () => {
       <ErrorBoundary>
         <BrowserRouter>
           {IS_MOCK_AUTH ? (
-            <AppRoutes />
+            <MockAuthProvider>
+              <AppRoutes />
+            </MockAuthProvider>
           ) : (
             <AuthInitializer>
               <AppRoutes />

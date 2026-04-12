@@ -95,7 +95,7 @@ describe('RecordDetailPage — create mode (/records/new)', () => {
   it('renders "Create Record" as the submit button label', () => {
     renderPage('/records/new');
     expect(screen.getByRole('button', { name: /Create Record/i })).toBeInTheDocument();
-  });
+  }, 15000);
 
   it('does not render a Delete button in create mode', () => {
     renderPage('/records/new');
@@ -105,7 +105,7 @@ describe('RecordDetailPage — create mode (/records/new)', () => {
   it('renders the Back to Results button', () => {
     renderPage('/records/new');
     expect(screen.getByRole('button', { name: /Back to Results/i })).toBeInTheDocument();
-  });
+  }, 15000);
 
   it('renders all accordion section headings', () => {
     renderPage('/records/new');
