@@ -16,6 +16,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 
+import { ROUTES } from '../../../constants/routes.js';
 import { buildStore, appMessages, AUTHED_STATE } from '../../../renderUtils.jsx';
 import ResultsPage from '../ResultsPage.jsx';
 
@@ -41,12 +42,12 @@ function renderResults(search = '') {
     <Provider store={store}>
       <IntlProvider locale="en" messages={appMessages} defaultLocale="en">
         <App>
-          <MemoryRouter initialEntries={[`/results${search}`]}>
+          <MemoryRouter initialEntries={[`${ROUTES.RESULTS}${search}`]}>
             <Routes>
-              <Route path="/results" element={<ResultsPage />} />
-              <Route path="/search" element={<LocationCapture />} />
-              <Route path="/records/:id" element={<LocationCapture />} />
-              <Route path="/records/new" element={<LocationCapture />} />
+              <Route path={ROUTES.RESULTS} element={<ResultsPage />} />
+              <Route path={ROUTES.SEARCH} element={<LocationCapture />} />
+              <Route path={ROUTES.RECORD_DETAIL} element={<LocationCapture />} />
+              <Route path={ROUTES.RECORDS_NEW} element={<LocationCapture />} />
             </Routes>
           </MemoryRouter>
         </App>
@@ -81,14 +82,14 @@ describe('ResultsPage — chrome', () => {
     const user = userEvent.setup();
     renderResults();
     await user.click(screen.getByRole('button', { name: /Back to Search/i }));
-    await waitFor(() => expect(capturedLocation?.pathname).toBe('/search'));
+    await waitFor(() => expect(capturedLocation?.pathname).toBe(ROUTES.SEARCH));
   });
 
   it('navigates to /records/new when New Record is clicked', async () => {
     const user = userEvent.setup();
     renderResults();
     await user.click(screen.getAllByRole('button', { name: /New Record/i })[0]);
-    await waitFor(() => expect(capturedLocation?.pathname).toBe('/records/new'));
+    await waitFor(() => expect(capturedLocation?.pathname).toBe(ROUTES.RECORDS_NEW));
   }, 10000);
 });
 

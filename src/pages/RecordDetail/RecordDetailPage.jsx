@@ -32,6 +32,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
+import { ROUTES } from '../../constants/routes.js';
 import { useGuardedNavigate, useSetNavigationGuard } from '../../hooks/useNavigationGuard.jsx';
 import useUnsavedChangesBlocker from '../../hooks/useUnsavedChangesBlocker.js';
 import { createLogger } from '../../utils/logger.js';
@@ -94,7 +95,7 @@ const RecordDetailPage = () => {
   const [pendingValues, setPendingValues] = useState(null);
 
   const guardedNavigate = useGuardedNavigate();
-  const backPath = `/results${location.state?.search ? `?${location.state.search}` : ''}`;
+  const backPath = `${ROUTES.RESULTS}${location.state?.search ? `?${location.state.search}` : ''}`;
 
   const guardMessages = useMemo(
     () => ({
@@ -298,11 +299,11 @@ const RecordDetailPage = () => {
               items={[
                 {
                   label: intl.formatMessage(messages.DETAIL_BREADCRUMB_DASHBOARD),
-                  path: '/dashboard',
+                  path: ROUTES.DASHBOARD,
                 },
                 {
                   label: intl.formatMessage(messages.DETAIL_BREADCRUMB_SEARCH),
-                  path: '/search',
+                  path: ROUTES.SEARCH,
                 },
                 {
                   label: intl.formatMessage(messages.DETAIL_BREADCRUMB_RESULTS),

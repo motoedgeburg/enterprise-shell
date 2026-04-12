@@ -15,6 +15,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 
+import { ROUTES } from '../../../constants/routes.js';
 import { buildStore, appMessages, AUTHED_STATE } from '../../../renderUtils.jsx';
 import RecordDetailPage from '../RecordDetailPage.jsx';
 
@@ -73,9 +74,9 @@ function renderPage(path) {
         <App>
           <MemoryRouter initialEntries={[path]}>
             <Routes>
-              <Route path="/records/new" element={<RecordDetailPage />} />
-              <Route path="/records/:id" element={<RecordDetailPage />} />
-              <Route path="/results" element={<LocationCapture />} />
+              <Route path={ROUTES.RECORDS_NEW} element={<RecordDetailPage />} />
+              <Route path={ROUTES.RECORD_DETAIL} element={<RecordDetailPage />} />
+              <Route path={ROUTES.RESULTS} element={<LocationCapture />} />
             </Routes>
           </MemoryRouter>
         </App>
@@ -157,7 +158,7 @@ describe(`RecordDetailPage — edit mode (/records/${ALICE_UUID})`, () => {
       timeout: 10000,
     });
     await user.click(screen.getByRole('button', { name: /Back to Results/i }));
-    await waitFor(() => expect(capturedLocation?.pathname).toBe('/results'));
+    await waitFor(() => expect(capturedLocation?.pathname).toBe(ROUTES.RESULTS));
   }, 15000);
 });
 

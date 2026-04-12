@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
+import { ROUTES } from '../../constants/routes.js';
 import { SelectField, TextField } from '../../components/fields/index.js';
 import { useLookups } from '../../hooks/useLookups.js';
 import { useValidators } from '../../hooks/useValidators.js';
@@ -22,14 +23,17 @@ const SearchPage = () => {
     Object.entries(values).forEach(([key, val]) => {
       if (val) params.set(key, val);
     });
-    navigate(`/results?${params.toString()}`);
+    navigate(`${ROUTES.RESULTS}?${params.toString()}`);
   };
 
   return (
     <Space orientation="vertical" size="large" style={{ width: '100%' }}>
       <Breadcrumbs
         items={[
-          { label: intl.formatMessage(messages.SEARCH_BREADCRUMB_DASHBOARD), path: '/dashboard' },
+          {
+            label: intl.formatMessage(messages.SEARCH_BREADCRUMB_DASHBOARD),
+            path: ROUTES.DASHBOARD,
+          },
           { label: intl.formatMessage(messages.SEARCH_BREADCRUMB) },
         ]}
       />

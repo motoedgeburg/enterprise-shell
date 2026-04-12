@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
 import logoUrl from '../../assets/logo.svg';
+import { ROUTES } from '../../constants/routes.js';
 import { useAuth } from '../../hooks/useAuth.js';
 import { NavigationGuardProvider, useGuardedNavigate } from '../../hooks/useNavigationGuard.jsx';
 
@@ -41,12 +42,12 @@ const AppLayoutInner = () => {
   const navItems = useMemo(
     () => [
       {
-        key: '/dashboard',
+        key: ROUTES.DASHBOARD,
         icon: <HomeOutlined />,
         label: intl.formatMessage(messages.NAV_DASHBOARD),
       },
       {
-        key: '/search',
+        key: ROUTES.SEARCH,
         icon: <SearchOutlined />,
         label: intl.formatMessage(messages.NAV_SEARCH),
       },

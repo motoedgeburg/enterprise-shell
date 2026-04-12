@@ -353,6 +353,9 @@ log.error('fetch failed', err);  // always emitted
     │   ├── ProtectedRoute.jsx        # Auth guard — redirects to /login
     │   └── tests/
     │
+    ├── constants/
+    │   └── routes.js                 # Centralized route path constants (ROUTES.DASHBOARD, etc.)
+    │
     ├── assets/
     │   └── logo.svg                  # App logo (SVG)
     │

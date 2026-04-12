@@ -13,6 +13,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 
+import { ROUTES } from '../../../constants/routes.js';
 import { buildStore, appMessages, AUTHED_STATE } from '../../../renderUtils.jsx';
 import SearchPage from '../SearchPage.jsx';
 
@@ -56,10 +57,10 @@ function renderSearch(lookupsOverrides = {}) {
   return render(
     <Provider store={store}>
       <IntlProvider locale="en" messages={appMessages} defaultLocale="en">
-        <MemoryRouter initialEntries={['/search']}>
+        <MemoryRouter initialEntries={[ROUTES.SEARCH]}>
           <Routes>
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/results" element={<LocationCapture />} />
+            <Route path={ROUTES.SEARCH} element={<SearchPage />} />
+            <Route path={ROUTES.RESULTS} element={<LocationCapture />} />
           </Routes>
         </MemoryRouter>
       </IntlProvider>
@@ -142,7 +143,7 @@ describe('SearchPage — submit', () => {
     renderSearch();
     await user.click(screen.getByRole('button', { name: /Search/i }));
     await waitFor(() => expect(capturedLocation).not.toBeNull());
-    expect(capturedLocation.pathname).toBe('/results');
+    expect(capturedLocation.pathname).toBe(ROUTES.RESULTS);
   });
 
   it('includes name in query params when filled', async () => {

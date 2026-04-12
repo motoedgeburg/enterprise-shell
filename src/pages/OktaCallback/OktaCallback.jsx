@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import { ROUTES } from '../../constants/routes.js';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { setAuthError } from '../../store/slices/authSlice.js';
@@ -41,7 +42,7 @@ const OktaCallback = () => {
     handled.current = true;
 
     // Retrieve the originally requested path (set by ProtectedRoute)
-    const from = location.state?.from?.pathname ?? '/dashboard';
+    const from = location.state?.from?.pathname ?? ROUTES.DASHBOARD;
 
     handleCallback()
       .then(() => {
@@ -60,7 +61,7 @@ const OktaCallback = () => {
   // to avoid calling navigate() during render.
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+      navigate(ROUTES.DASHBOARD, { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -72,7 +73,9 @@ const OktaCallback = () => {
           showIcon
           message={intl.formatMessage(messages.CALLBACK_AUTH_FAILED_TITLE)}
           description={authError}
-          action={<a href="/login">{intl.formatMessage(messages.CALLBACK_RETURN_TO_LOGIN)}</a>}
+          action={
+            <a href={ROUTES.LOGIN}>{intl.formatMessage(messages.CALLBACK_RETURN_TO_LOGIN)}</a>
+          }
         />
       </div>
     );

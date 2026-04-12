@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import AppLayout from '../components/AppLayout/AppLayout.jsx';
+import { ROUTES } from '../constants/routes.js';
 import LoginPage from '../pages/LoginPage/LoginPage.jsx';
 import OktaCallback from '../pages/OktaCallback/OktaCallback.jsx';
 
@@ -26,19 +27,19 @@ const AppRoutes = () => (
   <Suspense fallback={<PageLoader />}>
     <Routes>
       {/* Public routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/login/callback" element={<OktaCallback />} />
+      <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+      <Route path={ROUTES.LOGIN_CALLBACK} element={<OktaCallback />} />
 
       {/* Protected routes — nested under AppLayout */}
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/records/new" element={<RecordDetailPage />} />
-          <Route path="/records/:id" element={<RecordDetailPage />} />
+          <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+          <Route path={ROUTES.SEARCH} element={<SearchPage />} />
+          <Route path={ROUTES.RESULTS} element={<ResultsPage />} />
+          <Route path={ROUTES.RECORDS_NEW} element={<RecordDetailPage />} />
+          <Route path={ROUTES.RECORD_DETAIL} element={<RecordDetailPage />} />
           {/* Fallback inside protected zone */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
         </Route>
       </Route>
 

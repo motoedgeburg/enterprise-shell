@@ -6,6 +6,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { recordsService } from '../../api/recordsService';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs.jsx';
+import { ROUTES } from '../../constants/routes.js';
 import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
@@ -102,13 +103,13 @@ const ResultsPage = () => {
           items={[
             {
               label: intl.formatMessage(messages.RESULTS_BREADCRUMB_DASHBOARD),
-              path: '/dashboard',
+              path: ROUTES.DASHBOARD,
             },
-            { label: intl.formatMessage(messages.RESULTS_BREADCRUMB_SEARCH), path: '/search' },
+            { label: intl.formatMessage(messages.RESULTS_BREADCRUMB_SEARCH), path: ROUTES.SEARCH },
             { label: intl.formatMessage(messages.RESULTS_BREADCRUMB) },
           ]}
         />
-        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/search')}>
+        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(ROUTES.SEARCH)}>
           {intl.formatMessage(messages.RESULTS_BACK_TO_SEARCH)}
         </Button>
       </div>
@@ -116,7 +117,9 @@ const ResultsPage = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => navigate('/records/new', { state: { search: searchParams.toString() } })}
+          onClick={() =>
+            navigate(ROUTES.RECORDS_NEW, { state: { search: searchParams.toString() } })
+          }
         >
           {intl.formatMessage(messages.RESULTS_NEW_RECORD)}
         </Button>
@@ -144,14 +147,14 @@ const ResultsPage = () => {
           emptyText: (
             <Empty description={intl.formatMessage(messages.RESULTS_EMPTY)}>
               <Space>
-                <Button onClick={() => navigate('/search')}>
+                <Button onClick={() => navigate(ROUTES.SEARCH)}>
                   {intl.formatMessage(messages.RESULTS_EMPTY_REFINE)}
                 </Button>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}
                   onClick={() =>
-                    navigate('/records/new', { state: { search: searchParams.toString() } })
+                    navigate(ROUTES.RECORDS_NEW, { state: { search: searchParams.toString() } })
                   }
                 >
                   {intl.formatMessage(messages.RESULTS_NEW_RECORD)}

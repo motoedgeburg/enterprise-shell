@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { IntlProvider } from 'react-intl';
 
+import { ROUTES } from '../../../constants/routes.js';
 import { appMessages } from '../../../renderUtils.jsx';
 import ErrorBoundary from '../ErrorBoundary.jsx';
 
@@ -70,6 +71,6 @@ describe('ErrorBoundary', () => {
   it('has a link to dashboard', () => {
     renderBoundary(<ThrowingChild />);
     const link = screen.getByRole('link', { name: 'Go to Dashboard' });
-    expect(link).toHaveAttribute('href', '/dashboard');
+    expect(link).toHaveAttribute('href', ROUTES.DASHBOARD);
   });
 });

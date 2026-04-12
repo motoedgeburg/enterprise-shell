@@ -2,6 +2,7 @@ import { Button, Result } from 'antd';
 import { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 
+import { ROUTES } from '../../constants/routes.js';
 import { createLogger } from '../../utils/logger.js';
 
 import messages from './messages.js';
@@ -48,7 +49,7 @@ class ErrorBoundary extends Component {
               <Button key="retry" type="primary" onClick={this.handleReset}>
                 <FormattedMessage {...messages.ERROR_BOUNDARY_RETRY} />
               </Button>,
-              <Button key="home" href="/dashboard">
+              <Button key="home" href={ROUTES.DASHBOARD}>
                 <FormattedMessage {...messages.ERROR_BOUNDARY_HOME} />
               </Button>,
             ]}

@@ -18,6 +18,7 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
+import { ROUTES } from '../../../constants/routes.js';
 import { buildStore, appMessages, MOCK_USER, AUTHED_STATE } from '../../../renderUtils.jsx';
 import AppLayout from '../AppLayout.jsx';
 
@@ -38,7 +39,7 @@ vi.mock('@okta/okta-auth-js', () => ({
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function renderLayout(authOverrides = {}, initialPath = '/dashboard') {
+function renderLayout(authOverrides = {}, initialPath = ROUTES.DASHBOARD) {
   const store = buildStore(authOverrides);
   return {
     store,
@@ -48,8 +49,8 @@ function renderLayout(authOverrides = {}, initialPath = '/dashboard') {
           <MemoryRouter initialEntries={[initialPath]}>
             <Routes>
               <Route element={<AppLayout />}>
-                <Route path="/dashboard" element={<div>Dashboard Content</div>} />
-                <Route path="/search" element={<div>Search Content</div>} />
+                <Route path={ROUTES.DASHBOARD} element={<div>Dashboard Content</div>} />
+                <Route path={ROUTES.SEARCH} element={<div>Search Content</div>} />
               </Route>
             </Routes>
           </MemoryRouter>
@@ -87,7 +88,7 @@ describe('AppLayout — sidebar', () => {
 
   it('navigates to /dashboard when the Dashboard menu item is clicked', async () => {
     const user = userEvent.setup();
-    renderLayout(AUTHED_STATE, '/search');
+    renderLayout(AUTHED_STATE, ROUTES.SEARCH);
 
     await screen.findByText('Search Content');
     await user.click(screen.getByText('Dashboard'));
@@ -176,7 +177,7 @@ describe('AppLayout — sign out', () => {
 
 describe('AppLayout — outlet', () => {
   it('renders child route content in the main content area', () => {
-    renderLayout(AUTHED_STATE, '/dashboard');
+    renderLayout(AUTHED_STATE, ROUTES.DASHBOARD);
     expect(screen.getByText('Dashboard Content')).toBeInTheDocument();
   });
 });

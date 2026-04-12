@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
+import { ROUTES } from '../../constants/routes.js';
 import { useLookups } from '../../hooks/useLookups.js';
 
 import messages from './messages.js';
@@ -25,7 +26,7 @@ const Dashboard = () => {
     >
       <Button
         type="primary"
-        onClick={() => navigate('/search')}
+        onClick={() => navigate(ROUTES.SEARCH)}
         style={{
           width: 200,
           height: 200,
