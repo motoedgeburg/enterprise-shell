@@ -201,7 +201,7 @@ const EmergencyContactsTab = () => {
               />
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
                 <Button onClick={() => setOpen(false)}>
-                  {intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
+                  {intl.formatMessage(messages.DETAIL_MODAL_CANCEL)}
                 </Button>
                 <Button type="primary" htmlType="submit">
                   {editIndex !== null

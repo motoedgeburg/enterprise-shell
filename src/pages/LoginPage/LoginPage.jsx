@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { Navigate } from 'react-router-dom';
 
+import { ROUTES } from '../../constants/routes.js';
 import { useAuth } from '../../hooks/useAuth.js';
 
 import messages from './messages.js';
@@ -42,7 +43,7 @@ const LoginPage = () => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={ROUTES.DASHBOARD} replace />;
   }
 
   return (
@@ -60,7 +61,7 @@ const LoginPage = () => {
         styles={{ body: { padding: '40px 32px' } }}
       >
         <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-          <LockOutlined style={{ fontSize: 48, color: '#1677ff' }} />
+          <LockOutlined style={{ fontSize: 48, color: '#008cff' }} />
 
           <div>
             <Title level={3} style={{ marginBottom: 4 }}>

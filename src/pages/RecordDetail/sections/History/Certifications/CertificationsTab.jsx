@@ -12,11 +12,12 @@ import messages from './messages.js';
 
 const { Text } = Typography;
 
-const certStatus = (expiryDate) => {
-  if (!expiryDate) return { label: 'No Expiry', color: 'blue' };
+const certStatus = (expiryDate, intl) => {
+  if (!expiryDate)
+    return { label: intl.formatMessage(messages.DETAIL_CERTS_STATUS_NO_EXPIRY), color: 'blue' };
   return dayjs(expiryDate).isAfter(dayjs())
-    ? { label: 'Active', color: 'green' }
-    : { label: 'Expired', color: 'red' };
+    ? { label: intl.formatMessage(messages.DETAIL_CERTS_STATUS_ACTIVE), color: 'green' }
+    : { label: intl.formatMessage(messages.DETAIL_CERTS_STATUS_EXPIRED), color: 'red' };
 };
 
 const CertificationsTab = () => {
@@ -63,7 +64,7 @@ const CertificationsTab = () => {
       dataIndex: 'name',
       key: 'name',
       render: (name, record) => {
-        const { label } = certStatus(record.expiryDate);
+        const { label } = certStatus(record.expiryDate, intl);
         return (
           <Space orientation="vertical" size={2}>
             <Text style={{ opacity: label === 'Expired' ? 0.45 : 1 }}>{name}</Text>
@@ -98,7 +99,7 @@ const CertificationsTab = () => {
       key: 'status',
       width: 100,
       render: (_, record) => {
-        const { label, color } = certStatus(record.expiryDate);
+        const { label, color } = certStatus(record.expiryDate, intl);
         return <Tag color={color}>{label}</Tag>;
       },
     },
@@ -196,7 +197,7 @@ const CertificationsTab = () => {
               />
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
                 <Button onClick={() => setOpen(false)}>
-                  {intl.formatMessage(messages.DETAIL_DELETE_CANCEL)}
+                  {intl.formatMessage(messages.DETAIL_MODAL_CANCEL)}
                 </Button>
                 <Button type="primary" htmlType="submit">
                   {editIndex !== null

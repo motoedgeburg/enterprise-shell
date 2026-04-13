@@ -3,6 +3,7 @@ const emergencyContactsMessages = {
   DETAIL_SUBMIT: { id: 'DETAIL_SUBMIT', defaultMessage: 'Save Changes' },
   DETAIL_DELETE_OK: { id: 'DETAIL_DELETE_OK', defaultMessage: 'Delete' },
   DETAIL_DELETE_CANCEL: { id: 'DETAIL_DELETE_CANCEL', defaultMessage: 'Cancel' },
+  DETAIL_MODAL_CANCEL: { id: 'DETAIL_MODAL_CANCEL', defaultMessage: 'Cancel' },
 
   // ─── Emergency Contacts ────────────────────────────────────────────────────
   DETAIL_CONTACTS_COL_NAME: { id: 'DETAIL_CONTACTS_COL_NAME', defaultMessage: 'Name' },

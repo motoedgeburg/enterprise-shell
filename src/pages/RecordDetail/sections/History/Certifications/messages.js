@@ -3,6 +3,7 @@ const certificationsMessages = {
   DETAIL_SUBMIT: { id: 'DETAIL_SUBMIT', defaultMessage: 'Save Changes' },
   DETAIL_DELETE_OK: { id: 'DETAIL_DELETE_OK', defaultMessage: 'Delete' },
   DETAIL_DELETE_CANCEL: { id: 'DETAIL_DELETE_CANCEL', defaultMessage: 'Cancel' },
+  DETAIL_MODAL_CANCEL: { id: 'DETAIL_MODAL_CANCEL', defaultMessage: 'Cancel' },
 
   // ─── Professional Certifications ───────────────────────────────────────────
   DETAIL_CERTS_COL_NAME: { id: 'DETAIL_CERTS_COL_NAME', defaultMessage: 'Certification' },
@@ -48,6 +49,20 @@ const certificationsMessages = {
   DETAIL_CERTS_PLACEHOLDER_EXPIRY: {
     id: 'DETAIL_CERTS_PLACEHOLDER_EXPIRY',
     defaultMessage: 'Leave blank if no expiry',
+  },
+
+  // ─── Status labels ──────────────────────────────────────────────────────────
+  DETAIL_CERTS_STATUS_ACTIVE: {
+    id: 'DETAIL_CERTS_STATUS_ACTIVE',
+    defaultMessage: 'Active',
+  },
+  DETAIL_CERTS_STATUS_EXPIRED: {
+    id: 'DETAIL_CERTS_STATUS_EXPIRED',
+    defaultMessage: 'Expired',
+  },
+  DETAIL_CERTS_STATUS_NO_EXPIRY: {
+    id: 'DETAIL_CERTS_STATUS_NO_EXPIRY',
+    defaultMessage: 'No Expiry',
   },
 };
 

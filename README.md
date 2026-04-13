@@ -78,7 +78,7 @@ Login (Okta SSO or mock auth)
 ```
 
 - Search filters are preserved in URL query params so the browser Back button returns to the exact results page.
-- After creating a record, the app replaces the URL with the new record's detail route so Back still works correctly.
+- After creating or saving a record, the app redirects back to the Results page with the original search filters preserved.
 
 ---
 

@@ -136,13 +136,13 @@ const RecordDetailPage = () => {
 
     try {
       if (isNew) {
-        const created = await recordsService.create(payload);
+        await recordsService.create(payload);
         void message.success(intl.formatMessage(messages.DETAIL_CREATE_SUCCESS));
-        navigate(`/records/${created.uuid}`, { replace: true, state: location.state });
+        navigate(backPath, { replace: true });
       } else {
-        const updated = await recordsService.update(id, payload);
+        await recordsService.update(id, payload);
         void message.success(intl.formatMessage(messages.DETAIL_SUCCESS));
-        setRecord(updated);
+        navigate(backPath, { replace: true });
       }
     } catch (err) {
       log.error(isNew ? 'Failed to create record' : 'Failed to save record', err);
@@ -417,7 +417,7 @@ const RecordDetailPage = () => {
               value={saveNote}
               onChange={(e) => setSaveNote(e.target.value)}
               placeholder={intl.formatMessage(messages.DETAIL_SAVE_MODAL_NOTE_PLACEHOLDER)}
-              style={{ marginTop: 16 }}
+              style={{ marginTop: 16, marginBottom: 24 }}
             />
           </Modal>
         </Space>

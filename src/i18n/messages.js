@@ -8,6 +8,8 @@ import dashboardMessages from '../pages/Dashboard/messages.js';
 import loginMessages from '../pages/LoginPage/messages.js';
 import callbackMessages from '../pages/OktaCallback/messages.js';
 import recordDetailMessages from '../pages/RecordDetail/messages.js';
+import compensationMessages from '../pages/RecordDetail/sections/Compensation/messages.js';
+import auditTrailMessages from '../pages/RecordDetail/sections/History/AuditTrail/messages.js';
 import certificationsMessages from '../pages/RecordDetail/sections/History/Certifications/messages.js';
 import emergencyContactsMessages from '../pages/RecordDetail/sections/History/EmergencyContacts/messages.js';
 import historyMessages from '../pages/RecordDetail/sections/History/messages.js';
@@ -26,6 +28,8 @@ const allDescriptors = [
   callbackMessages,
   recordDetailMessages,
   historyMessages,
+  auditTrailMessages,
+  compensationMessages,
   emergencyContactsMessages,
   certificationsMessages,
   personalInfoMessages,

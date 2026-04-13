@@ -165,13 +165,13 @@ const ResultsPage = () => {
         }}
         onRow={(record) => ({
           onClick: () =>
-            navigate(`/records/${record.uuid}`, {
+            navigate(ROUTES.RECORD_DETAIL.replace(':id', record.uuid), {
               state: { search: searchParams.toString() },
             }),
           onKeyDown: (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              navigate(`/records/${record.uuid}`, {
+              navigate(ROUTES.RECORD_DETAIL.replace(':id', record.uuid), {
                 state: { search: searchParams.toString() },
               });
             }
